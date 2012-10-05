@@ -402,6 +402,7 @@ architecture Behavorial of ethernet_core_wrapper is
 	-- control what we should do
 	signal set_what_to_do				: std_logic;
 	signal set_register_access			: std_logic;
+	signal unset_register_access		: std_logic;
 	signal set_register_addr1			: std_logic;
 	signal set_register_addr2			: std_logic;
 	signal set_register_addr_zero		: std_logic;
@@ -846,6 +847,7 @@ begin
 		
 		set_what_to_do <= '0';
 		set_register_access <= '0';
+		unset_register_access <= '0';
 		set_register_addr1 <= '0';
 		set_register_addr2 <= '0';
 		set_register_addr_zero <= '0';
@@ -930,14 +932,15 @@ begin
 						continue_to_send_data := '1';
 					end if;
 				elsif ( what_to_do = do_write_register ) then
---					if ( waiting_for_write_count = waiting_for_write-1 ) then
---						set_timeout_for_waiting_exeeded <= '1';
+					if ( waiting_for_write_count = waiting_for_write-1 ) then
+						set_timeout_for_waiting_exeeded <= '1';
 						continue_to_send_data := '1';
---					elsif ( REGISTER_READ_READY = '1' ) then
---						continue_to_send_data := '1';
---					else
---						set_waiting_for_write_count <= INCR;
---					end if;
+					elsif ( REGISTER_READ_READY = '1' ) then
+						continue_to_send_data := '1';
+						unset_register_access <= '1';
+					else
+						set_waiting_for_write_count <= INCR;
+					end if;
 				else
 					continue_to_send_data := '1';
 				end if;
@@ -1166,6 +1169,7 @@ begin
 				if ( set_register_write_data3 = '1' )	then register_write_data_int(15 downto 8)		<= udp_rx_int.data.data_in; end if;
 				if ( set_register_write_data4 = '1' )	then register_write_data_int(7 downto 0)		<= udp_rx_int.data.data_in; end if;
 				if ( set_register_access = '1' )			then register_access_int <= '1'; end if;
+				if ( unset_register_access = '1' )		then register_access_int <= '0'; end if;
 				if ( set_register_read_data = '1' )		then register_read_data_int <= REGISTER_READ_DATA; end if;
 				
 				if ( reset_register_access = '1' ) then
@@ -1196,11 +1200,15 @@ begin
 					REGISTER_ACCESS <= register_access_int;
 				end if;
 			else
-				wait_with_register_access <= '0';
+				if ( wait_with_register_access = '1' ) then
+					wait_with_register_access <= '0';
+				else 
+					REGISTER_ADDR <= (others => '0');
+					REGISTER_WRITE_OR_READ <= '0';
+					REGISTER_WRITE_DATA <= (others => '0');
+				end if;
+				--wait_with_register_access <= '0';
 				REGISTER_ACCESS <= '0';
-				REGISTER_ADDR <= (others => '0');
-				REGISTER_WRITE_OR_READ <= '0';
-				REGISTER_WRITE_DATA <= (others => '0');
 			end if;
 		end if;
 	end process;
