@@ -24,3 +24,5 @@
 
 # include readme and other documentation
 !*.md
+
+*_not_used_/
