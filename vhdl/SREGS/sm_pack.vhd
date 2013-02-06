@@ -115,7 +115,7 @@ package sample_package is
 	constant TPXMASTER_TRIGGERHI 	: integer	:=16#130#;	--hex address 4C0
 	constant TPXMASTER_BITCOUNT 	: integer	:=16#131#;	--hex address 4C4	
 	
-	constant LED_REG					: integer 	:=16#132#; 	--hex address 4C8 
+	constant LED_REG				: integer 	:=16#132#; 	--hex address 4C8 
 	
 	constant LCD_MODE_REG			: integer 	:=16#133#; 	--hex address 4CC 
 	constant LCD_FIFO_CHAR_REG		: integer 	:=16#134#; 	--hex address 4D0 
@@ -128,19 +128,19 @@ package sample_package is
 --	constant LCD_CHAR_REG_2_3		: integer 	:=16#13a#; 	--hex address 4E8
 --	constant LCD_CHAR_REG_2_4		: integer 	:=16#13b#; 	--hex address 4EC      
 	
---	constant SM_IDENT					: integer :=16#101#;  	-- 404   raus, doppelt zu GLS_IDENT
+--	constant SM_IDENT				: integer :=16#101#;  	-- 404   raus, doppelt zu GLS_IDENT
 	
-	constant SCR_ENA					: integer := 0;
-	constant SCR_HIGH					: integer := 15;
+	constant SCR_ENA				: integer := 0;
+	constant SCR_HIGH				: integer := 15;
 
-	constant SM_SR						: integer :=16#132#;    --
-	constant SM_BLK_SIZE				: integer :=16#106#;    -- 418
-	constant SM_RO_DATA				: integer :=16#0100#;   -- Register Adresse fuer DMA transfer
+	constant SM_SR					: integer :=16#132#;    --
+	constant SM_BLK_SIZE			: integer :=16#106#;    -- 418    DMA FIFO data count
+	constant SM_RO_DATA				: integer :=16#100#;    -- 400    Register address for DMA transfer
 
 -- -------------------------- Giga Link protocol constants --------------- --
 
 	constant GL_START	: T_SLV8 := x"1C";	-- K.28.0  
-	constant GL_XON	: T_SLV8 := x"5C";	-- K.28.2  
+	constant GL_XON		: T_SLV8 := x"5C";	-- K.28.2  
 	constant GL_XOFF	: T_SLV8 := x"7C";	-- K.28.3  
 	constant GL_RESET	: T_SLV8 := x"9C";	-- K.28.4  
 	constant GL_IDLE	: T_SLV8 := x"BC";	-- K.28.5  

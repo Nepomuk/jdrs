@@ -14,6 +14,18 @@
 --							....,....,....,.
 --					 		Firmware loaded!
 --							online: ##:##:##
+--	               1) Temperature
+--							....,....,....,.
+--					 		T: ##°C ADC: ###
+--							Fan speed: ##
+--	               2) UDP: package counter
+--							....,....,....,.
+--					 		[UDP] packages
+--							 # ### ### ###
+--	               3) UDP: register access
+--							....,....,....,.
+--					 		[UDP] set  0x###   (set or read)
+--							Fan speed: ##
 --							
 --              This is based on a module I found somewhere. Unfortunately
 --              I can't remember where I found it.
@@ -35,17 +47,19 @@ entity lcd_control is
    port ( 
 		RST				: in std_logic;								-- Reset
 		CLK				: in std_logic;								-- Clock, 50 MHz (faster may disturb the LCD)
-		MODE				: in std_logic_vector (2 downto 0);		-- in which mode should the LCD operate? (see comments above)
+		MODE			: in std_logic_vector (2 downto 0);		-- in which mode should the LCD operate? (see comments above)
 		CONTROL			: out std_logic_vector (2 downto 0); 	-- (2): LCD_RS, (1): LCD_RW, (0): LCD_E
-		SF_D				: out std_logic_vector (7 downto 4);		-- LCD data bus
+		SF_D			: out std_logic_vector (7 downto 4);		-- LCD data bus
 		
 		TEMP_IN			: in std_logic_vector(7 downto 0);
 		TEMP_ADC_IN		: in std_logic_vector(9 downto 0);
 		FAN_SPEED_IN	: in std_logic_vector(5 downto 0);
 		
-		REGISTER_ADDR				: in std_logic_vector(11 downto 0);
+		REGISTER_ADDR			: in std_logic_vector(11 downto 0);
 		REGISTER_WRITE_OR_READ	: in std_logic;
-		REGISTER_DATA				: in std_logic_vector(31 downto 0)
+		REGISTER_DATA			: in std_logic_vector(31 downto 0);
+		
+		UDP_PKG_CTR		: in std_logic_vector(31 downto 0)  -- how many UDP packages were received?
 	); 
 end lcd_control; 
 
@@ -160,6 +174,30 @@ architecture lcd_control_arch of lcd_control is
 		
 		return bcd;
 	end to_bcd;
+	
+	function to_bcd32 ( bin : std_logic_vector(31 downto 0) ) return std_logic_vector is
+		variable n : integer := 31;
+		variable i : integer:=0;
+		variable bcd : std_logic_vector(n+2 downto 0) := (others => '0');
+		variable bint : std_logic_vector(n downto 0) := bin;
+	begin
+	
+		for i in 0 to n loop  -- repeating 10 times.
+			bcd(n+2 downto 1) := bcd(n-1 downto 0);  --shifting the bits.
+			bcd(0) := bint(n);
+			bint(n downto 1) := bint(n-1 downto 0);
+			bint(0) :='0';
+
+			for j in 0 to 7 loop
+				if(i < n and bcd(j+3 downto j) > "0100") then --add 3 if BCD digit is greater than 4.
+					bcd(j+3 downto j) := bcd(j+3 downto j) + "0011";
+				end if;
+			end loop;
+			
+		end loop;
+		
+		return bcd;
+	end to_bcd32;
 	
 	
 	-- A function that converts a 4 bit hexadecimal number to
@@ -540,8 +578,36 @@ begin
 				lower_line(15) <= x"20"; -- 
 				
 				
-				
 			elsif mode = "010" then
+				upper_line( 0) <= x"5b"; -- [
+				upper_line( 1) <= x"55"; -- U
+				upper_line( 2) <= x"44"; -- D
+				upper_line( 3) <= x"50"; -- P
+				upper_line( 4) <= x"5d"; -- ]
+				upper_line( 5) <= x"20"; -- 
+				upper_line( 6) <= x"70"; -- p
+				upper_line( 7) <= x"61"; -- a
+				upper_line( 8) <= x"63"; -- c
+				upper_line( 9) <= x"6b"; -- k
+				upper_line(10) <= x"61"; -- a
+				upper_line(11) <= x"67"; -- g
+				upper_line(12) <= x"65"; -- e
+				upper_line(13) <= x"73"; -- s
+				upper_line(14) <= x"3a"; -- :
+				upper_line(15) <= x"20"; -- 
+				
+				lower_line( 0) <= x"20"; -- 
+				
+				lower_line( 2) <= x"20"; -- 
+				
+				lower_line( 6) <= x"20"; -- 
+				
+				lower_line(10) <= x"20"; -- 
+				
+				lower_line(14) <= x"20"; -- 
+				lower_line(15) <= x"20"; -- 
+				
+			elsif mode = "011" then
 				upper_line( 0) <= x"5b"; -- [
 				upper_line( 1) <= x"55"; -- U
 				upper_line( 2) <= x"44"; -- D
@@ -659,13 +725,16 @@ begin
 	-- change the state and cursor position on the LCD
 	timing : process (RST, CLK) is
 	begin
-		if	(rising_edge(CLK)) then
+		if (RST = '1') then
+			state		<= waiting;
+			count_temp	<= 0;
+			line_pos	<= 0;
+			sf_d		<= (others => '0');
+			count		<= 0;
+		elsif	(rising_edge(CLK)) then
 			sf_d <= sf_d_short;
 			count <= count_temp;
-			if (RST = '1') then
-				state <= waiting;
-				count_temp <= 0;
-			elsif (state_flag = '1') then
+			if (state_flag = '1') then
 				state <= next_state;
 				count_temp <= 0;
 			else

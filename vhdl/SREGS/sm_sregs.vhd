@@ -49,40 +49,40 @@ generic (
 	SC_VERSION	: integer
 );
 port (
-	LCLK				: out		std_logic;
+	LCLK			: out	std_logic;
 	BASECLOCK		: in   	std_logic;	-- 125 MHz
-	CLK66				: in     std_logic; 	-- 66 MHz
-	GRESET   		: out		std_logic;	-- general reset
-	P1MS				: in		std_logic;	-- 1 ms pulse
+	CLK66			: in    std_logic; 	-- 66 MHz
+	GRESET   		: out	std_logic;	-- general reset
+	P1MS			: in	std_logic;	-- 1 ms pulse
 	LED				: out 	std_logic_vector(7 downto 0);
-	USER_SWITCH		: in		std_logic_vector(4 downto 0);
+	USER_SWITCH		: in	std_logic_vector(4 downto 0);
 --	-------------------------- local bus zum GIGALink Teil ---------------- --
-	P_REG				: in		std_logic;								-- Signal fuer Registerzugriffe
-	P_WR				: in		std_logic;								-- write
-	P_A				: in		std_logic_vector(12 downto 2);	-- address
-	P_D				: in		T_SLV32;									-- data - byte count is swapped
-	P_D_O				: out		T_SLV32;									-- data out
-	P_RDY				: out		std_logic;								-- data ready
-	P_BLK				: in     std_logic;								-- always read
-	P_WAIT			: in 		std_logic;								--	pause block read
-	P_END				: out 	std_logic;								-- block end
+	P_REG			: in	std_logic;								-- Signal fuer Registerzugriffe
+	P_WR			: in	std_logic;								-- write
+	P_A				: in	std_logic_vector(12 downto 2);	-- address
+	P_D				: in	T_SLV32;									-- data - byte count is swapped
+	P_D_O			: out	T_SLV32;									-- data out
+	P_RDY			: out	std_logic;								-- data ready
+	P_BLK			: in    std_logic;								-- always read
+	P_WAIT			: in 	std_logic;								--	pause block read
+	P_END			: out 	std_logic;								-- block end
 	--	-------------------------- control signals ---------------------------- --
-	DMD_DMA			: in		std_logic;
-	EV_DATACOUNT	: out    std_logic_vector(9 downto 0);
-	DT_REQ			: out		std_logic;
-	DT_ACK			: in		std_logic;
-	DT_DEN			: out		std_logic;		-- data enable on PD
+	DMD_DMA			: in	std_logic;
+	EV_DATACOUNT	: out   std_logic_vector(9 downto 0);
+	DT_REQ			: out	std_logic;
+	DT_ACK			: in	std_logic;
+	DT_DEN			: out	std_logic;		-- data enable on PD
 	FIFO_EMPTY  	: out 	std_logic;
 --	-------------------------- write to Host register request ------------- --
-	HREG_REQ			: out		std_logic;
-	HREG_A			: out		std_logic_vector(8 downto 2);		-- address
-	HREG_D			: out		T_SLV32;
-	HREG_ACK			: in		std_logic;
+	HREG_REQ		: out	std_logic;
+	HREG_A			: out	std_logic_vector(8 downto 2);		-- address
+	HREG_D			: out	T_SLV32;
+	HREG_ACK		: in	std_logic;
 -- -------------------------- control/status ----------------------------- --
-	SYS_MODE			: out		T_SLV16;		-- control
+	SYS_MODE		: out	T_SLV16;		-- control
 -- -------------------------- host doorbell ------------------------------ --
-	P100MS			: in		std_logic;		-- 100 ms signal
-	DMD_WR			: in		std_logic		-- write demand data to host
+	P100MS			: in	std_logic;		-- 100 ms signal
+	DMD_WR			: in	std_logic		-- write demand data to host
 );
 end SREGS;
 
@@ -94,39 +94,39 @@ architecture RTL of SREGS is
 
 COMPONENT one_hertz_counter
 PORT(
-	CLK 					: IN std_logic;          
+	CLK 				: IN std_logic;
 	COUNTER_OUT 		: OUT std_logic_vector(7 downto 0)
 	);
 END COMPONENT;
 component knight_rider
 	port (
-		CLK66				: in		std_logic;
-		USER_SWITCH		: in		std_logic_vector (4 downto 0);
-		LED				: out		std_logic_vector (7 downto 0)
+		CLK66			: in	std_logic;
+		USER_SWITCH		: in	std_logic_vector (4 downto 0);
+		LED				: out	std_logic_vector (7 downto 0)
 	);
 end component;
 
 component sm_dummy_data is
 Port (
 	START 				: in  	STD_LOGIC;
-	RESET 				: in 		std_logic;
+	RESET 				: in 	std_logic;
 	EMPTY 				: out 	std_logic;
-	FULL					: out 	std_logic;
+	FULL				: out 	std_logic;
 	DATA_COUNT			: out 	std_logic_vector (9 downto 0);
-	CLK					: in 		std_logic;
-	DIN 					: in  	STD_LOGIC_VECTOR (31 downto 0);
-	DWEN 					: in 		std_logic ;
-	DOUT 					: out  	STD_LOGIC_VECTOR (31 downto 0);
-	DDESTWE 				: out  	std_logic;
-	BUSY 					: out  	STD_LOGIC
+	CLK					: in 	std_logic;
+	DIN 				: in  	STD_LOGIC_VECTOR (31 downto 0);
+	DWEN 				: in 	std_logic ;
+	DOUT 				: out  	STD_LOGIC_VECTOR (31 downto 0);
+	DDESTWE 			: out  	std_logic;
+	BUSY 				: out  	STD_LOGIC
 	);
 end component sm_dummy_data;
 
 COMPONENT daq_fifo
   PORT (
-    clk 			: 		IN STD_LOGIC;
+    clk 		: 		IN STD_LOGIC;
     srst 		: 		IN STD_LOGIC;
-    din 			: 		IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    din 		: 		IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     wr_en 		: 		IN STD_LOGIC;
     rd_en 		: 		IN STD_LOGIC;
     dout 		: 		OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -140,26 +140,26 @@ END COMPONENT;
 -- ======================================================================= --
 --										    Signals                                  --
 -- ======================================================================= --
-	alias regadr							: std_logic_vector(8 downto 0) is P_A(10 downto 2);
+	alias regadr						: std_logic_vector(8 downto 0) is P_A(10 downto 2);
 -- control/status register
-	signal doorbell_mask					: T_SLV16;
-	signal stimer							: T_SLV32;
-	signal stimer_clr						: std_logic;
+	signal doorbell_mask				: T_SLV16;
+	signal stimer						: T_SLV32;
+	signal stimer_clr					: std_logic;
 -- block counter
 	signal dmd_counter					: std_logic_vector(31 downto 2);
 	signal dmd_block_sz					: std_logic_vector(23 downto 2);
-	signal dmd_block						: std_logic_vector(23 downto 2);
+	signal dmd_block					: std_logic_vector(23 downto 2);
 	signal dmd_load						: std_logic;
-	signal dmd_int							: std_logic;
+	signal dmd_int						: std_logic;
 -- host doorbell
-	signal cnt1sec							: T_SLV4;
-	signal s2sec							: std_logic;
+	signal cnt1sec						: T_SLV4;
+	signal s2sec						: std_logic;
 	signal dbell_in						: T_SLV32;
-	signal dbell_in_d						: T_SLV32;
-	signal dbell_act						: T_SLV32;
-	signal dbell_out						: T_SLV32;
-	signal dbell_req						: std_logic;
-	signal creg								: T_SLV32;
+	signal dbell_in_d					: T_SLV32;
+	signal dbell_act					: T_SLV32;
+	signal dbell_out					: T_SLV32;
+	signal dbell_req					: std_logic;
+	signal creg							: T_SLV32;
 	signal tpx_fifodummyreg     		: std_logic_vector(31 downto 0);
 	signal tpx_fifodummydata     		: std_logic_vector(31 downto 0);
 	signal tpx_fifo_din					: std_logic_vector(31 downto 0);
@@ -168,31 +168,31 @@ END COMPONENT;
 	signal synthieclock         		: std_logic;
 	signal dummy_data_busy				: std_logic;
 	signal tpx_fifodummydestwe			: std_logic;
-	signal clock_counter					: std_logic_vector(11 downto 0):= "000000000000";
-	signal led_config						: std_logic_vector(4 downto 0);
+	signal clock_counter				: std_logic_vector(11 downto 0):= "000000000000";
+	signal led_config					: std_logic_vector(4 downto 0);
 	signal one_hertz_counter_i			: std_logic_vector(7 downto 0);
 	signal knight_rider_i				: std_logic_vector(7 downto 0);
-	signal ilclk,ilreset					: std_logic;
+	signal ilclk,ilreset				: std_logic;
 
 -- ========================== MMCM_DRP ====================================== --
-	signal rc_do							: T_SLV16;
+	signal rc_do						: T_SLV16;
 	signal rc_we,rc_start				: std_logic;
 	signal drp_busy						: std_logic;
-	signal s_rdy							: std_logic;		-- single ready (no block)
+	signal s_rdy						: std_logic;		-- single ready (no block)
 	signal rdy_fi,rdy_fi_d1				: std_logic;
 	signal fi_count,fi_cnt_max			: T_SLV10;
-	signal fi_wen							: std_logic;
-	signal fi_ren							: std_logic;
+	signal fi_wen						: std_logic;
+	signal fi_ren						: std_logic;
 	signal fi_empty,fi_full				: std_logic;
 	signal fi_pfull						: std_logic;		-- 3/4
 	signal fi_datacount					: std_logic_vector(9 downto 0);
-	signal fi_din,fi_dout, fi_din_dummy		: std_logic_vector(31 downto 0);
+	signal fi_din,fi_dout, fi_din_dummy	: std_logic_vector(31 downto 0);
 	signal fi_valid						: std_logic;
-	signal blk								: std_logic;
-	signal blk_rdy							: std_logic;
-	signal blk_cnt							: std_logic_vector(17 downto 0);	-- lword count, 1MB
+	signal blk							: std_logic;
+	signal blk_rdy						: std_logic;
+	signal blk_cnt						: std_logic_vector(17 downto 0);	-- lword count, 1MB
 	signal blk_zero						: std_logic;	-- zero
-	signal ldt_den							: std_logic;
+	signal ldt_den						: std_logic;
 
 -- ======================================================================= --
 --										       Begin                                 --
@@ -209,7 +209,7 @@ GRESET	<= ilreset;
 U_MMCM: entity work.U_MMCM
 port map (
 	CLKIN			=> CLK66, --BASECLOCK, -- ilclk ist eigentlich baseclock
-	LCLK			=> ilclk,  -- ilclk kommt aus mmcm raus 
+	LCLK			=> ilclk,  -- ilclk kommt aus mmcm raus
 	LRESET		=> ilreset,
 	BCLK			=> open,
 	BRESET		=> open,   -- not locked
@@ -229,49 +229,51 @@ tpx_fifo_din <= tpx_fifodummyreg;
 
 U_DUMMY_DATA :  sm_dummy_data
     Port  map(
-	 START 			=> creg(4),
-	 RESET			=> ilreset,
-	 EMPTY			=> open,
-	 FULL				=> open,
-	 DATA_COUNT 	=> tpx_fifo_datacount,
-	 CLK				=> ilclk,
-    DIN 				=> tpx_fifo_din,
-	 DWEN				=> tpx_fifodummywe,
-    DOUT 			=> tpx_fifodummydata,
-	 DDESTWE			=> tpx_fifodummydestwe,
-    BUSY 			=> dummy_data_busy
-	 );
-	
+		START 			=> creg(4),
+		RESET			=> ilreset,
+		EMPTY			=> open,
+		FULL			=> open,
+		DATA_COUNT 		=> tpx_fifo_datacount,
+		CLK				=> ilclk,
+		DIN 			=> tpx_fifo_din,
+		DWEN			=> tpx_fifodummywe,
+		DOUT 			=> tpx_fifodummydata,
+		DDESTWE			=> tpx_fifodummydestwe,
+		BUSY 			=> dummy_data_busy
+	);
+
 dma_buffer: daq_fifo
 	port map(
 		clk			=> ilclk,
-		srst			=> ilreset,
+		srst		=> ilreset,
 		din			=> fi_din,
-		wr_en			=> fi_wen,
-		rd_en			=> fi_ren,
-		dout			=> fi_dout,
-		full			=> fi_full,
-		empty			=> fi_empty,
+		wr_en		=> fi_wen,
+		rd_en		=> fi_ren,
+		dout		=> fi_dout,
+		full		=> fi_full,
+		empty		=> fi_empty,
 		prog_full	=> fi_pfull,
 		data_count	=> fi_datacount
-	);	
-U_ONE_HERTZ_COUNTER : one_hertz_counter 
+	);
+
+U_ONE_HERTZ_COUNTER : one_hertz_counter
 	PORT MAP(
-	CLK 				=> ilclk,
-	COUNTER_OUT 	=> one_hertz_counter_i
+		CLK 		=> ilclk,
+		COUNTER_OUT => one_hertz_counter_i
 	);
 U_KNIGHT_RIDER : knight_rider
 	port map (
-		CLK66			=> ilclk,
+		CLK66		=> ilclk,
 		USER_SWITCH	=> USER_SWITCH,
 		LED			=> knight_rider_i
 	);
 
 with led_config select LED <=
-			  one_hertz_counter_i 					when "00000",		-- 0
-			  knight_rider_i (7 downto 0)		 	when "00001",		-- 1
-			  tpx_fifo_datacount(7 downto 0) 	when "00010",		-- 2
-			  "11111111" 								when others;
+	one_hertz_counter_i 				when "00000",		-- 0
+	knight_rider_i (7 downto 0)		 	when "00001",		-- 1
+	tpx_fifo_datacount(7 downto 0) 		when "00010",		-- 2
+	fi_datacount(7 downto 0) 			when "00011",		-- 3
+	"11111111" 							when others;
 
 
 -- ======================================================================= --
@@ -291,24 +293,26 @@ begin
 		if SL2B(P_REG and P_WR) and (regadr = GLS_CONTROL_REGISTER) then
 			creg	<=P_D(CREG'range);
 		end if;
-		if SL2B(P_REG and P_WR) and (regadr = LED_REG) then 
+		if SL2B(P_REG and P_WR) and (regadr = LED_REG) then
 			led_config <= P_D(led_config'range);
 		end if;
-		
-		if SL2B(P_REG and P_WR) and (regadr = TPX_FIFODUMMY_REG) then
-			tpx_fifodummyreg <= P_D(tpx_fifodummyreg'range);
-		end if;
+
+		-- if SL2B(P_REG and P_WR) and (regadr = TPX_FIFODUMMY_REG) then
+			-- tpx_fifodummyreg <= P_D(tpx_fifodummyreg'range);
+		-- end if;
 		if dummy_data_busy ='1' then   -- start dummy data transfer from sm to data fifo
 			creg(4) <='0';
 		end if;
 		if drp_busy ='1'  then
 			creg(5)	<= '0';        --start Clockgen Reconfigure
 		end if;
-	tpx_fifodummywe <= '0';
+
 
 		if SL2B(P_REG and P_WR) and (regadr = TPX_FIFODUMMY_REG) then
 			tpx_fifodummywe <= '1';
 			tpx_fifodummyreg <= P_D(tpx_fifodummyreg'range);
+		else
+			tpx_fifodummywe <= '0';
 		end if;
 
 	if SL2B(ilreset) then
@@ -461,11 +465,11 @@ HREG_D	<= SL2SLV(dbell_req, HREG_D'length) and dbell_out;
 process(ilclk)
 begin
 if rising_edge(ilclk) then
-	s_rdy		<=    P_REG 
-				  and ( 		B2SL(P_A = SM_DMA_CONTROL	)
-						 or 	B2SL(P_A = SM_SR)
-						 or 	B2SL(P_A = SM_BLK_SIZE)
-						 or 	(B2SL(P_A = SM_RO_DATA) and not P_WR));
+  s_rdy   <=    P_REG
+          and (     B2SL(P_A = SM_DMA_CONTROL )
+             or   B2SL(P_A = SM_SR)
+             or   B2SL(P_A = SM_BLK_SIZE)
+             or   (B2SL(P_A = SM_RO_DATA) and not P_WR));
 
 	rdy_fi		<= P_REG and not P_WR and B2SL(P_A = SM_RO_DATA);
 	rdy_fi_d1	<= rdy_fi;
@@ -562,7 +566,7 @@ P_RDY	<= s_rdy or blk_rdy or
 						  or B2SL(regadr = TPX_TRIGCOUNT_REG)
 						  or B2SL(regadr = LED_REG)
 						  or B2SL(regadr = TPX_LEDINFOREG)
-						  or B2SL(regadr(regadr'high downto 5) = (SM_DRP/32)))		-- MMCM_DRP						  
+						  or B2SL(regadr(regadr'high downto 5) = (SM_DRP/32)))		-- MMCM_DRP
 						  );
 
 P_D_O <=
@@ -579,17 +583,17 @@ P_D_O <=
 		or (    SL2SLV(P_REG and not P_WR and B2SL(regadr = GLS_BLKSZ))
 			 and EXT2SLV(dmd_block_sz&"00"))
 		or (    SL2SLV(P_REG and not P_WR and B2SL(regadr = GLS_CONTROL_REGISTER))
-			 and INT2SLV(SM_VERSION_HW) ) --creg)
+			 and creg)
 		or (	  SL2SLV(P_REG and not P_WR and B2SL(regadr = LED_REG))
 			 and EXT2SLV(led_config))
 		or	(    SL2SLV(P_REG and not P_WR and B2SL(P_A = SM_SR))
 			 and EXT2SLV(fi_pfull&fi_valid))
 		or (    SL2SLV(P_REG and not P_WR and B2SL(P_A = SM_BLK_SIZE))
 			 and EXT2SLV(fi_cnt_max))
-		or (    SL2SLV(not fi_valid and P_REG and not P_WR and B2SL(P_A = SM_RO_DATA))
+		or (    SL2SLV(not fi_valid and s_rdy and not P_WR and B2SL(P_A = SM_RO_DATA))  -- P_REG -> s_rdy
 			 and x"EEEEEEEE")
-		or (    SL2SLV(fi_valid and (   blk or DT_ACK	or (P_REG and not P_WR and B2SL(P_A = SM_RO_DATA))))
-			 and fi_dout)			 
+		or (    SL2SLV(fi_valid and (   blk or DT_ACK	or (s_rdy and not P_WR and B2SL(P_A = SM_RO_DATA)) ))  -- P_REG -> s_rdy
+			 and fi_dout)
 -- ========================== MMCM_DRP ====================================== --
 		or (    SL2SLV(    P_REG and not P_WR
 						   and B2SL(regadr(regadr'high downto 5) = (SM_DRP/32)))
