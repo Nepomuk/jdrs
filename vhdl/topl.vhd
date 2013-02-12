@@ -115,6 +115,7 @@ architecture Behavioral of topl is
 	signal register_dma_wait		: std_logic;
 	signal register_dma_end			: std_logic;
 	signal register_dma_empty		: std_logic;
+	signal register_dma_count   : std_logic_vector(9 downto 0);
 	--signal register_dt_ack			: std_logic;
 
 	-- LCD stuff
@@ -350,7 +351,8 @@ begin
 		REGISTER_DMA_WAIT		=> register_dma_wait,
 		REGISTER_DMA_END		=> register_dma_end,
 		REGISTER_DMA_EMPTY  => register_dma_empty,
-		REGISTER_DMA_CLK		=> sregs_clk
+		REGISTER_DMA_COUNT  => register_dma_count,
+		REGISTER_CLK        => sregs_clk
 
 	);
 
@@ -421,7 +423,7 @@ begin
 		P_WAIT			=> register_dma_wait,
 		P_END			=> register_dma_end,
 		DMD_DMA			=> sys_mode(0),
-		EV_DATACOUNT	=> open, --ev_datacount,
+		EV_DATACOUNT	=> register_dma_count, --ev_datacount,
 
 	--	-------------------------- direct block transfer ----------------------- --
 		DT_REQ			=> open, --p_dt_req,
