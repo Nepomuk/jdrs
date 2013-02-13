@@ -450,6 +450,7 @@ architecture Behavorial of ethernet_core_wrapper is
 	-- dma block fifo
 	signal register_dma_count_int   : std_logic_vector(15 downto 0);
 	signal register_dma_int         : std_logic;
+  signal register_dma_is_empty    : std_logic;
   -- signal register_dma_access_init : std_logic;
 	signal fifo_dma_reset           : std_logic;
 	signal fifo_dma_din             : std_logic_vector(31 downto 0);
@@ -1109,7 +1110,7 @@ begin
 								end if;
 
 							when do_read_dma =>
-                if ( register_write_data_int = 0 ) then
+                if ( register_dma_is_empty = '1' ) then
                   -- no data available
                   udp_tx_int.data.data_out <= x"ee";
                 else
@@ -1220,6 +1221,7 @@ begin
 				-- register_read_data_int <= (others => '0');
 				register_dma_int <= '0';
 				register_dma_count_int <= (others => '0');
+        register_dma_is_empty <= '0';
 			else
 
 				-- Next rx_state processing
@@ -1337,14 +1339,16 @@ begin
         if ( set_register_dma_count = '1' ) then
           register_write_data_int(31 downto 18) <= (others => '0');
           register_write_data_int(1 downto 0) <= "00";
+          register_dma_is_empty <= '0';
           --register_write_data_int(17 downto 2) <= std_logic_vector( to_unsigned(3,16) );
 
           if ( register_dma_count_int > 368 and REGISTER_DMA_COUNT > 368 ) then -- max: 368 32-bit-words per UDP
             register_write_data_int(17 downto 2) <= std_logic_vector( to_unsigned(368,16) );
             tx_count_target <= 368*4;
-          elsif ( REGISTER_DMA_EMPTY = '1' or REGISTER_DMA_COUNT = 0 ) then
+          elsif ( REGISTER_DMA_COUNT = 0 ) then -- or REGISTER_DMA_COUNT = 0 ) then
             register_write_data_int(17 downto 2) <= (others => '0');
             tx_count_target <= 4;
+            register_dma_is_empty <= '1';
           elsif ( register_dma_count_int > REGISTER_DMA_COUNT ) then
             register_write_data_int(17 downto 12) <= (others => '0');
             register_write_data_int(11 downto 2) <= REGISTER_DMA_COUNT;
@@ -1368,6 +1372,7 @@ begin
 				if ( reset_dma_access = '1' ) then
 					register_dma_int <= '0';
 					register_dma_count_int <= (others => '0');
+          register_dma_is_empty <= '0';
 				end if;
 
 			end if;
