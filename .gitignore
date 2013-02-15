@@ -15,6 +15,7 @@
 !vhdl/*/*/*/*/
 !ipcore_dir/
 !*.vhd
+!*.ucf
 !*.vho
 !*.xco
 !*.xise
