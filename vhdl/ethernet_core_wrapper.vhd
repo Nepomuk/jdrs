@@ -1349,7 +1349,8 @@ begin
             register_write_data_int(17 downto 2) <= (others => '0');
             tx_count_target <= 4;
             register_dma_is_empty <= '1';
-          elsif ( register_dma_count_int > REGISTER_DMA_COUNT ) then
+          elsif ( register_dma_count_int > REGISTER_DMA_COUNT and
+            not ( REGISTER_DMA_COUNT = 1 and REGISTER_DMA_EMPTY = '0' ) ) then  -- when the fifo is full, the counter shows 0 (which is transformed to 1)
             register_write_data_int(17 downto 12) <= (others => '0');
             register_write_data_int(11 downto 2) <= REGISTER_DMA_COUNT;
             tx_count_target <= to_integer(unsigned(REGISTER_DMA_COUNT)) *4;
