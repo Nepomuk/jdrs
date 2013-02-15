@@ -188,6 +188,7 @@ END COMPONENT;
 	signal fi_datacount					: std_logic_vector(9 downto 0);
 	signal fi_din,fi_dout, fi_din_dummy	: std_logic_vector(31 downto 0);
 	signal fi_valid						: std_logic;
+	signal fill_dma_counter   : std_logic_vector(31 downto 0);
 	signal blk							: std_logic;
 	signal blk_rdy						: std_logic;
 	signal blk_cnt						: std_logic_vector(17 downto 0);	-- lword count, 1MB
@@ -532,8 +533,26 @@ end process;
 --										sample data fifo											--
 -- ========================================================================== --
 
-fi_din <= tpx_fifodummydata;
-fi_wen <= tpx_fifodummydestwe;
+-- fi_din <= tpx_fifodummydata;
+-- fi_wen <= tpx_fifodummydestwe;
+
+-- fill the DMA constantly with data
+-- (comment the upper two lines out and the process below in)
+fill_dma_with_counter : process( ilclk )
+begin
+	if rising_edge( ilclk ) then
+		if SL2B(ilreset) then
+			fill_dma_counter <= (others => '0');
+		elsif ( fi_full = '1' ) then
+			fill_dma_counter <= fill_dma_counter;
+		else
+			fill_dma_counter <= fill_dma_counter + 1;
+		end if;
+	end if;
+end process;
+fi_din <= fill_dma_counter;
+fi_wen <= not fi_full;
+-- fill DMA end
 
 process(ilclk)
 begin
