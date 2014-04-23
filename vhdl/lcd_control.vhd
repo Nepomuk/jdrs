@@ -534,15 +534,15 @@ begin
 
 
       elsif mode = "001" then
-        temp_bcd := to_bcd("0000000000" or TEMP_IN);
+        temp_bcd := to_bcd("0000000000" or "00" & TEMP_IN);
         temp_adc_bcd := to_bcd("0000000000" or TEMP_ADC_IN);
-        fan_speed_bcd := to_bcd("0000000000" or FAN_SPEED_IN);
+        fan_speed_bcd := to_bcd("0000000000" or "0000" & FAN_SPEED_IN);
 
         upper_line( 0) <= x"54"; -- T
         upper_line( 1) <= x"3a"; -- :
         upper_line( 2) <= x"20"; --
-        upper_line( 3) <= x"30" or temp_bcd(7 downto 4); -- [0..9]
-        upper_line( 4) <= x"30" or temp_bcd(3 downto 0); -- [0..9]
+        upper_line( 3) <= x"30" or "0000" & temp_bcd(7 downto 4); -- [0..9]
+        upper_line( 4) <= x"30" or "0000" & temp_bcd(3 downto 0); -- [0..9]
         upper_line( 5) <= x"df"; --
         upper_line( 6) <= x"43"; -- C
         upper_line( 7) <= x"20"; --
@@ -551,9 +551,9 @@ begin
         upper_line(10) <= x"43"; -- C
         upper_line(11) <= x"3a"; -- :
         upper_line(12) <= x"20"; --
-        upper_line(13) <= x"30" or temp_adc_bcd(11 downto 8); -- [0..9]
-        upper_line(14) <= x"30" or temp_adc_bcd(7 downto 4); -- [0..9]
-        upper_line(15) <= x"30" or temp_adc_bcd(3 downto 0); -- [0..9]
+        upper_line(13) <= x"30" or "0000" & temp_adc_bcd(11 downto 8); -- [0..9]
+        upper_line(14) <= x"30" or "0000" & temp_adc_bcd(7 downto 4); -- [0..9]
+        upper_line(15) <= x"30" or "0000" & temp_adc_bcd(3 downto 0); -- [0..9]
 
         lower_line( 0) <= x"46"; -- F
         lower_line( 1) <= x"61"; -- a
@@ -570,8 +570,8 @@ begin
           lower_line(11) <= x"2d"; -- -
           lower_line(12) <= x"2d"; -- -
         else
-          lower_line(11) <= x"30" or fan_speed_bcd(7 downto 4); -- [0..1]
-          lower_line(12) <= x"30" or fan_speed_bcd(3 downto 0); -- [0..9]
+          lower_line(11) <= x"30" or "0000" & fan_speed_bcd(7 downto 4); -- [0..1]
+          lower_line(12) <= x"30" or "0000" & fan_speed_bcd(3 downto 0); -- [0..9]
         end if;
         lower_line(13) <= x"20"; --
         lower_line(14) <= x"20"; --
