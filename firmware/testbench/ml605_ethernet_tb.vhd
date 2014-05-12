@@ -53,10 +53,13 @@ architecture behavioral of ml605_ethernet_tb is
   constant clk66_period   : time := 15.151515 ns; -- 66 MHz clock
   constant clk125_period  : time := 8 ns; -- 125 MHz Ethernet clock
 
+  constant bytes_MAC        : integer := 6;
+  constant bytes_IP         : integer := 4;
+
 
   -- IP & MAC addresses
-  type IP_address  is array (0 to 3) of byte;
-  type MAC_address is array (0 to 5) of byte;
+  type IP_address  is array (0 to bytes_IP-1) of byte;
+  type MAC_address is array (0 to bytes_MAC-1) of byte;
   constant our_IP_address   : IP_address  := (x"C0", x"A8", x"00", x"01");
   constant FPGA_IP_address  : IP_address  := (x"C0", x"A8", x"00", x"0A");
   constant our_MAC_address  : MAC_address := (x"54", x"04", x"A6", x"69", x"15", x"26");
@@ -120,6 +123,13 @@ architecture behavioral of ml605_ethernet_tb is
   -- internal signals
   ------------------------------------------------------------------------------
 
+  -- input data signals
+  signal mac_rx_tready          : std_logic;
+  signal mac_tx_tdata           : std_logic_vector(7 downto 0);
+  signal mac_tx_tvalid          : std_logic;
+  signal mac_tx_tfirst          : std_logic;
+  signal mac_tx_tlast           : std_logic;
+
   -- mirrored UDP/IP signals
   signal udp_rx                 : udp_rx_type;
   signal udp_rx_start           : std_logic;
@@ -128,11 +138,10 @@ architecture behavioral of ml605_ethernet_tb is
   signal arp_pkt_count          : std_logic_vector(7 downto 0);
   signal ip_rx_hdr              : ipv4_rx_header_type;
   signal ip_pkt_count           : std_logic_vector(7 downto 0);
-  -- signal mac_tx_tdata           : std_logic_vector(7 downto 0);
-  signal mac_tx_tvalid          : std_logic;
-  -- signal mac_tx_tfirst          : std_logic;
-  signal mac_tx_tlast           : std_logic;
-  -- signal mac_rx_tready          : std_logic;
+
+
+  -- Delay to provide setup and hold timing at the GMII/MII.
+  constant dly : time := 2 ns;
 
 
 begin
@@ -196,15 +205,21 @@ begin
   -- mirror UDP/IP signals
   mirrors : process
   begin
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_tx_result", "udp_tx_result");
+    -- modify these signals (skip the ethernet core from the evaluation board)
+    init_signal_driver("ml605_topl/eth_wrapper/udp_block/mac_tx_tready",  "mac_tx_tready", , , 1);
+    init_signal_driver("ml605_topl/eth_wrapper/udp_block/mac_rx_tdata",   "mac_rx_tdata");
+    init_signal_driver("ml605_topl/eth_wrapper/udp_block/mac_tx_tvalid",  "mac_tx_tvalid");
+    init_signal_driver("ml605_topl/eth_wrapper/udp_block/mac_tx_tfirst",  "mac_tx_tfirst");
+    init_signal_driver("ml605_topl/eth_wrapper/udp_block/mac_tx_tlast",   "mac_tx_tlast");
+
+    -- just spy on these
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_tx_result",     "udp_tx_result");
     init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_tx_data_out_ready", "udp_tx_data_out_ready");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/mac_tx_tvalid", "mac_tx_tvalid");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/mac_tx_tlast", "mac_tx_tlast");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/arp_pkt_count", "arp_pkt_count");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/ip_pkt_count", "ip_pkt_count");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rx_start", "udp_rx_start");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rxo", "udp_rx");
-    init_signal_spy("ml605_topl/eth_wrapper/udp_block/ip_rx_hdr", "ip_rx_hdr");
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/arp_pkt_count",     "arp_pkt_count");
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/ip_pkt_count",      "ip_pkt_count");
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rx_start",      "udp_rx_start");
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rxo",           "udp_rx");
+    init_signal_spy("ml605_topl/eth_wrapper/udp_block/ip_rx_hdr",         "ip_rx_hdr");
     wait;
   end process;
 
@@ -247,6 +262,9 @@ begin
 
     -- power-on reset
     GLBL_RST <= '1', '0' after 2*clk125_period;
+    -- GMII_CRS    <= '0';
+    GMII_RX_DV  <= '0';
+    GMII_RXD    <= x"00";
     wait for 10*clk125_period;
 
     -- check reset conditions
@@ -277,25 +295,162 @@ begin
     -- TEST 1 -- send ARP request
     ------------
 
-    report "T1: Send an ARP request: who has 192.168.5.9? Tell 192.168.5.1";
+    report "T1: Send an ARP request: who has 192.168.0.10? Tell 192.168.0.1";
+
+    mac_tx_tready <= '1';
+    mac_rx_tvalid <= '1';
 
     -- Ethernet package initalization
-    GMII_CRS    <= '1';   wait for 3*clk125_period;
-    GMII_RX_DV  <= '1';
-    GMII_RXD    <= x"55"; wait for 7*clk125_period;
-    GMII_RXD    <= x"D5"; wait for 1*clk125_period;
+    -- GMII_CRS    <= '1';   wait for 3*clk125_period;
+    GMII_RX_DV  <= '1' after dly;
+    GMII_RXD    <= x"55" after dly; wait for 7*clk125_period;
+    GMII_RXD    <= x"D5" after dly; wait for 1*clk125_period;
 
     -- Ethernet package
-    GMII_RXD <= x"05"; wait for 10*clk125_period;
+
+    -- dst MAC (broadcast)
+    GMII_RXD <= x"FF" after dly; wait for bytes_MAC*clk125_period;
+    -- src MAC
+    for i in our_MAC_address'range loop
+      GMII_RXD <= our_MAC_address(i) after dly; wait for clk125_period;
+    end loop;
+    -- type
+    GMII_RXD <= x"08" after dly; wait for clk125_period;    -- ARP pkt
+    GMII_RXD <= x"06" after dly; wait for clk125_period;
+    -- HW type
+    GMII_RXD <= x"00" after dly; wait for clk125_period;
+    GMII_RXD <= x"01" after dly; wait for clk125_period;
+    -- Protocol type
+    GMII_RXD <= x"08" after dly; wait for clk125_period;
+    GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- HW size
+    GMII_RXD <= x"06" after dly; wait for clk125_period;
+    -- protocol size
+    GMII_RXD <= x"04" after dly; wait for clk125_period;
+    -- Opcode
+    GMII_RXD <= x"00" after dly; wait for clk125_period;
+    GMII_RXD <= x"01" after dly; wait for clk125_period;
+    -- Sender MAC
+    for i in our_MAC_address'range loop
+      GMII_RXD <= our_MAC_address(i) after dly; wait for clk125_period;
+    end loop;
+    -- Sender IP
+    for i in our_IP_address'range loop
+      GMII_RXD <= our_IP_address(i) after dly; wait for clk125_period;
+    end loop;
+    -- Target MAC
+    GMII_RXD <= x"00" after dly; wait for bytes_MAC*clk125_period;
+    -- Target IP
+    for i in FPGA_IP_address'range loop
+      GMII_RXD <= FPGA_IP_address(i) after dly; wait for clk125_period;
+    end loop;
+    -- filler
+    GMII_RXD <= x"00" after dly; wait for 3*clk125_period;
+    GMII_RXD <= x"00" after dly; wait for clk125_period;
+    GMII_RXD <= x"00" after dly; wait for clk125_period;
 
     -- Ethernet package trailer (skip FCS and send x"AA" instead)
-    GMII_RXD    <= x"AA"; wait for 3*clk125_period;
-    GMII_CRS    <= '0';   wait for 1*clk125_period;
-    GMII_RXD    <= x"00";
-    GMII_RX_DV  <= '0';
+    GMII_RXD    <= x"AA" after dly; wait for 3*clk125_period;
+    -- GMII_CRS    <= '0';   wait for 1*clk125_period;
+    GMII_RXD    <= x"00" after dly;
+    GMII_RX_DV  <= '0' after dly;
+
+    -- check if we got the ARP pkt
+    assert arp_pkt_count = x"01"              report "T1: arp_pkt_count wrong value";
+    assert ip_pkt_count = x"00"               report "T1: ip_pkt_count wrong value";
+    assert udp_tx_result = UDPTX_RESULT_NONE  report "T1: udp_tx_result wrong value";
+    assert udp_tx_data_out_ready = '0'        report "T1: ip_udp_txitx.data.data_out_ready wrong value";
+    assert udp_rx_start = '0'                 report "T1: udp_rx_start wrong value";
+    assert udp_rx.hdr.is_valid = '0'          report "T1: udp_rx.hdr.is_valid wrong value";
+    assert ip_rx_hdr.is_valid = '0'           report "T1: ip_rx_hdr.is_valid wrong value";
+
+
+    -- check if we tx a response
+    wait for clk125_period*25;
+    assert mac_tx_tvalid = '1'                report "T1: not transmitting a response";
+    wait for clk125_period*25;
+    assert mac_tx_tvalid = '0'                report "T1: tx held on for too long";
 
 
 
+
+    -- ------------
+    -- -- TEST 2 -- send ARP request
+    -- ------------
+
+    -- report "T2: Send an ARP request: who has 192.168.0.10? Tell 192.168.0.1";
+
+    -- -- Ethernet package initalization
+    -- -- GMII_CRS    <= '1';   wait for 3*clk125_period;
+    -- GMII_RX_DV  <= '1' after dly;
+    -- GMII_RXD    <= x"55" after dly; wait for 7*clk125_period;
+    -- GMII_RXD    <= x"D5" after dly; wait for 1*clk125_period;
+
+    -- -- Ethernet package
+
+    -- -- dst MAC
+    -- for i in FPGA_MAC_address'range loop
+    --   GMII_RXD <= FPGA_MAC_address(i) after dly; wait for clk125_period;
+    -- end loop;
+    -- -- src MAC
+    -- for i in our_MAC_address'range loop
+    --   GMII_RXD <= our_MAC_address(i) after dly; wait for clk125_period;
+    -- end loop;
+
+    -- -- type
+    -- GMII_RXD <= x"08" after dly; wait for clk125_period;    -- IP pkt
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- -- ver & HL / service type
+    -- GMII_RXD <= x"45" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- -- total len
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"21" after dly; wait for clk125_period;
+    -- -- ID
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"7a" after dly; wait for clk125_period;
+    -- -- flags & frag
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- -- TTL
+    -- GMII_RXD <= x"80" after dly; wait for clk125_period;
+    -- -- Protocol
+    -- GMII_RXD <= x"11" after dly; wait for clk125_period;
+    -- -- Header CKS
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+
+    -- -- Sender IP
+    -- for i in our_IP_address'range loop
+    --   GMII_RXD <= our_IP_address(i) after dly; wait for clk125_period;
+    -- end loop;
+    -- -- Target IP
+    -- for i in FPGA_IP_address'range loop
+    --   GMII_RXD <= FPGA_IP_address(i) after dly; wait for clk125_period;
+    -- end loop;
+    -- -- SRC port
+    -- GMII_RXD <= x"f4" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"9a" after dly; wait for clk125_period;
+    -- -- DST port
+    -- GMII_RXD <= x"26" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"94" after dly; wait for clk125_period;
+    -- -- cks
+    -- GMII_RXD <= x"8b" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"79" after dly; wait for clk125_period;
+    -- -- user data
+    -- GMII_RXD <= x"68" after dly; wait for clk125_period;
+
+    -- -- put the rest of the user data
+    -- GMII_RXD <= x"65" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"6c" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"6c" after dly; wait for clk125_period;
+    -- GMII_RXD <= x"6f" after dly; wait for clk125_period;
+
+    --     -- Ethernet package trailer (skip FCS and send x"AA" instead)
+    -- GMII_RXD    <= x"AA" after dly; wait for 3*clk125_period;
+    -- -- GMII_CRS    <= '0';   wait for 1*clk125_period;
+    -- GMII_RXD    <= x"00" after dly;
+    -- GMII_RX_DV  <= '0' after dly;
 
     -- finish
     wait for 100 ms;
