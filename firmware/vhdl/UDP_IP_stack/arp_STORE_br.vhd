@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------------
--- Company: 
+-- Company:
 -- Engineer: 		Peter Fall
--- 
--- Create Date:    12:00:04 05/31/2011 
--- Design Name: 
--- Module Name:    arp_STORE_br - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
+--
+-- Create Date:    12:00:04 05/31/2011
+-- Design Name:
+-- Module Name:    arp_STORE_br - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
 -- Description:
 --		ARP storage table using block ram with lookup based on IP address
 --		implements upto 255 entries with sequential search
@@ -16,11 +16,11 @@
 --		store may take a number of cycles and the request is latched
 --		lookup may take a number of cycles. Assumes that request signals remain valid during lookup
 --
--- Dependencies: 
+-- Dependencies:
 --
--- Revision: 
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -51,18 +51,18 @@ end arp_STORE_br;
 architecture Behavioral of arp_STORE_br is
 
 	type st_state_t is (IDLE,PAUSE,SEARCH,FOUND,NOT_FOUND);
-	
+
 	type ip_ram_t is array (0 to MAX_ARP_ENTRIES-1) of std_logic_vector(31 downto 0);
 	type mac_ram_t is array (0 to MAX_ARP_ENTRIES-1) of std_logic_vector(47 downto 0);
 	subtype addr_t is integer range 0 to MAX_ARP_ENTRIES;
-	
+
 	type count_mode_t is (RST,INCR,HOLD);
-	
+
 	type mode_t is (MREAD,MWRITE);
 
 	-- state variables
 	signal ip_ram					: ip_ram_t;										-- will be implemented as block ram
-	signal mac_ram					: mac_ram_t;									-- will be implemented as block ram	
+	signal mac_ram					: mac_ram_t;									-- will be implemented as block ram
 	signal st_state				: st_state_t;
 	signal next_write_addr		: addr_t;										-- where to make the next write
 	signal num_entries			: addr_t; 										-- number of entries in the store
@@ -70,13 +70,13 @@ architecture Behavioral of arp_STORE_br is
 	signal entry_found			: arp_entry_t;									-- entry found in search
 	signal mode						: mode_t;										-- are we writing or reading?
 	signal req_entry				: arp_entry_t;									-- entry latched from req
-	
+
 	-- busses
 	signal next_st_state			: st_state_t;
 	signal arp_entry_val			: arp_entry_t;
 	signal mode_val				: mode_t;
 	signal write_addr				: addr_t; 										-- actual write address to use
-	
+
 	-- control signals
 	signal set_st_state		: std_logic;
 	signal set_next_write_addr	: count_mode_t;
@@ -105,14 +105,14 @@ architecture Behavioral of arp_STORE_br is
 begin
 	combinatorial : process (
 		-- input signals
-		read_req, write_req, clear_store, reset, 
+		read_req, write_req, clear_store, reset,
 		-- state variables
-		ip_ram, mac_ram, st_state, next_write_addr, num_entries, 
-		next_read_addr, entry_found, mode, req_entry, 
+		ip_ram, mac_ram, st_state, next_write_addr, num_entries,
+		next_read_addr, entry_found, mode, req_entry,
 		-- busses
-		next_st_state, arp_entry_val, mode_val, write_addr, 
+		next_st_state, arp_entry_val, mode_val, write_addr,
 		-- control signals
-		set_st_state, set_next_write_addr, set_num_entries, set_next_read_addr, set_entry_found, 
+		set_st_state, set_next_write_addr, set_num_entries, set_next_read_addr, set_entry_found,
 		write_ram, set_mode
 		)
 	begin
@@ -120,12 +120,12 @@ begin
 		read_result.status <= IDLE;
 		read_result.entry <= entry_found;
 		entry_count <= to_unsigned(num_entries,8);
-				
+
 		-- set bus defaults
 		next_st_state <= IDLE;
 		mode_val <= MREAD;
 		write_addr <= next_write_addr;
-		
+
 		-- set signal defaults
 		set_st_state <= '0';
 		set_next_write_addr <= HOLD;
@@ -134,7 +134,7 @@ begin
 		write_ram <= '0';
 		set_entry_found <= '0';
 		set_mode <= '0';
-		
+
 		-- STORE FSM
 		case st_state is
 			when IDLE =>
@@ -144,7 +144,7 @@ begin
 					mode_val <= MWRITE;
 					set_mode <= '1';
 					next_st_state <= PAUSE;
-					set_st_state <= '1';				
+					set_st_state <= '1';
 				elsif read_req.req = '1' then
 					set_next_read_addr <= RST;			-- start lookup from beginning
 					mode_val <= MREAD;
@@ -159,7 +159,7 @@ begin
 				set_next_read_addr <= INCR;
 				next_st_state <= SEARCH;
 				set_st_state <= '1';
-				
+
 			when SEARCH =>
 				read_result.status <= read_status(SEARCHING,mode);
 				-- check if have a match at this entry
@@ -178,7 +178,7 @@ begin
 					set_next_read_addr <= INCR;
 				end if;
 
-			when FOUND =>			
+			when FOUND =>
 				read_result.status <= read_status(FOUND,mode);
 				if mode = MWRITE then
 					write_addr <= next_read_addr - 1;
@@ -190,7 +190,7 @@ begin
 					set_st_state <= '1';
 				end if;
 
-			when NOT_FOUND =>			
+			when NOT_FOUND =>
 				read_result.status <= read_status(NOT_FOUND,mode);
 				if mode = MWRITE then
 					-- need to write into the next free slot
@@ -207,13 +207,17 @@ begin
 					next_st_state <= IDLE;
 					set_st_state <= '1';
 				end if;
-				
-		end case;		
+
+		end case;
 	end process;
 
-	sequential : process (clk)
+	sequential : process (clk, reset)
 	begin
-		if rising_edge(clk) then
+		if reset = '1' then
+			ip_ram <= (others => (others => '0'));
+			mac_ram <= (others => (others => '0'));
+
+		elsif rising_edge(clk) then
 			-- ram processing
 			if write_ram = '1' then
 				ip_ram(write_addr) <= req_entry.ip;
@@ -226,7 +230,7 @@ begin
 				arp_entry_val.ip <= (others => '0');
 				arp_entry_val.mac <= (others => '0');
 			end if;
-			
+
 			if reset = '1' or clear_store = '1' then
 				-- reset state variables
 				st_state <= IDLE;
@@ -238,7 +242,7 @@ begin
 				req_entry.ip <= (others => '0');
 				req_entry.mac <= (others => '0');
 				mode <= MREAD;
-				
+
 			else
 				-- Next req_state processing
 				if set_st_state = '1' then
@@ -260,7 +264,7 @@ begin
 					mode <= mode;
 					req_entry <= req_entry;
 				end if;
-				
+
 				-- latch entry found
 				if set_entry_found = '1' then
 					entry_found <= arp_entry_val;
@@ -288,8 +292,8 @@ begin
 					when RST => next_read_addr <= 0;
 					when INCR => if next_read_addr < MAX_ARP_ENTRIES then next_read_addr <= next_read_addr + 1; else next_read_addr <= 0; end if;
 				end case;
-				
-			end if;						
+
+			end if;
 		end if;
 	end process;
 
