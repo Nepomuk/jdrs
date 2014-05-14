@@ -179,11 +179,16 @@ begin
 
 
   -- translate the temperature into an integer
-  process ( CLK, temp_data_out, temp_data_ready )
+  process ( RESET, CLK, temp_data_out, temp_data_ready )
     variable tmp_temp_current  : integer range 0 to 1023;
     variable tmp_temp_celcius  : std_logic_vector(8 downto 0);
   begin
-    if rising_edge(CLK) then
+    if RESET = '1' then
+      temp_current <= 0;
+      TEMP_OUT <= (others => '0');
+      TEMP_ADC_OUT <= (others => '0');
+
+    elsif rising_edge(CLK) then
       if temp_data_ready = '1' then
         tmp_temp_current := to_integer(unsigned( temp_data_out(15 downto 6) ));
 
@@ -208,10 +213,14 @@ begin
 
 
   -- check, if the temperature changes and adapt the fan setting
-  process ( CLK, temp_current )
+  process ( RESET, CLK, temp_current )
     variable tmp_fan_speed         : integer range 0 to fan_speed_max*2;
   begin
-    if rising_edge( CLK ) then
+    if RESET = '1' then
+      fan_speed <= 0;
+      FAN_SPEED_OUT <= (others => '0');
+
+    elsif rising_edge( CLK ) then
 
       -- we have reached the maximum difference accepted - turn to max speed
       if ( temp_current > temp_target_value + temp_max_difference ) then

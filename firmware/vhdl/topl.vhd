@@ -253,21 +253,20 @@ begin
       register_display_counter_enable <= register_display_counter_running or register_access_ready;
     end if;
 
+    -- a global reset came in
+    if ( GLBL_RST = '1' ) then
+      lcd_mode <= lcd_mode_default;
+      register_display_counter <= 0;
+      register_display_counter_running <= '0';
 
-    if rising_edge( gtx_clk_bufg ) then
+      register_addr_buf <= (others => '0');
+      register_write_or_read_buf <= '0';
+      register_data_buf <= (others => '0');
 
-      -- a global reset came in
-      if ( GLBL_RST = '1' ) then
-        lcd_mode <= lcd_mode_default;
-        register_display_counter <= 0;
-        register_display_counter_running <= '0';
-
-        register_addr_buf <= (others => '0');
-        register_write_or_read_buf <= '0';
-        register_data_buf <= (others => '0');
+    elsif rising_edge( gtx_clk_bufg ) then
 
       -- the display of the register command is active
-      elsif ( lcd_enable_register_display = '1' and register_display_counter_enable = '1' ) then
+      if ( lcd_enable_register_display = '1' and register_display_counter_enable = '1' ) then
         lcd_mode <= "011";
 
         if ( register_display_counter = register_display_counter_max ) then
