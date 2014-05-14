@@ -619,23 +619,23 @@ begin
 
   rx_stats_sync : sync_block
   port map (
-    clk              => gtx_clk_bufg,
+    clk              => rx_mac_aclk,
     data_in          => rx_stats_toggle,
     data_out         => rx_stats_toggle_sync
   );
 
-  reg_rx_toggle : process (gtx_clk_bufg)
+  reg_rx_toggle : process (rx_mac_aclk)
   begin
-    if gtx_clk_bufg'event and gtx_clk_bufg = '1' then
+    if rx_mac_aclk'event and rx_mac_aclk = '1' then
       rx_stats_toggle_sync_reg <= rx_stats_toggle_sync;
     end if;
   end process reg_rx_toggle;
 
   -- when an update is rxd load shifter (plus start/stop bit)
   -- shifter always runs (no power concerns as this is an example design)
-  gen_shift_rx : process (gtx_clk_bufg)
+  gen_shift_rx : process (rx_mac_aclk)
   begin
-    if gtx_clk_bufg'event and gtx_clk_bufg = '1' then
+    if rx_mac_aclk'event and rx_mac_aclk = '1' then
       if (rx_stats_toggle_sync_reg xor rx_stats_toggle_sync) = '1' then
         rx_stats_shift <= '1' & rx_stats &  '1';
       else
@@ -819,7 +819,7 @@ begin
     -- IP RX signals
     ip_rx_hdr         => ip_rx_hdr_int,
     -- system signals
-    rx_clk            => gtx_clk_bufg,
+    rx_clk            => rx_mac_aclk,
     tx_clk            => gtx_clk_bufg,
     reset             => glbl_rst_int,
     our_ip_address    => our_ip,
