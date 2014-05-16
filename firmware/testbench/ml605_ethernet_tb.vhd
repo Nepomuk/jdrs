@@ -65,6 +65,22 @@ architecture behavioral of ml605_ethernet_tb is
   constant our_MAC_address  : MAC_address := (x"54", x"04", x"A6", x"69", x"15", x"26");
   constant FPGA_MAC_address : MAC_address := (x"00", x"0A", x"35", x"02", x"2E", x"62");
 
+  -- what_to_do is the first byte of the UDP data payload and is
+  --  an identifyer, that tells us what should be done.
+  --  (copied from ethernet_core_wrapper.vhd)
+  subtype what_to_do_type is std_logic_vector(7 downto 0);
+  constant do_nothing         : what_to_do_type := x"00";  -- nothing is happening here, just keep going
+  constant do_ping            : what_to_do_type := x"01";  -- request a pong reply
+  constant do_pong            : what_to_do_type := x"02";  -- answer to a ping request
+  constant do_confirm         : what_to_do_type := x"03";  -- confirmation
+  constant do_error           : what_to_do_type := x"04";  -- something went wrong
+  constant do_timeout         : what_to_do_type := x"05";  -- a timeout for a request occured
+  constant do_read_register   : what_to_do_type := x"11";  -- read out a register value
+  constant do_write_register  : what_to_do_type := x"12";  -- set a register value
+  constant do_pkg_count_read  : what_to_do_type := x"13";  -- read out the package counter
+  constant do_pkg_count_reset : what_to_do_type := x"14";  -- reset the package counter
+  constant do_read_dma        : what_to_do_type := x"21";  -- read from the DMA fifo
+
 
   ------------------------------------------------------------------------------
   -- toplevel port map signals
@@ -384,9 +400,9 @@ begin
     -- filler
     mac_rx_tdata <= x"00"; wait for 3*clk125_period;
     mac_rx_tlast <= '1';
-    mac_rx_tdata <= x"00"; wait for clk_period;
-    mac_rx_tlast <= '0';
+    mac_rx_tdata <= x"00"; wait for clk125_period;
     mac_rx_tvalid <= '0';
+    mac_rx_tlast <= '0';
 
 
     -- check if we got the ARP pkt
@@ -410,82 +426,105 @@ begin
 
 
     -- ------------
-    -- -- TEST 2 -- send ARP request
+    -- -- TEST 2 -- send UDP pkt (ping)
     -- ------------
 
-    -- report "T2: Send an ARP request: who has 192.168.0.10? Tell 192.168.0.1";
+    report "T2: Send an UDP package: ping";
 
-    -- -- Ethernet package initalization
-    -- -- GMII_CRS    <= '1';   wait for 3*clk125_period;
-    -- GMII_RX_DV  <= '1' after dly;
-    -- GMII_RXD    <= x"55" after dly; wait for 7*clk125_period;
-    -- GMII_RXD    <= x"D5" after dly; wait for 1*clk125_period;
+    mac_rx_tvalid <= '1';
 
-    -- -- Ethernet package
+    -- dst MAC (broadcast)
+    for i in FPGA_MAC_address'range loop
+      mac_rx_tdata <= FPGA_MAC_address(i); wait for clk125_period;
+    end loop;
+    -- src MAC
+    for i in our_MAC_address'range loop
+      mac_rx_tdata <= our_MAC_address(i); wait for clk125_period;
+    end loop;
+    -- type
+    mac_rx_tdata <= x"08"; wait for clk125_period;    -- IP pkt
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- ver & HL / service type
+    mac_rx_tdata <= x"45"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- total len
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"21"; wait for clk125_period;
+    -- ID
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"7a"; wait for clk125_period;
+    -- flags & frag
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- TTL
+    mac_rx_tdata <= x"80"; wait for clk125_period;
+    -- Protocol
+    mac_rx_tdata <= x"11"; wait for clk125_period;
+    -- Header CKS
+    mac_rx_tdata <= x"00"; wait for clk125_period; -- skip the checksum
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- src IP
+    for i in our_IP_address'range loop
+      mac_rx_tdata <= our_IP_address(i); wait for clk125_period;
+    end loop;
+    -- dst IP
+    for i in FPGA_IP_address'range loop
+      mac_rx_tdata <= FPGA_IP_address(i); wait for clk125_period;
+    end loop;
+    -- src port
+    mac_rx_tdata <= x"C3"; wait for clk125_period; -- port 50,000
+    mac_rx_tdata <= x"50"; wait for clk125_period;
+    -- dst port
+    mac_rx_tdata <= x"C3"; wait for clk125_period; -- port 50,000
+    mac_rx_tdata <= x"50"; wait for clk125_period;
+    -- length
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"0c"; wait for clk125_period; -- header (8 byte + data)
+    -- cks
+    mac_rx_tdata <= x"00"; wait for clk125_period; -- skip the checksum
+    mac_rx_tdata <= x"00"; wait for clk125_period;
 
-    -- -- dst MAC
-    -- for i in FPGA_MAC_address'range loop
-    --   GMII_RXD <= FPGA_MAC_address(i) after dly; wait for clk125_period;
-    -- end loop;
-    -- -- src MAC
-    -- for i in our_MAC_address'range loop
-    --   GMII_RXD <= our_MAC_address(i) after dly; wait for clk125_period;
-    -- end loop;
+    -- user data
+    mac_rx_tdata <= do_ping; wait for clk125_period;
 
-    -- -- type
-    -- GMII_RXD <= x"08" after dly; wait for clk125_period;    -- IP pkt
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- -- ver & HL / service type
-    -- GMII_RXD <= x"45" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- -- total len
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"21" after dly; wait for clk125_period;
-    -- -- ID
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"7a" after dly; wait for clk125_period;
-    -- -- flags & frag
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- -- TTL
-    -- GMII_RXD <= x"80" after dly; wait for clk125_period;
-    -- -- Protocol
-    -- GMII_RXD <= x"11" after dly; wait for clk125_period;
-    -- -- Header CKS
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"00" after dly; wait for clk125_period;
+    -- since we are up to the user data stage, the header should be valid and the data_in_valid should be set
+    assert udp_rx.hdr.is_valid = '1'                report "T2: udp_rx.hdr.is_valid not set";
+    assert udp_rx.hdr.data_length = x"0004"         report "T2: udp_rx.hdr.data_length not set correctly";
+    assert udp_rx.hdr.src_ip_addr = x"c0a80001"     report "T2: udp_rx.hdr.src_ip_addr not set correctly";
+    assert udp_rx.hdr.src_port = x"C350"            report "T2: udp_rx.hdr.src_port not set correctly";
+    assert udp_rx.hdr.dst_port = x"C350"            report "T2: udp_rx.hdr.dst_port not set correctly";
 
-    -- -- Sender IP
-    -- for i in our_IP_address'range loop
-    --   GMII_RXD <= our_IP_address(i) after dly; wait for clk125_period;
-    -- end loop;
-    -- -- Target IP
-    -- for i in FPGA_IP_address'range loop
-    --   GMII_RXD <= FPGA_IP_address(i) after dly; wait for clk125_period;
-    -- end loop;
-    -- -- SRC port
-    -- GMII_RXD <= x"f4" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"9a" after dly; wait for clk125_period;
-    -- -- DST port
-    -- GMII_RXD <= x"26" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"94" after dly; wait for clk125_period;
-    -- -- cks
-    -- GMII_RXD <= x"8b" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"79" after dly; wait for clk125_period;
-    -- -- user data
-    -- GMII_RXD <= x"68" after dly; wait for clk125_period;
+    assert udp_rx_start = '1'                       report "T2: udp_rx_start not set";
+    assert udp_rx.data.data_in_valid = '1'          report "T2: udp_rx.data.data_in_valid not set";
 
-    -- -- put the rest of the user data
-    -- GMII_RXD <= x"65" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"6c" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"6c" after dly; wait for clk125_period;
-    -- GMII_RXD <= x"6f" after dly; wait for clk125_period;
+    assert ip_rx_hdr.is_valid = '1'                 report "T2: ip_rx_hdr.is_valid not set";
+    assert ip_rx_hdr.protocol = x"11"               report "T2: ip_rx_hdr.protocol not set correctly";
+    assert ip_rx_hdr.src_ip_addr = x"c0a80001"      report "T2: ip_rx.hdr.src_ip_addr not set correctly";
+    assert ip_rx_hdr.num_frame_errors = x"00"       report "T2: ip_rx.hdr.num_frame_errors not set correctly";
+    assert ip_rx_hdr.last_error_code = x"0"         report "T2: ip_rx.hdr.last_error_code not set correctly";
 
-    --     -- Ethernet package trailer (skip FCS and send x"AA" instead)
-    -- GMII_RXD    <= x"AA" after dly; wait for 3*clk125_period;
-    -- -- GMII_CRS    <= '0';   wait for 1*clk125_period;
-    -- GMII_RXD    <= x"00" after dly;
-    -- GMII_RX_DV  <= '0' after dly;
+    -- put the rest of the user data
+    mac_rx_tdata <= x"00"; wait for 2*clk125_period; -- fill up the what to do word
+    mac_rx_tdata <= x"00"; mac_rx_tlast <= '1'; wait for clk125_period;
+
+    assert udp_rx.data.data_in_last = '1'           report "T2: udp_rx.data.data_in_last not set";
+
+    mac_rx_tdata <= x"00";
+    mac_rx_tlast <= '0';
+    mac_rx_tvalid <= '0';
+    wait for clk125_period;
+
+    assert udp_rx.data.data_in_valid = '0'          report "T2: udp_rx.data.data_in_valid not cleared";
+    assert udp_rx.data.data_in_last = '0'           report "T2: udp_rx.data.data_in_last not cleared";
+    assert udp_rx_start = '0'                       report "T2: udp_rx_start not cleared";
+    assert ip_rx_hdr.num_frame_errors = x"00"       report "T2: ip_rx_hdr.num_frame_errors non zero at end of test";
+    assert ip_rx_hdr.last_error_code = x"0"         report "T2: ip_rx_hdr.last_error_code indicates error at end of test";
+    assert ip_pkt_count = x"01"                     report "T2: ip pkt cnt incorrect";
+
+    wait for clk125_period*20;
+
+
+    report "T2: test complete!";
 
     -- finish
     wait for 100 ms;
