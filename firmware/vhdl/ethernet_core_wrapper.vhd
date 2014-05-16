@@ -819,7 +819,7 @@ begin
     -- IP RX signals
     ip_rx_hdr         => ip_rx_hdr_int,
     -- system signals
-    rx_clk            => rx_mac_aclk,
+    rx_clk            => gtx_clk_bufg, --rx_mac_aclk,
     tx_clk            => gtx_clk_bufg,
     reset             => glbl_rst_int,
     our_ip_address    => our_ip,
