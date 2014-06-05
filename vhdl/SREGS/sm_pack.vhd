@@ -115,7 +115,7 @@ package sample_package is
 	constant TPXMASTER_TRIGGERHI 	: integer	:=16#130#;	--hex address 4C0
 	constant TPXMASTER_BITCOUNT 	: integer	:=16#131#;	--hex address 4C4	
 	
-	constant LED_REG				: integer 	:=16#132#; 	--hex address 4C8 
+	constant LED_REG				   : integer 	:=16#132#; 	--hex address 4C8 
 	
 	constant LCD_MODE_REG			: integer 	:=16#133#; 	--hex address 4CC 
 	constant LCD_FIFO_CHAR_REG		: integer 	:=16#134#; 	--hex address 4D0 
@@ -133,7 +133,7 @@ package sample_package is
 	constant SCR_ENA				: integer := 0;
 	constant SCR_HIGH				: integer := 15;
 
-	constant SM_SR					: integer :=16#132#;    --
+	constant SM_SR					: integer :=16#109#;    --
 	constant SM_BLK_SIZE			: integer :=16#106#;    -- 418    DMA FIFO data count
 	constant SM_RO_DATA				: integer :=16#100#;    -- 400    Register address for DMA transfer
 
