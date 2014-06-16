@@ -41,11 +41,11 @@ entity topl is
     GLBL_RST            : in  std_logic;
 
     -- 200MHz clock input from board
-    CLK_IN_P            : in  std_logic;
-    CLK_IN_N            : in  std_logic;
+    CLK_IN_P            : in  std_logic;  		--! Differential on-board 200 MHz clock
+    CLK_IN_N            : in  std_logic;			--! Differential on-board 200 MHz clock
 
     -- 66MHz clock input from board
-    CLK66               : in  std_logic;
+    CLK66               : in  std_logic;			--! Single-ended on-board 66 MHz clock
 
     -- 125MHz GTX clock
     -- MGTREFCLK_N         : in  std_logic;
@@ -56,10 +56,10 @@ entity topl is
 
     -- LCD  interface
     ------------------
-    SF_D                : out std_logic_vector(3 downto 0); -- LCD data bus
-    LCD_E               : out std_logic;              -- LCD: E   (control bit)
-    LCD_RS              : out std_logic;              -- LCD: RS  (setup or data)
-    LCD_RW              : out std_logic;              -- LCD: R/W (read or write)
+    SF_D                : out std_logic_vector(3 downto 0); --! LCD data bus
+    LCD_E               : out std_logic;              --! LCD: E   (control bit)
+    LCD_RS              : out std_logic;              --! LCD: RS  (setup or data)
+    LCD_RW              : out std_logic;              --! LCD: R/W (read or write)
 
     -- GMII Interface
     -----------------
@@ -87,8 +87,8 @@ entity topl is
 
     -- Design controls and output
     -------------------------------
-    USER_LED            : out std_logic_vector (7 downto 0);
-    USER_SWITCH         : in  std_logic_vector (4 downto 0)
+    USER_LED            : out std_logic_vector (7 downto 0);  	--! 8 GPIO LEDs
+    USER_SWITCH         : in  std_logic_vector (4 downto 0)		--! 8 GPIO Switches
   );
 end topl;
 
@@ -116,7 +116,7 @@ architecture Behavioral of topl is
   signal register_dma_wait      : std_logic;
   signal register_dma_end       : std_logic;
   signal register_dma_empty     : std_logic;
-  signal register_dma_count     : std_logic_vector(9 downto 0);
+  signal register_dma_count     : std_logic_vector(16 downto 0);
   -- signal register_dt_ack       : std_logic;
 
   -- LCD stuff

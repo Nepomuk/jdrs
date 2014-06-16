@@ -49,37 +49,37 @@ generic (
 	SC_VERSION	: integer
 );
 port (
-	LCLK			: out	std_logic;
+	LCLK				: out	std_logic;
 	BASECLOCK		: in   	std_logic;	-- 125 MHz
-	CLK66			: in    std_logic; 	-- 66 MHz
+	CLK66				: in    std_logic; 	-- 66 MHz
 	GRESET   		: out	std_logic;	-- general reset
-	P1MS			: in	std_logic;	-- 1 ms pulse
+	P1MS				: in	std_logic;	-- 1 ms pulse
 	LED				: out 	std_logic_vector(7 downto 0);
 	USER_SWITCH		: in	std_logic_vector(4 downto 0);
 --	-------------------------- local bus zum GIGALink Teil ---------------- --
-	P_REG			: in	std_logic;								-- Signal fuer Registerzugriffe
-	P_WR			: in	std_logic;								-- write
+	P_REG				: in	std_logic;								-- Signal fuer Registerzugriffe
+	P_WR				: in	std_logic;								-- write
 	P_A				: in	std_logic_vector(12 downto 2);	-- address
 	P_D				: in	T_SLV32;									-- data - byte count is swapped
-	P_D_O			: out	T_SLV32;									-- data out
-	P_RDY			: out	std_logic;								-- data ready
-	P_BLK			: in    std_logic;								-- always read
+	P_D_O				: out	T_SLV32;									-- data out
+	P_RDY				: out	std_logic;								-- data ready
+	P_BLK				: in    std_logic;								-- always read
 	P_WAIT			: in 	std_logic;								--	pause block read
-	P_END			: out 	std_logic;								-- block end
+	P_END				: out 	std_logic;								-- block end
 	--	-------------------------- control signals ---------------------------- --
 	DMD_DMA			: in	std_logic;
-	EV_DATACOUNT	: out   std_logic_vector(9 downto 0);
+	EV_DATACOUNT	: out   std_logic_vector(16 downto 0);
 	DT_REQ			: out	std_logic;
 	DT_ACK			: in	std_logic;
 	DT_DEN			: out	std_logic;		-- data enable on PD
 	FIFO_EMPTY  	: out 	std_logic;
 --	-------------------------- write to Host register request ------------- --
-	HREG_REQ		: out	std_logic;
+	HREG_REQ			: out	std_logic;
 	HREG_A			: out	std_logic_vector(8 downto 2);		-- address
 	HREG_D			: out	T_SLV32;
-	HREG_ACK		: in	std_logic;
+	HREG_ACK			: in	std_logic;
 -- -------------------------- control/status ----------------------------- --
-	SYS_MODE		: out	T_SLV16;		-- control
+	SYS_MODE			: out	T_SLV16;		-- control
 -- -------------------------- host doorbell ------------------------------ --
 	P100MS			: in	std_logic;		-- 100 ms signal
 	DMD_WR			: in	std_logic		-- write demand data to host
@@ -133,7 +133,7 @@ COMPONENT daq_fifo
     full 		: 		OUT STD_LOGIC;
     empty 		: 		OUT STD_LOGIC;
     prog_full 	: 		OUT STD_LOGIC;
-	 data_count	: 		out std_logic_vector(9 downto 0)
+	 data_count	: 		out std_logic_vector(16 downto 0)
   );
 END COMPONENT;
 
@@ -185,7 +185,7 @@ END COMPONENT;
 	signal fi_ren						: std_logic;
 	signal fi_empty,fi_full				: std_logic;
 	signal fi_pfull						: std_logic;		-- 3/4
-	signal fi_datacount					: std_logic_vector(9 downto 0);
+	signal fi_datacount					: std_logic_vector(16 downto 0);
 	signal fi_din,fi_dout, fi_din_dummy	: std_logic_vector(31 downto 0);
 	signal fi_valid						: std_logic;
 	signal fill_dma_counter   : std_logic_vector(31 downto 0);
