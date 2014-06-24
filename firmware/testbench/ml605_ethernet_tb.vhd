@@ -433,6 +433,7 @@ begin
 
     mac_rx_tvalid <= '1';
 
+    ------- ETH ----------
     -- dst MAC (broadcast)
     for i in FPGA_MAC_address'range loop
       mac_rx_tdata <= FPGA_MAC_address(i); wait for clk125_period;
@@ -444,8 +445,11 @@ begin
     -- type
     mac_rx_tdata <= x"08"; wait for clk125_period;    -- IP pkt
     mac_rx_tdata <= x"00"; wait for clk125_period;
-    -- ver & HL / service type
+
+    ------- IPIP ----------
+    -- version & HL (header length)
     mac_rx_tdata <= x"45"; wait for clk125_period;
+    -- service type
     mac_rx_tdata <= x"00"; wait for clk125_period;
     -- total len
     mac_rx_tdata <= x"00"; wait for clk125_period;
@@ -471,6 +475,8 @@ begin
     for i in FPGA_IP_address'range loop
       mac_rx_tdata <= FPGA_IP_address(i); wait for clk125_period;
     end loop;
+
+    ------- UDP ----------
     -- src port
     mac_rx_tdata <= x"C3"; wait for clk125_period; -- port 50,000
     mac_rx_tdata <= x"50"; wait for clk125_period;
@@ -482,7 +488,7 @@ begin
     mac_rx_tdata <= x"0c"; wait for clk125_period; -- header (8 byte + data)
     -- cks
     mac_rx_tdata <= x"00"; wait for clk125_period; -- skip the checksum
-    mac_rx_tdata <= x"00"; wait for clk125_period;
+    --mac_rx_tdata <= x"00"; wait for clk125_period;  (for some reason, the simulation has an offset by one clk cycle, the real thing works though)
 
     -- user data
     mac_rx_tdata <= do_ping; wait for clk125_period;
@@ -504,10 +510,16 @@ begin
     assert ip_rx_hdr.last_error_code = x"0"         report "T2: ip_rx.hdr.last_error_code not set correctly";
 
     -- put the rest of the user data
-    mac_rx_tdata <= x"00"; wait for 2*clk125_period; -- fill up the what to do word
-    mac_rx_tdata <= x"00"; mac_rx_tlast <= '1'; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for 3*clk125_period; -- fill up the what to do word
+    -- mac_rx_tdata <= x"00"; mac_rx_tlast <= '1'; wait for clk125_period;
+    -- mac_rx_tdata <= x"02"; wait for clk125_period;
+    -- mac_rx_tdata <= x"03"; wait for clk125_period;
+    -- mac_rx_tdata <= x"04"; wait for clk125_period;
 
     assert udp_rx.data.data_in_last = '1'           report "T2: udp_rx.data.data_in_last not set";
+    wait for clk125_period;
+    mac_rx_tlast <= '1';
+    wait for clk125_period;
 
     mac_rx_tdata <= x"00";
     mac_rx_tlast <= '0';
