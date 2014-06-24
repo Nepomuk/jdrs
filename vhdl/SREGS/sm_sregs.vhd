@@ -68,7 +68,7 @@ port (
 	P_END				: out 	std_logic;								-- block end
 	--	-------------------------- control signals ---------------------------- --
 	DMD_DMA			: in	std_logic;
-	EV_DATACOUNT	: out   std_logic_vector(16 downto 0);
+	EV_DATACOUNT	: out   std_logic_vector(17 downto 0);
 	DT_REQ			: out	std_logic;
 	DT_ACK			: in	std_logic;
 	DT_DEN			: out	std_logic;		-- data enable on PD
@@ -124,16 +124,16 @@ end component sm_dummy_data;
 
 COMPONENT daq_fifo
   PORT (
-    clk 		: 		IN STD_LOGIC;
+    clk 			: 		IN STD_LOGIC;
     srst 		: 		IN STD_LOGIC;
-    din 		: 		IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    din 			: 		IN STD_LOGIC_VECTOR(31 DOWNTO 0);
     wr_en 		: 		IN STD_LOGIC;
     rd_en 		: 		IN STD_LOGIC;
     dout 		: 		OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     full 		: 		OUT STD_LOGIC;
     empty 		: 		OUT STD_LOGIC;
     prog_full 	: 		OUT STD_LOGIC;
-	 data_count	: 		out std_logic_vector(16 downto 0)
+	 data_count	: 		out std_logic_vector(17 downto 0)
   );
 END COMPONENT;
 
@@ -185,7 +185,7 @@ END COMPONENT;
 	signal fi_ren						: std_logic;
 	signal fi_empty,fi_full				: std_logic;
 	signal fi_pfull						: std_logic;		-- 3/4
-	signal fi_datacount					: std_logic_vector(16 downto 0);
+	signal fi_datacount					: std_logic_vector(17 downto 0);
 	signal fi_din,fi_dout, fi_din_dummy	: std_logic_vector(31 downto 0);
 	signal fi_valid						: std_logic;
 	signal fill_dma_counter   : std_logic_vector(31 downto 0);
@@ -231,28 +231,28 @@ tpx_fifo_din <= tpx_fifodummyreg;
 U_DUMMY_DATA :  sm_dummy_data
     Port  map(
 		START 			=> creg(4),
-		RESET			=> ilreset,
-		EMPTY			=> open,
-		FULL			=> open,
+		RESET				=> ilreset,
+		EMPTY				=> open,
+		FULL				=> open,
 		DATA_COUNT 		=> tpx_fifo_datacount,
 		CLK				=> ilclk,
-		DIN 			=> tpx_fifo_din,
-		DWEN			=> tpx_fifodummywe,
-		DOUT 			=> tpx_fifodummydata,
+		DIN 				=> tpx_fifo_din,
+		DWEN				=> tpx_fifodummywe,
+		DOUT 				=> tpx_fifodummydata,
 		DDESTWE			=> tpx_fifodummydestwe,
-		BUSY 			=> dummy_data_busy
+		BUSY 				=> dummy_data_busy
 	);
 
 dma_buffer: daq_fifo
 	port map(
 		clk			=> ilclk,
-		srst		=> ilreset,
+		srst			=> ilreset,
 		din			=> fi_din,
-		wr_en		=> fi_wen,
-		rd_en		=> fi_ren,
-		dout		=> fi_dout,
-		full		=> fi_full,
-		empty		=> fi_empty,
+		wr_en			=> fi_wen,
+		rd_en			=> fi_ren,
+		dout			=> fi_dout,
+		full			=> fi_full,
+		empty			=> fi_empty,
 		prog_full	=> fi_pfull,
 		data_count	=> fi_datacount
 	);
@@ -270,11 +270,13 @@ U_KNIGHT_RIDER : knight_rider
 	);
 
 with led_config select LED <=
-	one_hertz_counter_i 				when "00000",		-- 0
-	knight_rider_i (7 downto 0)		 	when "00001",		-- 1
-	tpx_fifo_datacount(7 downto 0) 		when "00010",		-- 2
-	fi_datacount(7 downto 0) 			when "00011",		-- 3
-	"11111111" 							when others;
+	one_hertz_counter_i 							when "00000",		-- 0
+	knight_rider_i (7 downto 0)		 		when "00001",		-- 1
+	tpx_fifo_datacount(7 downto 0) 			when "00010",		-- 2
+	fi_datacount(7 downto 0) 					when "00011",		-- 3
+	fi_datacount(15 downto 8)					when "00100",		-- 4
+	fi_datacount(17 downto 16)&"111000"	when "00101",		-- 4	
+	"11111111" 									when others;
 
 
 -- ======================================================================= --
@@ -533,25 +535,25 @@ end process;
 --										sample data fifo											--
 -- ========================================================================== --
 
--- fi_din <= tpx_fifodummydata;
--- fi_wen <= tpx_fifodummydestwe;
+ fi_din <= tpx_fifodummydata;
+ fi_wen <= tpx_fifodummydestwe;
 
 -- fill the DMA constantly with data
 -- (comment the upper two lines out and the process below in)
-fill_dma_with_counter : process( ilclk )
-begin
-	if rising_edge( ilclk ) then
-		if SL2B(ilreset) then
-			fill_dma_counter <= (others => '0');
-		elsif ( fi_full = '1' ) then
-			fill_dma_counter <= fill_dma_counter;
-		else
-			fill_dma_counter <= fill_dma_counter + 1;
-		end if;
-	end if;
-end process;
-fi_din <= fill_dma_counter;
-fi_wen <= not fi_full;
+--fill_dma_with_counter : process( ilclk )
+--begin
+--	if rising_edge( ilclk ) then
+--		if SL2B(ilreset) then
+--			fill_dma_counter <= (others => '0');
+--		elsif ( fi_full = '1' ) then
+--			fill_dma_counter <= fill_dma_counter;
+--		else
+--			fill_dma_counter <= fill_dma_counter + 1;
+--		end if;
+--	end if;
+--end process;
+--fi_din <= fill_dma_counter;
+--fi_wen <= not fi_full;
 -- fill DMA end
 
 process(ilclk)
@@ -585,6 +587,7 @@ P_RDY	<= s_rdy or blk_rdy or
 						  or B2SL(regadr = TPX_TRIGCOUNT_REG)
 						  or B2SL(regadr = LED_REG)
 						  or B2SL(regadr = TPX_LEDINFOREG)
+						  or B2SL(regadr = SM_RO_DATA_COUNT)
 						  or B2SL(regadr(regadr'high downto 5) = (SM_DRP/32)))		-- MMCM_DRP
 						  );
 
@@ -595,6 +598,8 @@ P_D_O <=
 			 and dbell_in)
 		or (    SL2SLV(P_REG and not P_WR and B2SL(regadr = GLS_DOORBELL_MASK))
 			 and EXT2SLV(doorbell_mask))
+		or (	  SL2SLV(P_REG and not P_WR and B2SL(regadr = SM_RO_DATA_COUNT))
+			 and EXT2SLV(fi_datacount))
 		or (    SL2SLV(P_REG and not P_WR and B2SL(regadr = GLS_TIMER))
 			 and stimer)
 		or (    SL2SLV(P_REG and not P_WR and B2SL(regadr = GLS_DCOUNT))

@@ -50,7 +50,7 @@ ENTITY daq_fifo IS
     dout : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     full : OUT STD_LOGIC;
     empty : OUT STD_LOGIC;
-    data_count : OUT STD_LOGIC_VECTOR(16 DOWNTO 0);
+    data_count : OUT STD_LOGIC_VECTOR(17 DOWNTO 0);
     prog_full : OUT STD_LOGIC
   );
 END daq_fifo;
@@ -67,7 +67,7 @@ COMPONENT wrapped_daq_fifo
     dout : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
     full : OUT STD_LOGIC;
     empty : OUT STD_LOGIC;
-    data_count : OUT STD_LOGIC_VECTOR(16 DOWNTO 0);
+    data_count : OUT STD_LOGIC_VECTOR(17 DOWNTO 0);
     prog_full : OUT STD_LOGIC
   );
 END COMPONENT;
@@ -100,7 +100,7 @@ END COMPONENT;
       c_axis_type => 0,
       c_common_clock => 1,
       c_count_type => 0,
-      c_data_count_width => 17,
+      c_data_count_width => 18,
       c_default_value => "BlankString",
       c_din_width => 32,
       c_din_width_axis => 1,

@@ -78,8 +78,8 @@ entity topl is
 
     -- Serialised statistics vectors
     --------------------------------
-    TX_STATISTICS_S     : out std_logic;
-    RX_STATISTICS_S     : out std_logic;
+  --  TX_STATISTICS_S     : out std_logic;
+  --  RX_STATISTICS_S     : out std_logic;
 
     -- Serialised Pause interface controls
     --------------------------------------
@@ -116,7 +116,7 @@ architecture Behavioral of topl is
   signal register_dma_wait      : std_logic;
   signal register_dma_end       : std_logic;
   signal register_dma_empty     : std_logic;
-  signal register_dma_count     : std_logic_vector(16 downto 0);
+  signal register_dma_count     : std_logic_vector(17 downto 0);
   -- signal register_dt_ack       : std_logic;
 
   -- LCD stuff
@@ -330,8 +330,8 @@ begin
 
     -- Serialised statistics vectors
     --------------------------------
-    TX_STATISTICS_S => TX_STATISTICS_S,
-    RX_STATISTICS_S => RX_STATISTICS_S,
+   -- TX_STATISTICS_S => TX_STATISTICS_S,
+   -- RX_STATISTICS_S => RX_STATISTICS_S,
 
     -- Serialised Pause interface controls
     --------------------------------------

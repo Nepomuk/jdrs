@@ -136,7 +136,7 @@ package sample_package is
 	constant SM_SR					: integer :=16#109#;    --
 	constant SM_BLK_SIZE			: integer :=16#106#;    -- 418    DMA FIFO data count
 	constant SM_RO_DATA				: integer :=16#100#;    -- 400    Register address for DMA transfer
-
+	constant SM_RO_DATA_COUNT	: integer :=16#10a#;
 -- -------------------------- Giga Link protocol constants --------------- --
 
 	constant GL_START	: T_SLV8 := x"1C";	-- K.28.0  
