@@ -156,6 +156,11 @@ architecture behavioral of ml605_ethernet_tb is
   signal ip_rx_hdr              : ipv4_rx_header_type;
   signal ip_pkt_count           : std_logic_vector(7 downto 0);
 
+  -- fix behavior of simulation
+  type UDP_state_type is (IDLE, WAIT_RX_DONE, WAIT_DATA_OUT_RDY, DATA_OUT, FINISH_SEND);
+  signal UDP_state, UDP_next_state : UDP_state_type;
+  signal UDP_set_state          : std_logic;
+
 
   -- Delay to provide setup and hold timing at the GMII/MII.
   constant dly : time := 2 ns;
@@ -250,6 +255,12 @@ begin
     init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rx_start",    "udp_rx_start");
     init_signal_spy("ml605_topl/eth_wrapper/udp_block/udp_rxo",         "udp_rx");
     init_signal_spy("ml605_topl/eth_wrapper/udp_block/ip_rx_hdr",       "ip_rx_hdr");
+
+    -- some more to fix strange behavior in simulation
+    init_signal_spy("ml605_topl/eth_wrapper/set_state",   "UDP_set_state");
+    init_signal_spy("ml605_topl/eth_wrapper/state",       "UDP_state");
+    init_signal_spy("ml605_topl/eth_wrapper/next_state",  "UDP_next_state");
+
     wait;
   end process;
 
@@ -308,6 +319,31 @@ begin
     wait for clk125_period/2;
     GMII_RX_CLK <= '0';
     wait for clk125_period/2;
+  end process;
+
+
+  -- We need to fix a strange behavior of the simulation: for some reason it
+  -- doesn't change the state of the UDP wrapper correctly.
+  process
+  begin
+    wait until UDP_set_state = '1';
+
+    signal_force("ml605_topl/eth_wrapper/set_state", "1", 0 ps, freeze, clk125_period - 10 ps, 0);
+
+    case UDP_next_state is
+      when IDLE =>
+        signal_force("ml605_topl/eth_wrapper/state", "IDLE", 0 ps, deposit, open, 0);
+      when WAIT_RX_DONE =>
+        signal_force("ml605_topl/eth_wrapper/state", "WAIT_RX_DONE", 0 ps, deposit, open, 0);
+      when WAIT_DATA_OUT_RDY =>
+        signal_force("ml605_topl/eth_wrapper/state", "WAIT_DATA_OUT_RDY", 0 ps, deposit, open, 0);
+      when DATA_OUT =>
+        signal_force("ml605_topl/eth_wrapper/state", "DATA_OUT", 0 ps, deposit, open, 0);
+      when FINISH_SEND =>
+        signal_force("ml605_topl/eth_wrapper/state", "FINISH_SEND", 0 ps, deposit, open, 0);
+    end case;
+
+    wait for clk125_period;
   end process;
 
 
@@ -511,15 +547,9 @@ begin
 
     -- put the rest of the user data
     mac_rx_tdata <= x"00"; wait for 3*clk125_period; -- fill up the what to do word
-    -- mac_rx_tdata <= x"00"; mac_rx_tlast <= '1'; wait for clk125_period;
-    -- mac_rx_tdata <= x"02"; wait for clk125_period;
-    -- mac_rx_tdata <= x"03"; wait for clk125_period;
-    -- mac_rx_tdata <= x"04"; wait for clk125_period;
-
     assert udp_rx.data.data_in_last = '1'           report "T2: udp_rx.data.data_in_last not set";
     wait for clk125_period;
-    mac_rx_tlast <= '1';
-    wait for clk125_period;
+    mac_rx_tlast <= '1'; wait for clk125_period;
 
     mac_rx_tdata <= x"00";
     mac_rx_tlast <= '0';
