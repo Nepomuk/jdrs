@@ -158,8 +158,10 @@ architecture behavioral of ml605_ethernet_tb is
 
   -- fix behavior of simulation
   type UDP_state_type is (IDLE, WAIT_RX_DONE, WAIT_DATA_OUT_RDY, DATA_OUT, FINISH_SEND);
+  type count_mode_type is (RST, INCR, HOLD);
   signal UDP_state, UDP_next_state : UDP_state_type;
   signal UDP_set_state          : std_logic;
+  signal UDP_set_tx_count       : count_mode_type;
 
 
   -- Delay to provide setup and hold timing at the GMII/MII.
@@ -260,6 +262,7 @@ begin
     init_signal_spy("ml605_topl/eth_wrapper/set_state",   "UDP_set_state");
     init_signal_spy("ml605_topl/eth_wrapper/state",       "UDP_state");
     init_signal_spy("ml605_topl/eth_wrapper/next_state",  "UDP_next_state");
+    init_signal_spy("ml605_topl/eth_wrapper/set_tx_count","UDP_set_tx_count");
 
     wait;
   end process;
@@ -345,6 +348,16 @@ begin
 
     wait for clk125_period;
   end process;
+
+  -- sending of a package is also strange, the counter starts too early
+  process
+  begin
+    wait until UDP_set_tx_count = INCR;
+    signal_force("ml605_topl/eth_wrapper/tx_count", "16#0000", 0 ps, deposit, open, 1);
+    wait until UDP_set_tx_count = RST;
+  end process;
+
+
 
 
   ------------------------------------------------------------------------------
