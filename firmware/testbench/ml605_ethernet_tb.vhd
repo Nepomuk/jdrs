@@ -483,7 +483,7 @@ begin
     mac_rx_tvalid <= '1';
 
     ------- ETH ----------
-    -- dst MAC (broadcast)
+    -- dst MAC
     for i in FPGA_MAC_address'range loop
       mac_rx_tdata <= FPGA_MAC_address(i); wait for clk125_period;
     end loop;
@@ -580,6 +580,127 @@ begin
 
 
     report "T2: test complete!";
+
+
+    -- ------------
+    -- -- TEST 3 -- send UDP pkt (register write)
+    -- ------------
+
+    report "T3: Send an UDP package: register write";
+
+    mac_rx_tvalid <= '1';
+
+    ------- ETH ----------
+    -- dst MAC
+    for i in FPGA_MAC_address'range loop
+      mac_rx_tdata <= FPGA_MAC_address(i); wait for clk125_period;
+    end loop;
+    -- src MAC
+    for i in our_MAC_address'range loop
+      mac_rx_tdata <= our_MAC_address(i); wait for clk125_period;
+    end loop;
+    -- type
+    mac_rx_tdata <= x"08"; wait for clk125_period;    -- IP pkt
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+
+    ------- IPIP ----------
+    -- version & HL (header length)
+    mac_rx_tdata <= x"45"; wait for clk125_period;
+    -- service type
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- total len
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"29"; wait for clk125_period;
+    -- ID
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"7a"; wait for clk125_period;
+    -- flags & frag
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- TTL
+    mac_rx_tdata <= x"80"; wait for clk125_period;
+    -- Protocol
+    mac_rx_tdata <= x"11"; wait for clk125_period;
+    -- Header CKS
+    mac_rx_tdata <= x"00"; wait for clk125_period; -- skip the checksum
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    -- src IP
+    for i in our_IP_address'range loop
+      mac_rx_tdata <= our_IP_address(i); wait for clk125_period;
+    end loop;
+    -- dst IP
+    for i in FPGA_IP_address'range loop
+      mac_rx_tdata <= FPGA_IP_address(i); wait for clk125_period;
+    end loop;
+
+    ------- UDP ----------
+    -- src port
+    mac_rx_tdata <= x"C3"; wait for clk125_period; -- port 50,000
+    mac_rx_tdata <= x"50"; wait for clk125_period;
+    -- dst port
+    mac_rx_tdata <= x"C3"; wait for clk125_period; -- port 50,000
+    mac_rx_tdata <= x"50"; wait for clk125_period;
+    -- length
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"14"; wait for clk125_period; -- header (8 byte + data)
+    -- cks
+    mac_rx_tdata <= x"00"; wait for clk125_period; -- skip the checksum
+    --mac_rx_tdata <= x"00"; wait for clk125_period;  (for some reason, the simulation has an offset by one clk cycle, the real thing works though)
+
+    -- user data
+    mac_rx_tdata <= do_write_register; wait for clk125_period;
+
+    -- since we are up to the user data stage, the header should be valid and the data_in_valid should be set
+    assert udp_rx.hdr.is_valid = '1'                report "T3: udp_rx.hdr.is_valid not set";
+    assert udp_rx.hdr.data_length = x"000C"         report "T3: udp_rx.hdr.data_length not set correctly";
+    assert udp_rx.hdr.src_ip_addr = x"c0a80001"     report "T3: udp_rx.hdr.src_ip_addr not set correctly";
+    assert udp_rx.hdr.src_port = x"C350"            report "T3: udp_rx.hdr.src_port not set correctly";
+    assert udp_rx.hdr.dst_port = x"C350"            report "T3: udp_rx.hdr.dst_port not set correctly";
+
+    assert udp_rx_start = '1'                       report "T3: udp_rx_start not set";
+    assert udp_rx.data.data_in_valid = '1'          report "T3: udp_rx.data.data_in_valid not set";
+
+    assert ip_rx_hdr.is_valid = '1'                 report "T3: ip_rx_hdr.is_valid not set";
+    assert ip_rx_hdr.protocol = x"11"               report "T3: ip_rx_hdr.protocol not set correctly";
+    assert ip_rx_hdr.src_ip_addr = x"c0a80001"      report "T3: ip_rx.hdr.src_ip_addr not set correctly";
+    assert ip_rx_hdr.num_frame_errors = x"00"       report "T3: ip_rx.hdr.num_frame_errors not set correctly";
+    assert ip_rx_hdr.last_error_code = x"0"         report "T3: ip_rx.hdr.last_error_code not set correctly";
+
+    -- put the rest of the user data
+    mac_rx_tdata <= x"00"; wait for 3*clk125_period; -- fill up the what to do word
+
+    -- register address
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"04"; wait for clk125_period;
+    mac_rx_tdata <= x"C8"; wait for clk125_period;
+
+    -- new register value
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"00"; wait for clk125_period;
+    mac_rx_tdata <= x"01"; wait for clk125_period;
+
+    assert udp_rx.data.data_in_last = '1'           report "T3: udp_rx.data.data_in_last not set";
+    wait for clk125_period;
+    mac_rx_tlast <= '1'; wait for clk125_period;
+
+    mac_rx_tdata <= x"00";
+    mac_rx_tlast <= '0';
+    mac_rx_tvalid <= '0';
+    wait for clk125_period;
+
+    assert udp_rx.data.data_in_valid = '0'          report "T3: udp_rx.data.data_in_valid not cleared";
+    assert udp_rx.data.data_in_last = '0'           report "T3: udp_rx.data.data_in_last not cleared";
+    assert udp_rx_start = '0'                       report "T3: udp_rx_start not cleared";
+    assert ip_rx_hdr.num_frame_errors = x"00"       report "T3: ip_rx_hdr.num_frame_errors non zero at end of test";
+    assert ip_rx_hdr.last_error_code = x"0"         report "T3: ip_rx_hdr.last_error_code indicates error at end of test";
+    assert ip_pkt_count = x"02"                     report "T3: ip pkt cnt incorrect";
+
+    wait for clk125_period*20;
+
+
+    report "T3: test complete!";
 
     -- finish
     wait for 100 ms;
