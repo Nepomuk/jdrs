@@ -448,9 +448,9 @@ architecture Behavorial of ethernet_core_wrapper is
   --signal set_register_read_data     : std_logic;
 
   -- register handling
-  signal register_access_int         : std_logic;
-  signal register_access_clk_sync    : std_logic;
-  signal register_access_delayed     : std_logic;
+  signal register_access_int         : std_logic := '0';
+  signal register_access_clk_sync    : std_logic := '0';
+  signal register_access_delayed     : std_logic := '0';
   -- signal register_access_delayed_2   : std_logic;
   signal register_read_ready_delayed : std_logic;
   -- signal register_dma_empty_delayed  : std_logic;
@@ -462,7 +462,7 @@ architecture Behavorial of ethernet_core_wrapper is
 
   -- dma block fifo
   signal register_dma_count_int   : std_logic_vector(31 downto 0);
-  signal register_dma_int         : std_logic;
+  signal register_dma_int         : std_logic := '0';
 --  signal register_dma_is_empty    : std_logic;
   -- signal register_dma_access_init : std_logic;
   signal fifo_dma_reset           : std_logic;
