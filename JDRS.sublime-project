@@ -1,0 +1,31 @@
+{
+	"build_systems":
+	[
+		{
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "python -u \"$file\""
+		}
+	],
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"*.sublime-workspace"
+			],
+			"folder_exclude_patterns": ["*"],
+			"name": "Global Settings",
+			"path": "~/Development/jdrs/"
+		},
+		{
+			"file_exclude_patterns":
+			[
+				".nfs*"
+			],
+			"folder_exclude_patterns": [],
+			"name": "VHDL Sources",
+			"path": "~/Development/jdrs/firmware/vhdl"
+		}
+	]
+}

@@ -1,0 +1,8 @@
+build-software*
+*/*.swp
+*.swp
+*.directory
+*/*.directory
+
+# Sublime Text workspace file
+*.sublime-workspace
