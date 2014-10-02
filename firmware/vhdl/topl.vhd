@@ -157,7 +157,7 @@ architecture Behavioral of topl is
   -- SREGS signals
   signal sregs_clk            : std_logic;
   signal sys_mode             : std_logic_vector(15 downto 0);
-  signal sregs_regaddr        : std_logic_vector(12 downto 2);
+  signal sregs_regaddr        : std_logic_vector(11 downto 0); --(12 downto 2);
   alias regadr                : std_logic_vector(8 downto 0) is sregs_regaddr(10 downto 2);
 
   signal test_display_int     : std_logic;
@@ -397,53 +397,71 @@ begin
 
   -- get rid of the first and last bits of the address
   -- (equivalent to dividing by 4)
-  sregs_regaddr <= register_addr(12 downto 2);
+  -- sregs_regaddr <= register_addr(12 downto 2);
 
-  U_SREGS : entity work.SREGS
-  generic map (
-    SC_VERSION  => SC_VERSION
-  )
+  -- U_SREGS : entity work.SREGS
+  -- generic map (
+  --   SC_VERSION  => SC_VERSION
+  -- )
+  -- port map (
+  --   LCLK        => sregs_clk,
+  --   BASECLOCK   => gtx_clk_bufg,--CLK66,
+  --   CLK66       => CLK66, -- a direct clock connection is needed for the MMCM
+  --   GRESET      => open,  -- a reset from the SREGS
+  --   P1MS        => pulse_1ms,
+  --   LED         => USER_LED,
+  --   USER_SWITCH => USER_SWITCH,
+
+  -- -- -------------------------- local bus to communication port ------------- --
+  --   P_REG       => register_access,
+  --   P_WR        => register_write_or_read,
+  --   P_A         => sregs_regaddr,
+  --   P_D         => register_write_data,
+  --   P_D_O       => register_read_data,
+  --   P_RDY       => register_access_ready,
+  --   P_BLK       => register_dma,
+  --   P_WAIT      => register_dma_wait,
+  --   P_END       => register_dma_end,
+  --   DMD_DMA     => sys_mode(0),
+  --   EV_DATACOUNT  => register_dma_count, --ev_datacount,
+
+  -- -- -------------------------- direct block transfer ----------------------- --
+  --   DT_REQ      => open, --p_dt_req,
+  --   DT_ACK      => '0', --register_dt_ack, --p_dt_ack,
+  --   DT_DEN      => open, --p_dt_den,
+  --   FIFO_EMPTY  => register_dma_empty, --fifo_empty_i,
+
+  -- -- -------------------------- write to Host register request -------------- --
+  --   HREG_REQ    => open, --hreg_req,
+  --   HREG_A      => open, --hreg_a,
+  --   HREG_D      => open, --hreg_d,
+  --   HREG_ACK    => '0', --hreg_ack,
+
+  -- -- -------------------------- control/status ------------------------------ --
+  --   SYS_MODE    => sys_mode,
+
+  -- -- -------------------------- host doorbell ------------------------------- --
+  --   P100MS      => pulse_100ms,
+  --   DMD_WR      => '0' --p_dt_den
+  -- );
+
+  sregs_regaddr <= register_addr(11 downto 0);
+  REG_CTRL : entity work.RegisterControl
   port map (
-    LCLK        => sregs_clk,
-    BASECLOCK   => gtx_clk_bufg,--CLK66,
-    CLK66       => CLK66, -- a direct clock connection is needed for the MMCM
-    GRESET      => open,  -- a reset from the SREGS
-    P1MS        => pulse_1ms,
-    LED         => USER_LED,
-    USER_SWITCH => USER_SWITCH,
+    CLK             => gtx_clk_bufg,
+    RESET           => GLBL_RST,
+    LED             => USER_LED,
+    USER_SWITCH     => USER_SWITCH,
 
-  -- -------------------------- local bus to communication port ------------- --
-    P_REG       => register_access,
-    P_WR        => register_write_or_read,
-    P_A         => sregs_regaddr,
-    P_D         => register_write_data,
-    P_D_O       => register_read_data,
-    P_RDY       => register_access_ready,
-    P_BLK       => register_dma,
-    P_WAIT      => register_dma_wait,
-    P_END       => register_dma_end,
-    DMD_DMA     => sys_mode(0),
-    EV_DATACOUNT  => register_dma_count, --ev_datacount,
-
-  -- -------------------------- direct block transfer ----------------------- --
-    DT_REQ      => open, --p_dt_req,
-    DT_ACK      => '0', --register_dt_ack, --p_dt_ack,
-    DT_DEN      => open, --p_dt_den,
-    FIFO_EMPTY  => register_dma_empty, --fifo_empty_i,
-
-  -- -------------------------- write to Host register request -------------- --
-    HREG_REQ    => open, --hreg_req,
-    HREG_A      => open, --hreg_a,
-    HREG_D      => open, --hreg_d,
-    HREG_ACK    => '0', --hreg_ack,
-
-  -- -------------------------- control/status ------------------------------ --
-    SYS_MODE    => sys_mode,
-
-  -- -------------------------- host doorbell ------------------------------- --
-    P100MS      => pulse_100ms,
-    DMD_WR      => '0' --p_dt_den
+    -- register handling
+    REG_EN          => register_access,
+    REG_WR          => register_write_or_read,
+    REG_ADDR        => sregs_regaddr,
+    REG_DATA        => register_write_data,
+    REG_DATA_OUT    => register_read_data,
+    REG_VALID       => register_access_ready
   );
+
 
   test_display_int <= (register_access and register_write_or_read) and
                 B2SL(regadr = std_logic_vector(to_unsigned(LED_REG, regadr'length)) );

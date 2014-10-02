@@ -14,10 +14,6 @@ use IEEE.numeric_std.all;
 use work.register_config.all;
 
 entity RegisterControl is
-  generic (
-    NBits     : integer := 4;
-    NBitsEnc  : integer := 7
-  );
   port (
     CLK             : in  std_logic;  -- 125 MHz (same as for ethernet transceiver)
     RESET           : in  std_logic;
@@ -37,6 +33,9 @@ end RegisterControl;
 
 architecture rtl of RegisterControl is
 
+  signal single_register_write  : std_logic;
+  signal register_address       : integer range 0 to 2**REG_ADDR_LEN-1;
+
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
 
@@ -50,13 +49,13 @@ begin
   --  LED output modules
   -- ---------------------------------------------------------------------------
 
-  SECONDS_COUNTER : one_hertz_counter
+  SECONDS_COUNTER : entity work.one_hertz_counter
   port map (
     CLK         => CLK,
     COUNTER_OUT => one_hertz_counter
   );
 
-  KNIGHT_RIDER : knight_rider
+  LED_KNIGHT_RIDER : entity work.knight_rider
   port map (
     CLK66       => CLK,
     USER_SWITCH => USER_SWITCH,
@@ -69,8 +68,8 @@ begin
   -- ---------------------------------------------------------------------------
 
   with r_led_config select LED <=
-    one_hertz_counter         when std_logic_vector(to_unsigned(0, )),
-    knight_rider              when std_logic_vector(to_unsigned(1, )),
+    one_hertz_counter         when std_logic_vector(to_unsigned(0, r_led_config'length)),
+    knight_rider              when std_logic_vector(to_unsigned(1, r_led_config'length)),
     (others => '1')           when others;
 
 
@@ -79,6 +78,7 @@ begin
   -- ---------------------------------------------------------------------------
 
   single_register_write <= REG_EN and REG_WR;
+  register_address <= to_integer(unsigned(REG_ADDR));
 
   process (reset, clk)
   begin
@@ -87,7 +87,7 @@ begin
 
     elsif rising_edge(clk) and single_register_write = '1' then
 
-      case REG_ADDR is
+      case register_address is
         when LED_REG =>
           r_led_config <= REG_DATA(r_led_config'range);
 
