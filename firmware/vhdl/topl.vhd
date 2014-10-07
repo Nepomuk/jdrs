@@ -352,7 +352,7 @@ begin
     REGISTER_DMA_END        => register_dma_end,
     REGISTER_DMA_EMPTY      => register_dma_empty,
     REGISTER_DMA_COUNT      => register_dma_count,
-    REGISTER_CLK            => sregs_clk
+    REGISTER_CLK            => gtx_clk_bufg --sregs_clk
 
   );
 
