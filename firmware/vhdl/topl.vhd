@@ -30,6 +30,9 @@ use IEEE.NUMERIC_STD.ALL;
 library UNISIM;
 use UNISIM.VComponents.all;
 
+-- needed for register handling
+use work.register_config.all;
+
 -- needed for SREGS stuff
 use work.util_pack.all;
 use work.sample_package.all;
@@ -118,6 +121,12 @@ architecture Behavioral of topl is
   signal register_dma_empty     : std_logic;
   signal register_dma_count     : std_logic_vector(17 downto 0);
   -- signal register_dt_ack       : std_logic;
+
+  -- generic device registers
+  signal reg_dev0_config        : reg_devX_config_type;
+  signal reg_dev0_status        : reg_devX_status_type;
+  signal reg_dev1_config        : reg_devX_config_type;
+  signal reg_dev1_status        : reg_devX_status_type;
 
   -- LCD stuff
   constant lcd_mode_default : std_logic_vector(2 downto 0) := "001";
@@ -459,7 +468,12 @@ begin
     REG_ADDR        => sregs_regaddr,
     REG_DATA        => register_write_data,
     REG_DATA_OUT    => register_read_data,
-    REG_VALID       => register_access_ready
+    REG_VALID       => register_access_ready,
+
+    REG_DEV0_CONFIG => reg_dev0_config,
+    REG_DEV0_STATUS => reg_dev0_status,
+    REG_DEV1_CONFIG => reg_dev1_config,
+    REG_DEV1_STATUS => reg_dev1_status
   );
 
 

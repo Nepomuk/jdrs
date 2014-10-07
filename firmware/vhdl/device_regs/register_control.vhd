@@ -26,7 +26,12 @@ entity RegisterControl is
     REG_ADDR        : in  std_logic_vector(REG_ADDR_LEN-1 downto 0);  -- register address
     REG_DATA        : in  std_logic_vector(REG_LEN-1 downto 0);       -- data in
     REG_DATA_OUT    : out std_logic_vector(REG_LEN-1 downto 0);       -- data out
-    REG_VALID       : out std_logic
+    REG_VALID       : out std_logic;
+
+    REG_DEV0_CONFIG : out reg_devX_config_type; -- generic config registers for device 0
+    REG_DEV0_STATUS : in  reg_devX_status_type; -- generic status registers for device 0
+    REG_DEV1_CONFIG : out reg_devX_config_type; -- generic config registers for device 1
+    REG_DEV1_STATUS : in  reg_devX_status_type  -- generic status registers for device 1
   );
 end RegisterControl;
 
@@ -37,10 +42,14 @@ architecture rtl of RegisterControl is
   signal single_register_read   : std_logic;
   signal single_register_write  : std_logic;
   signal register_address       : integer range 0 to 2**REG_ADDR_LEN-1;
+  signal register_address_scope : integer range 0 to 2**(REG_ADDR_LEN-8)-1;
+  signal register_address_dev   : integer range 0 to 2**8-1;
   signal register_read          : std_logic_vector(REG_LEN-1 downto 0);
 
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
+  signal r_dev0_config          : reg_devX_config_type;
+  signal r_dev1_config          : reg_devX_config_type;
 
 
   signal one_hertz_counter      : std_logic_vector(7 downto 0);
@@ -80,9 +89,11 @@ begin
   --  register control signals
   -- ---------------------------------------------------------------------------
 
-  single_register_read <= REG_EN and not REG_WR;
+  single_register_read  <= REG_EN and not REG_WR;
   single_register_write <= REG_EN and REG_WR;
-  register_address <= to_integer(unsigned(REG_ADDR));
+  register_address        <= to_integer(unsigned(REG_ADDR));
+  register_address_scope  <= to_integer(unsigned(REG_ADDR(REG_ADDR_LEN-1 downto 8)));
+  register_address_dev    <= to_integer(unsigned(REG_ADDR(7 downto 0)));
 
 
   -- ---------------------------------------------------------------------------
@@ -96,26 +107,68 @@ begin
 
     elsif rising_edge(clk) and single_register_write = '1' then
 
-      case register_address is
-        when LED_REG =>
-          r_led_config <= REG_DATA(r_led_config'range);
+      -- first device registers
+      if register_address_scope = DEV0_SCOPE and
+          register_address_dev >= DEVX_CONFIG_START and
+          register_address_dev <= DEVX_CONFIG_END then
+        r_dev0_config(register_address_dev) <= REG_DATA;
 
-        when others =>
-      end case;
+      -- second device registers
+      elsif register_address_scope = DEV1_SCOPE and
+          register_address_dev >= DEVX_CONFIG_START and
+          register_address_dev <= DEVX_CONFIG_END then
+        r_dev1_config(register_address_dev) <= REG_DATA;
+
+      -- everything else
+      else
+        case register_address is
+          when RA_LED_REG =>
+            r_led_config <= REG_DATA(r_led_config'range);
+
+          when others =>
+        end case;
+      end if;
     end if;
   end process;
 
+  REG_DEV0_CONFIG <= r_dev0_config;
+  REG_DEV1_CONFIG <= r_dev1_config;
+
 
   -- ---------------------------------------------------------------------------
-  --  register writing
+  --  register reading
   -- ---------------------------------------------------------------------------
 
   REG_VALID <= '1' when single_register_read = '1' and (
-      register_address = LED_REG
+      register_address = RA_LED_REG or
+      register_address_scope = DEV0_SCOPE or
+      register_address_scope = DEV1_SCOPE
     ) else '0';
 
   REG_DATA_OUT <=
-    EXT2SLV(r_led_config) when single_register_read = '1' and register_address = LED_REG else
+    EXT2SLV(r_led_config) when single_register_read = '1' and register_address = RA_LED_REG else
+
+    -- generic device registers
+    r_dev0_config(register_address_dev) when single_register_read = '1' and (
+        register_address_scope = DEV0_SCOPE and
+        register_address_dev >= DEVX_CONFIG_START and
+        register_address_dev <= DEVX_CONFIG_END ) else
+
+    REG_DEV0_STATUS(register_address_dev) when single_register_read = '1' and (
+        register_address_scope = DEV0_SCOPE and
+        register_address_dev >= DEVX_STATUS_START and
+        register_address_dev <= DEVX_STATUS_END ) else
+
+    r_dev1_config(register_address_dev) when single_register_read = '1' and (
+        register_address_scope = DEV1_SCOPE and
+        register_address_dev >= DEVX_CONFIG_START and
+        register_address_dev <= DEVX_CONFIG_END ) else
+
+    REG_DEV1_STATUS(register_address_dev) when single_register_read = '1' and (
+        register_address_scope = DEV1_SCOPE and
+        register_address_dev >= DEVX_STATUS_START and
+        register_address_dev <= DEVX_STATUS_END ) else
+
     (others => '0');
 
 
