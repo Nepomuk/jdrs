@@ -879,7 +879,7 @@ begin
     udp_rx_start_int, udp_rx_int.data.data_in_valid, udp_rx_int.data.data_in_last,
     udp_tx_result_int, udp_tx_data_out_ready_int,
     -- registers
-    register_access_int, register_dma_is_empty, fifo_dma_empty
+    register_access_int, fifo_dma_empty
     )
     variable continue_to_send_data : std_logic;
   begin
