@@ -45,7 +45,55 @@ package register_config is
   --  Device specific registers
   -- ---------------------------------------------------------------------------
 
+  -- ---------------------------------------------------------------------------
+  --  Utility functions
+  -- ---------------------------------------------------------------------------
+
+  function EXT2SLV (
+    SLV : std_logic_vector;
+    n   : integer := REG_LEN
+  ) return std_logic_vector;
+
+  function Z2SLV (
+    size  : integer
+  ) return std_logic_vector;
+
 end register_config;
 
+
+-- -----------------------------------------------------------------------------
+--  Package body
+-- -----------------------------------------------------------------------------
+
 package body register_config is
+
+  -- extend a std_logic_vector to a given length
+  function EXT2SLV (
+    SLV : std_logic_vector;
+    n   : integer := REG_LEN
+  ) return std_logic_vector is
+    variable result: std_logic_vector(n-1 downto 0);
+  begin
+    if ( SLV'length = n ) then
+      result := SLV;
+    elsif ( SLV'length < n ) then
+      result := Z2SLV(n - SLV'length) & SLV;
+    else
+      result := SLV(result'range);
+    end if;
+
+    return result;
+  end;
+
+
+  -- return a std_logic_vector with zeros
+  function Z2SLV (
+    size  : integer
+  ) return std_logic_vector is
+    variable result: std_logic_vector(size-1 downto 0);
+  begin
+    result := (others => '0');
+    return result;
+  end;
+
 end register_config;

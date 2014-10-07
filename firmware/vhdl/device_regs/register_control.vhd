@@ -33,8 +33,11 @@ end RegisterControl;
 
 architecture rtl of RegisterControl is
 
+  -- internal control signals
+  signal single_register_read   : std_logic;
   signal single_register_write  : std_logic;
   signal register_address       : integer range 0 to 2**REG_ADDR_LEN-1;
+  signal register_read          : std_logic_vector(REG_LEN-1 downto 0);
 
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
@@ -74,11 +77,17 @@ begin
 
 
   -- ---------------------------------------------------------------------------
-  --  register writing
+  --  register control signals
   -- ---------------------------------------------------------------------------
 
+  single_register_read <= REG_EN and not REG_WR;
   single_register_write <= REG_EN and REG_WR;
   register_address <= to_integer(unsigned(REG_ADDR));
+
+
+  -- ---------------------------------------------------------------------------
+  --  register writing
+  -- ---------------------------------------------------------------------------
 
   process (reset, clk)
   begin
@@ -95,4 +104,19 @@ begin
       end case;
     end if;
   end process;
+
+
+  -- ---------------------------------------------------------------------------
+  --  register writing
+  -- ---------------------------------------------------------------------------
+
+  REG_VALID <= '1' when single_register_read = '1' and (
+      register_address = LED_REG
+    ) else '0';
+
+  REG_DATA_OUT <=
+    EXT2SLV(r_led_config) when single_register_read = '1' and register_address = LED_REG else
+    (others => '0');
+
+
 end rtl;
