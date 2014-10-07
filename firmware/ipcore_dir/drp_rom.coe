@@ -1,0 +1,27 @@
+; Sample initalization file for a
+; 32-bit wide by 23 deep RAM
+memory_initialization_radix = 16;
+memory_initialization_vector =
+280000
+081000
+09FC00
+0A1000
+0BFC00
+0C1000
+0DFC00
+0E1000
+0FFC00
+101000
+11FC00
+061000
+07FC00
+121000
+13FC00
+16C000
+141000
+15FC00
+18FC00
+198000
+1A8000
+4E66FF
+4F666F;
