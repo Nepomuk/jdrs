@@ -19,7 +19,7 @@ package register_config is
 
   -- use mulitple of 8 bits for length
   constant REG_LEN                : integer := 4*8;
-  constant REG_BULK_LEN           : integer := 4*8; -- if you change this, remember to recompile the fifo
+  constant REG_BULK_LEN           : integer := 4*8; -- if you change this, remember to recompile the fifo and fill counter
   constant REG_ADDR_LEN           : integer := 12;
   constant BLK_FIFO_DEPTH_BITS    : integer := 16; -- number of bits needed to address the depth of the fifo
 

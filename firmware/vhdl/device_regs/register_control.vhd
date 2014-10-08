@@ -66,6 +66,15 @@ architecture rtl of RegisterControl is
     );
   end component;
 
+  component fifo_fill_counter
+    port (
+      CLK : in  std_logic;
+      CE  : in  std_logic;
+      Q   : out std_logic_vector(31 downto 0)
+    );
+  end component;
+
+
   -- internal control signals
   signal single_register_read   : std_logic;
   signal single_register_write  : std_logic;
@@ -81,6 +90,7 @@ architecture rtl of RegisterControl is
   signal mmcm_wren              : std_logic;
   signal mmcm_data_out          : std_logic_vector(15 downto 0);
 
+  -- DAQ fifo
   signal dev0_fifo_wren         : std_logic;
   signal dev0_fifo_rden         : std_logic;
   signal dev0_fifo_empty        : std_logic;
@@ -88,13 +98,17 @@ architecture rtl of RegisterControl is
   signal dev0_fifo_din          : std_logic_vector(REG_BULK_LEN-1 downto 0);
   signal dev0_fifo_dout         : std_logic_vector(REG_BULK_LEN-1 downto 0);
   signal dev0_fifo_single_read  : std_logic;
+  signal dev0_fifo_single_read_d1 : std_logic;
 
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
   signal r_dev1_config          : reg_devX_config_type;
+  signal r_dev0_fifo_fillType   : std_logic_vector(2 downto 0) := "001";
 
 
+  signal dev0_fifo_fill_ctr     : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal dev0_fifo_fill_ctr_en  : std_logic;
   signal one_hertz_counter      : std_logic_vector(7 downto 0);
   signal knight_rider           : std_logic_vector(7 downto 0);
 
@@ -170,10 +184,37 @@ begin
     RD_DATA_COUNT => BLK_DEV0_COUNT
   );
 
-  dev0_fifo_wren <= BLK_DEV0_WREN and not dev0_fifo_full;
-  dev0_fifo_rden <= ((REG_BLK_EN and BLK_DEV0_RDEN) or dev0_fifo_single_read) and not dev0_fifo_empty;
+  -- read from the fifo
+  dev0_fifo_single_read <= '1' when single_register_read = '1' and
+      register_address = RA_DEV0_BULK_DATA and dev0_fifo_empty = '0' else '0';
 
-  dev0_fifo_din <= BLK_DEV0_DIN;
+  process ( CLK ) begin
+    if rising_edge( CLK ) then
+      dev0_fifo_single_read_d1 <= dev0_fifo_single_read;
+    end if;
+  end process;
+
+  dev0_fifo_rden <= (
+      (REG_BLK_EN and BLK_DEV0_RDEN) or                         -- regular bulk transfer
+      (dev0_fifo_single_read and not dev0_fifo_single_read_d1)  -- read only one word
+    ) and not dev0_fifo_empty;
+
+
+  -- fill the fifo
+  dev0_fifo_wren <= not dev0_fifo_full when r_dev0_fifo_fillType = "001" else
+      BLK_DEV0_WREN and not dev0_fifo_full;
+
+  dev0_fifo_din <= dev0_fifo_fill_ctr when r_dev0_fifo_fillType = "001" else
+      BLK_DEV0_DIN;
+
+
+  dev0_fifo_fill_ctr_en <= '1' when r_dev0_fifo_fillType = "001" and dev0_fifo_full = '0' else '0';
+  dev0_fifo_fill_counter : fifo_fill_counter
+  port map (
+    CLK => mmcm_clk,
+    CE  => dev0_fifo_fill_ctr_en,
+    Q   => dev0_fifo_fill_ctr
+  );
 
 
   -- ---------------------------------------------------------------------------
@@ -239,10 +280,6 @@ begin
   -- ---------------------------------------------------------------------------
   --  register reading
   -- ---------------------------------------------------------------------------
-
-  dev0_fifo_single_read <= '1' when single_register_read = '1' and
-      register_address = RA_DEV0_BULK_DATA and dev0_fifo_empty = '0' else '0';
-
 
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
