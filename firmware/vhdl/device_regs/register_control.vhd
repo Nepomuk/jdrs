@@ -20,6 +20,10 @@ entity RegisterControl is
     LED             : out std_logic_vector(7 downto 0);
     USER_SWITCH     : in  std_logic_vector(4 downto 0);
 
+    -- MMCM output
+    CLK_MMCM        : out std_logic;
+    RST_MMCM        : out std_logic;
+
     -- register handling
     REG_EN          : in  std_logic;  -- register access
     REG_WR          : in  std_logic;  -- 0: read, 1: write
@@ -46,6 +50,13 @@ architecture rtl of RegisterControl is
   signal register_address_dev   : integer range 0 to 2**8-1;
   signal register_read          : std_logic_vector(REG_LEN-1 downto 0);
 
+  -- MMCM signals
+  signal mmcm_clk               : std_logic;
+  signal mmcm_reset             : std_logic;
+  signal mmcm_start             : std_logic;
+  signal mmcm_wren              : std_logic;
+  signal mmcm_data_out          : std_logic_vector(15 downto 0);
+
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
@@ -69,10 +80,44 @@ begin
 
   LED_KNIGHT_RIDER : entity work.knight_rider
   port map (
-    CLK66       => CLK,
+    CLK66       => mmcm_clk, --CLK,
     USER_SWITCH => USER_SWITCH,
     LED         => knight_rider
   );
+
+
+  -- ---------------------------------------------------------------------------
+  --  MMCM clock generator
+  -- ---------------------------------------------------------------------------
+
+  MMCM : entity work.U_MMCM
+  port map (
+    CLKIN     => CLK,
+    LCLK      => open,
+    LRESET    => open,
+    RC_A      => REG_ADDR(4 downto 0),
+    RC_DO     => mmcm_data_out,
+    RC_DI     => REG_DATA(15 downto 0),
+    RC_WE     => mmcm_wren,
+    RC_START  => mmcm_start,
+    RC_CLK    => mmcm_clk,
+    RC_CLK180 => open,
+    RC_RESET  => mmcm_reset
+  );
+
+  mmcm_wren <= '1' when
+      single_register_write = '1' and
+      register_address >= RA_MMCM_START and
+      register_address < RA_MMCM_START + N_MMCM_REGISTERS
+    else '0';
+
+  mmcm_start <= '1' when
+      single_register_write = '1' and
+      register_address = RA_MMCM_START
+    else '0';
+
+  CLK_MMCM <= mmcm_clk;
+  RST_MMCM <= mmcm_reset;
 
 
   -- ---------------------------------------------------------------------------
@@ -147,6 +192,12 @@ begin
 
   REG_DATA_OUT <=
     EXT2SLV(r_led_config) when single_register_read = '1' and register_address = RA_LED_REG else
+
+    -- MMCM data out
+    EXT2SLV(mmcm_data_out) when single_register_read = '1' and (
+        register_address >= RA_MMCM_START and
+        register_address < RA_MMCM_START + N_MMCM_REGISTERS
+      ) else
 
     -- generic device registers
     r_dev0_config(register_address_dev) when single_register_read = '1' and (

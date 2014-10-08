@@ -30,11 +30,11 @@ use work.util_pack.all;
 
 entity U_MMCM is
 Port (
-	CLKIN			: in	std_logic;	-- clock pin 66 MHz
+	CLKIN			: in	std_logic;	-- clock pin 125 MHz
 	LCLK			: out	std_logic;	-- local clock
 	LRESET		: out	std_logic;	-- power on reset
-	BCLK			: out	std_logic;	-- MMCM_BASE
-	BRESET		: out	std_logic;	-- MMCM startup
+	-- BCLK			: out	std_logic;	-- MMCM_BASE
+	-- BRESET		: out	std_logic;	-- MMCM startup
 	RC_A			: in	T_SLV5;		-- reconfiguration RAM address
 	RC_DO			: out	T_SLV16;		-- data out
 	RC_DI			: in	T_SLV16;		-- data in
@@ -52,8 +52,8 @@ architecture Behavioral of U_MMCM is
 	signal ilclk,ilrun,ilreset	: std_logic;	-- internal local clock
 	signal clkfbout				: std_logic;
 	signal clkfbout_buf			: std_logic;
-	signal obclk,ibclk			: std_logic;
-	signal bclk_lk,obclk_lk		: std_logic;
+	-- signal obclk,ibclk			: std_logic;
+	-- signal bclk_lk,obclk_lk		: std_logic;
 
 type T_DRP_STATE is (
 	WAIT_LOCK,
@@ -103,17 +103,18 @@ begin
 LCLK		<= ilclk;
 ilreset	<= not ilrun;
 LRESET	<= ilreset;
-BCLK		<= ibclk;
-BRESET	<= not obclk_lk;
+-- BCLK		<= ibclk;
+-- BRESET	<= not obclk_lk;
 
 -- ========================================================================== --
---										local 66MHz clock											--
+--										local 125MHz clock											--
 -- ========================================================================== --
 
-U10: IBUFG
-port map (
-	I => CLKIN,
-	O => ilclk);
+-- U10: IBUFG
+-- port map (
+-- 	I => CLKIN,
+-- 	O => ilclk);
+ilclk <= CLKIN; -- the incoming clock is already buffered
 
 U14: SRL16
 port map (
@@ -126,116 +127,116 @@ port map (
 	A0		=> '1');
 
 
--- ========================================================================== --
---										alternative clock											--
--- ========================================================================== --
+-- -- ========================================================================== --
+-- --										alternative clock											--
+-- -- ========================================================================== --
 
-U_MMCM_BASE: MMCM_ADV
-generic map (
-    BANDWIDTH            => "OPTIMIZED",
-    CLKOUT4_CASCADE      => FALSE,
-    CLOCK_HOLD           => FALSE,
---    COMPENSATION         => "ZHOLD",
-    STARTUP_WAIT         => FALSE,
-    DIVCLK_DIVIDE        => 1,
-    CLKFBOUT_MULT_F      => 15.000,
-    CLKFBOUT_PHASE       => 0.000,
-    CLKFBOUT_USE_FINE_PS => FALSE,
-    CLKOUT0_DIVIDE_F     => 99.000,
-    CLKOUT0_PHASE        => 0.000,
-    CLKOUT0_DUTY_CYCLE   => 0.500,
-    CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 99,
-    CLKOUT1_PHASE        => 0.000,
-    CLKOUT1_DUTY_CYCLE   => 0.500,
-    CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 99,
-    CLKOUT2_PHASE        => 0.000,
-    CLKOUT2_DUTY_CYCLE   => 0.500,
-    CLKOUT2_USE_FINE_PS  => FALSE,
-    CLKOUT3_DIVIDE       => 99,
-    CLKOUT3_PHASE        => 0.000,
-    CLKOUT3_DUTY_CYCLE   => 0.500,
-    CLKOUT3_USE_FINE_PS  => FALSE,
-    CLKOUT4_DIVIDE       => 99,
-    CLKOUT4_PHASE        => 0.000,
-    CLKOUT4_DUTY_CYCLE   => 0.500,
-    CLKOUT4_USE_FINE_PS  => FALSE,
-    CLKOUT5_DIVIDE       => 99,
-    CLKOUT5_PHASE        => 0.000,
-    CLKOUT5_DUTY_CYCLE   => 0.500,
-    CLKOUT5_USE_FINE_PS  => FALSE,
-    CLKOUT6_DIVIDE       => 99,
-    CLKOUT6_PHASE        => 0.000,
-    CLKOUT6_DUTY_CYCLE   => 0.500,
-    CLKOUT6_USE_FINE_PS  => FALSE,
-    CLKIN1_PERIOD        => 15.1515,
-    CLKIN2_PERIOD        => 15.1515,
-    REF_JITTER1          => 0.010
-)
-port map (
-    -- Output clocks
-    CLKFBOUT            => clkfbout,
-    CLKFBOUTB           => open,
-    CLKOUT0             => obclk,
-    CLKOUT0B            => open,
-    CLKOUT1             => open,
-    CLKOUT1B            => open,
-    CLKOUT2             => open,
-    CLKOUT2B            => open,
-    CLKOUT3             => open,
-    CLKOUT3B            => open,
-    CLKOUT4             => open,
-    CLKOUT5             => open,
-    CLKOUT6             => open,
-    -- Input clock control
-    CLKFBIN             => clkfbout_buf,
-    CLKIN1              => ilclk,
-    CLKIN2              => ilclk,
-    -- Tied to always select the primary input clock
-    CLKINSEL            => '1',
-    -- Ports for dynamic reconfiguration
-    DADDR               => "0000000",
-    DCLK                => '0',
-    DEN                 => '0',
-    DI                  => (others => '0'),
-    DO                  => open,
-    DRDY                => open,
-    DWE                 => '0',
-    -- Ports for dynamic phase shift
-    PSCLK               => '0',
-    PSEN                => '0',
-    PSINCDEC            => '0',
-    PSDONE              => open,
-    -- Other control and status signals
-    LOCKED              => bclk_lk,
-    CLKINSTOPPED        => open,
-    CLKFBSTOPPED        => open,
-    PWRDWN              => '0',
-    RST                 => '0'
-);
+-- U_MMCM_BASE: MMCM_ADV
+-- generic map (
+--     BANDWIDTH            => "OPTIMIZED",
+--     CLKOUT4_CASCADE      => FALSE,
+--     CLOCK_HOLD           => FALSE,
+-- --    COMPENSATION         => "ZHOLD",
+--     STARTUP_WAIT         => FALSE,
+--     DIVCLK_DIVIDE        => 5,
+--     CLKFBOUT_MULT_F      => 42.000,
+--     CLKFBOUT_PHASE       => 0.000,
+--     CLKFBOUT_USE_FINE_PS => FALSE,
+--     CLKOUT0_DIVIDE_F     => 105.000,
+--     CLKOUT0_PHASE        => 0.000,
+--     CLKOUT0_DUTY_CYCLE   => 0.500,
+--     CLKOUT0_USE_FINE_PS  => FALSE,
+--     CLKOUT1_DIVIDE       => 105,
+--     CLKOUT1_PHASE        => 0.000,
+--     CLKOUT1_DUTY_CYCLE   => 0.500,
+--     CLKOUT1_USE_FINE_PS  => FALSE,
+--     CLKOUT2_DIVIDE       => 105,
+--     CLKOUT2_PHASE        => 0.000,
+--     CLKOUT2_DUTY_CYCLE   => 0.500,
+--     CLKOUT2_USE_FINE_PS  => FALSE,
+--     CLKOUT3_DIVIDE       => 105,
+--     CLKOUT3_PHASE        => 0.000,
+--     CLKOUT3_DUTY_CYCLE   => 0.500,
+--     CLKOUT3_USE_FINE_PS  => FALSE,
+--     CLKOUT4_DIVIDE       => 105,
+--     CLKOUT4_PHASE        => 0.000,
+--     CLKOUT4_DUTY_CYCLE   => 0.500,
+--     CLKOUT4_USE_FINE_PS  => FALSE,
+--     CLKOUT5_DIVIDE       => 105,
+--     CLKOUT5_PHASE        => 0.000,
+--     CLKOUT5_DUTY_CYCLE   => 0.500,
+--     CLKOUT5_USE_FINE_PS  => FALSE,
+--     CLKOUT6_DIVIDE       => 105,
+--     CLKOUT6_PHASE        => 0.000,
+--     CLKOUT6_DUTY_CYCLE   => 0.500,
+--     CLKOUT6_USE_FINE_PS  => FALSE,
+--     CLKIN1_PERIOD        => 8.0,
+--     CLKIN2_PERIOD        => 8.0,
+--     REF_JITTER1          => 0.010
+-- )
+-- port map (
+--     -- Output clocks
+--     CLKFBOUT            => clkfbout,
+--     CLKFBOUTB           => open,
+--     CLKOUT0             => obclk,
+--     CLKOUT0B            => open,
+--     CLKOUT1             => open,
+--     CLKOUT1B            => open,
+--     CLKOUT2             => open,
+--     CLKOUT2B            => open,
+--     CLKOUT3             => open,
+--     CLKOUT3B            => open,
+--     CLKOUT4             => open,
+--     CLKOUT5             => open,
+--     CLKOUT6             => open,
+--     -- Input clock control
+--     CLKFBIN             => clkfbout_buf,
+--     CLKIN1              => ilclk,
+--     CLKIN2              => ilclk,
+--     -- Tied to always select the primary input clock
+--     CLKINSEL            => '1',
+--     -- Ports for dynamic reconfiguration
+--     DADDR               => "0000000",
+--     DCLK                => '0',
+--     DEN                 => '0',
+--     DI                  => (others => '0'),
+--     DO                  => open,
+--     DRDY                => open,
+--     DWE                 => '0',
+--     -- Ports for dynamic phase shift
+--     PSCLK               => '0',
+--     PSEN                => '0',
+--     PSINCDEC            => '0',
+--     PSDONE              => open,
+--     -- Other control and status signals
+--     LOCKED              => bclk_lk,
+--     CLKINSTOPPED        => open,
+--     CLKFBSTOPPED        => open,
+--     PWRDWN              => '0',
+--     RST                 => '0'
+-- );
 
-U0_BUFG: BUFG
-port map (
-    O => clkfbout_buf,
-    I => clkfbout
-);
+-- U0_BUFG: BUFG
+-- port map (
+--     O => clkfbout_buf,
+--     I => clkfbout
+-- );
 
-U1_BUFG: BUFG
-port map (
-    O   => ibclk,
-    I   => obclk
-);
+-- U1_BUFG: BUFG
+-- port map (
+--     O   => ibclk,
+--     I   => obclk
+-- );
 
-U0_SRL16: SRL16
-port map (
-	D		=> bclk_lk,
-	CLK	=> ibclk,
-	Q		=> obclk_lk,
-	A3		=> '1',
-	A2		=> '1',
-	A1		=> '1',
-	A0		=> '1');
+-- U0_SRL16: SRL16
+-- port map (
+-- 	D		=> bclk_lk,
+-- 	CLK	=> ibclk,
+-- 	Q		=> obclk_lk,
+-- 	A3		=> '1',
+-- 	A2		=> '1',
+-- 	A1		=> '1',
+-- 	A0		=> '1');
 
 -- ========================================================================== --
 --										dynamische einstellbare clock							--
@@ -328,40 +329,40 @@ generic map (
     CLOCK_HOLD           => FALSE,
 --    COMPENSATION         => "ZHOLD",
     STARTUP_WAIT         => FALSE,
-    DIVCLK_DIVIDE        => 3,
-    CLKFBOUT_MULT_F      => 40.000,
+    DIVCLK_DIVIDE        => 5,
+    CLKFBOUT_MULT_F      => 36.000,
     CLKFBOUT_PHASE       => 0.000,
     CLKFBOUT_USE_FINE_PS => FALSE,
-    CLKOUT0_DIVIDE_F     => 22.000,
+    CLKOUT0_DIVIDE_F     => 6.000,
     CLKOUT0_PHASE        => 0.000,
     CLKOUT0_DUTY_CYCLE   => 0.500,
     CLKOUT0_USE_FINE_PS  => FALSE,
-    CLKOUT1_DIVIDE       => 22,
+    CLKOUT1_DIVIDE       => 2,
     CLKOUT1_PHASE        => 0.000,
     CLKOUT1_DUTY_CYCLE   => 0.500,
     CLKOUT1_USE_FINE_PS  => FALSE,
-    CLKOUT2_DIVIDE       => 22,
+    CLKOUT2_DIVIDE       => 2,
     CLKOUT2_PHASE        => 0.000,
     CLKOUT2_DUTY_CYCLE   => 0.500,
     CLKOUT2_USE_FINE_PS  => FALSE,
-    CLKOUT3_DIVIDE       => 22,
+    CLKOUT3_DIVIDE       => 2,
     CLKOUT3_PHASE        => 0.000,
     CLKOUT3_DUTY_CYCLE   => 0.500,
     CLKOUT3_USE_FINE_PS  => FALSE,
-    CLKOUT4_DIVIDE       => 22,
+    CLKOUT4_DIVIDE       => 2,
     CLKOUT4_PHASE        => 0.000,
     CLKOUT4_DUTY_CYCLE   => 0.500,
     CLKOUT4_USE_FINE_PS  => FALSE,
-    CLKOUT5_DIVIDE       => 22,
+    CLKOUT5_DIVIDE       => 2,
     CLKOUT5_PHASE        => 0.000,
     CLKOUT5_DUTY_CYCLE   => 0.500,
     CLKOUT5_USE_FINE_PS  => FALSE,
-    CLKOUT6_DIVIDE       => 22,
+    CLKOUT6_DIVIDE       => 2,
     CLKOUT6_PHASE        => 0.000,
     CLKOUT6_DUTY_CYCLE   => 0.500,
     CLKOUT6_USE_FINE_PS  => FALSE,
-    CLKIN1_PERIOD        => 15.1515,
-    CLKIN2_PERIOD        => 15.1515,
+    CLKIN1_PERIOD        => 8.0,
+    CLKIN2_PERIOD        => 8.0,
     REF_JITTER1          => 0.010
 )
 port map (

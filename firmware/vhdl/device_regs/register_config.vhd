@@ -38,9 +38,13 @@ package register_config is
   constant RA_LCD_MODE_REG        : integer := 16#015#;
   constant RA_LCD_FIFO_CHAR_REG   : integer := 16#016#;
 
+  -- MMCM clock generator (32 addresses)
+  constant RA_MMCM_START          : integer := 16#020#; -- up to 16#03F#
+  constant N_MMCM_REGISTERS       : integer := 32;      -- number of MMCM registers
+
   -- bulk data transfer
-  constant RA_BULK_DATA           : integer := 16#020#;
-  constant RA_BULK_DATA_COUNT     : integer := 16#021#;
+  constant RA_BULK_DATA           : integer := 16#040#;
+  constant RA_BULK_DATA_COUNT     : integer := 16#041#;
 
 
   -- ---------------------------------------------------------------------------

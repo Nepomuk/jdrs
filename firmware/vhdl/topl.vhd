@@ -462,6 +462,10 @@ begin
     LED             => USER_LED,
     USER_SWITCH     => USER_SWITCH,
 
+    -- MMCM output
+    CLK_MMCM        => open,
+    RST_MMCM        => open,
+
     -- register handling
     REG_EN          => register_access,
     REG_WR          => register_write_or_read,
