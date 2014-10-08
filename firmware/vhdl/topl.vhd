@@ -474,10 +474,19 @@ begin
     REG_DATA_OUT    => register_read_data,
     REG_VALID       => register_access_ready,
 
+    -- generic registers
     REG_DEV0_CONFIG => reg_dev0_config,
     REG_DEV0_STATUS => reg_dev0_status,
     REG_DEV1_CONFIG => reg_dev1_config,
-    REG_DEV1_STATUS => reg_dev1_status
+    REG_DEV1_STATUS => reg_dev1_status,
+
+    -- bulk transfer
+    REG_BLK_EN      => register_dma,
+    BLK_DEV0_WREN   => '0',
+    BLK_DEV0_RDEN   => '0',
+    BLK_DEV0_DIN    => (others => '0'),
+    BLK_DEV0_DOUT   => open,
+    BLK_DEV0_COUNT  => open
   );
 
 

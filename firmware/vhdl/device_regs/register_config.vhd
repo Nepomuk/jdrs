@@ -19,8 +19,9 @@ package register_config is
 
   -- use mulitple of 8 bits for length
   constant REG_LEN                : integer := 4*8;
-  constant REG_BULK_LEN           : integer := 4*8;
+  constant REG_BULK_LEN           : integer := 4*8; -- if you change this, remember to recompile the fifo
   constant REG_ADDR_LEN           : integer := 12;
+  constant BLK_FIFO_DEPTH_BITS    : integer := 16; -- number of bits needed to address the depth of the fifo
 
   -- ---------------------------------------------------------------------------
   --  Readout system registers
@@ -43,8 +44,9 @@ package register_config is
   constant N_MMCM_REGISTERS       : integer := 32;      -- number of MMCM registers
 
   -- bulk data transfer
-  constant RA_BULK_DATA           : integer := 16#040#;
-  constant RA_BULK_DATA_COUNT     : integer := 16#041#;
+  constant RA_DEV0_BULK_DATA        : integer := 16#040#; -- read data from device 0 fifo
+  constant RA_DEV0_BULK_DATA_COUNT  : integer := 16#041#; -- how many data are in the fifo?
+  constant RA_DEV0_BULK_DATA_FILL   : integer := 16#042#; -- with what should we fill the fifo?
 
 
   -- ---------------------------------------------------------------------------

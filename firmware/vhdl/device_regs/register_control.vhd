@@ -32,15 +32,39 @@ entity RegisterControl is
     REG_DATA_OUT    : out std_logic_vector(REG_LEN-1 downto 0);       -- data out
     REG_VALID       : out std_logic;
 
+    -- generic registers
     REG_DEV0_CONFIG : out reg_devX_config_type; -- generic config registers for device 0
     REG_DEV0_STATUS : in  reg_devX_status_type; -- generic status registers for device 0
     REG_DEV1_CONFIG : out reg_devX_config_type; -- generic config registers for device 1
-    REG_DEV1_STATUS : in  reg_devX_status_type  -- generic status registers for device 1
+    REG_DEV1_STATUS : in  reg_devX_status_type; -- generic status registers for device 1
+
+    -- bulk transfer
+    REG_BLK_EN      : in  std_logic;  -- bulk register access
+    BLK_DEV0_WREN   : in  std_logic;  -- write enable for dev0 daq fifo (comes from dev)
+    BLK_DEV0_RDEN   : in  std_logic;  -- read enable for dev0 daq fifo (comes from eth)
+    BLK_DEV0_DIN    : in  std_logic_vector(REG_BULK_LEN-1 downto 0);  -- from dev
+    BLK_DEV0_DOUT   : out std_logic_vector(REG_BULK_LEN-1 downto 0);  -- to eth
+    BLK_DEV0_COUNT  : out std_logic_vector(15 downto 0)   -- fill level of fifo
   );
 end RegisterControl;
 
 
 architecture rtl of RegisterControl is
+
+  component daq_fifo
+    port (
+      RST           : in  std_logic;
+      WR_CLK        : in  std_logic;
+      RD_CLK        : in  std_logic;
+      DIN           : in  std_logic_vector(REG_BULK_LEN-1 downto 0);
+      WR_EN         : in  std_logic;
+      RD_EN         : in  std_logic;
+      DOUT          : out std_logic_vector(REG_BULK_LEN-1 downto 0);
+      FULL          : out std_logic;
+      EMPTY         : out std_logic;
+      RD_DATA_COUNT : out std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0)
+    );
+  end component;
 
   -- internal control signals
   signal single_register_read   : std_logic;
@@ -56,6 +80,14 @@ architecture rtl of RegisterControl is
   signal mmcm_start             : std_logic;
   signal mmcm_wren              : std_logic;
   signal mmcm_data_out          : std_logic_vector(15 downto 0);
+
+  signal dev0_fifo_wren         : std_logic;
+  signal dev0_fifo_rden         : std_logic;
+  signal dev0_fifo_empty        : std_logic;
+  signal dev0_fifo_full         : std_logic;
+  signal dev0_fifo_din          : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal dev0_fifo_dout         : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal dev0_fifo_single_read  : std_logic;
 
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
@@ -118,6 +150,30 @@ begin
 
   CLK_MMCM <= mmcm_clk;
   RST_MMCM <= mmcm_reset;
+
+
+  -- ---------------------------------------------------------------------------
+  --  DAQ data fifo for bulk transfer
+  -- ---------------------------------------------------------------------------
+
+  dev0_daq_fifo : daq_fifo
+  port map (
+    RST           => RESET,
+    WR_CLK        => mmcm_clk,
+    RD_CLK        => CLK,
+    DIN           => dev0_fifo_din,
+    WR_EN         => dev0_fifo_wren,
+    RD_EN         => dev0_fifo_rden,
+    DOUT          => dev0_fifo_dout,
+    FULL          => dev0_fifo_full,
+    EMPTY         => dev0_fifo_empty,
+    RD_DATA_COUNT => BLK_DEV0_COUNT
+  );
+
+  dev0_fifo_wren <= BLK_DEV0_WREN and not dev0_fifo_full;
+  dev0_fifo_rden <= ((REG_BLK_EN and BLK_DEV0_RDEN) or dev0_fifo_single_read) and not dev0_fifo_empty;
+
+  dev0_fifo_din <= BLK_DEV0_DIN;
 
 
   -- ---------------------------------------------------------------------------
@@ -184,14 +240,21 @@ begin
   --  register reading
   -- ---------------------------------------------------------------------------
 
+  dev0_fifo_single_read <= '1' when single_register_read = '1' and
+      register_address = RA_DEV0_BULK_DATA and dev0_fifo_empty = '0' else '0';
+
+
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
+      dev0_fifo_single_read = '1' or
       register_address_scope = DEV0_SCOPE or
       register_address_scope = DEV1_SCOPE
     ) else '0';
 
+
   REG_DATA_OUT <=
     EXT2SLV(r_led_config) when single_register_read = '1' and register_address = RA_LED_REG else
+    EXT2SLV(dev0_fifo_dout) when dev0_fifo_single_read = '1' else
 
     -- MMCM data out
     EXT2SLV(mmcm_data_out) when single_register_read = '1' and (
