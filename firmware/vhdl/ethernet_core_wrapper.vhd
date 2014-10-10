@@ -45,6 +45,8 @@ use work.axi.all;
 use work.ipv4_types.all;
 use work.arp_types.all;
 
+use work.register_config.all;
+
 --------------------------------------------------------------------------------
 -- The entity declaration for the example_design level wrapper.
 --------------------------------------------------------------------------------
@@ -98,12 +100,13 @@ entity ethernet_core_wrapper is
     REGISTER_READ_DATA      : in  std_logic_vector(31 downto 0);  -- data word for reading
     REGISTER_READ_READY     : in  std_logic;            -- register data is ready
     REGISTER_WRITE_DATA     : out std_logic_vector(31 downto 0);  -- data word for writing
-    REGISTER_DMA            : out std_logic;            -- we want to access the DMA FIFO
-    REGISTER_DMA_WAIT       : out std_logic;            -- wait a second with reading DMA, we need to do something
-    REGISTER_DMA_END        : in  std_logic;            -- the DMA reading has ended
-    REGISTER_DMA_EMPTY      : in  std_logic;            -- the DMA is empty
-    REGISTER_DMA_COUNT      : in  std_logic_vector(9 downto 0);  -- how many words are in the DMA buffer?
-    REGISTER_CLK            : in  std_logic
+
+    REGISTER_BLK_EN         : out std_logic;  -- bulk register access
+    REGISTER_BLK_RDEN       : out std_logic;  -- read enable for dev0 daq fifo (comes from eth)
+    REGISTER_BLK_DATA       : in  std_logic_vector(REG_BULK_LEN-1 downto 0);
+    REGISTER_BLK_COUNT      : in  std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0); -- fill level of fifo
+    REGISTER_BLK_EMPTY      : in  std_logic;  -- bulk fifo is empty
+    REGISTER_BLK_VALID      : in  std_logic   -- do we have valid data on the output line?
 
   );
 end ethernet_core_wrapper;
@@ -1336,18 +1339,18 @@ begin
           register_dma_is_empty <= '0';
           --register_write_data_int(17 downto 2) <= std_logic_vector( to_unsigned(3,16) );
 
-          if ( register_dma_count_int > 368 and REGISTER_DMA_COUNT > 368 ) then -- max: 368 32-bit-words per UDP
+          if ( register_dma_count_int > 368 and REGISTER_BLK_COUNT > 368 ) then -- max: 368 32-bit-words per UDP
             register_write_data_int(17 downto 2) <= std_logic_vector( to_unsigned(368,16) );
             tx_count_target <= 368*4;
-          elsif ( REGISTER_DMA_COUNT = 0 ) then -- or REGISTER_DMA_COUNT = 0 ) then
+          elsif ( REGISTER_BLK_COUNT = 0 ) then -- or REGISTER_DMA_COUNT = 0 ) then
             register_write_data_int(17 downto 2) <= (others => '0');
             tx_count_target <= 4;
             register_dma_is_empty <= '1';
-          elsif ( register_dma_count_int > REGISTER_DMA_COUNT and
-            not ( REGISTER_DMA_COUNT = 1 and REGISTER_DMA_EMPTY = '0' ) ) then  -- when the fifo is full, the counter shows 0 (which is transformed to 1)
+          elsif ( register_dma_count_int > REGISTER_BLK_COUNT and
+            not ( REGISTER_BLK_COUNT = 1 and REGISTER_BLK_EMPTY = '0' ) ) then  -- when the fifo is full, the counter shows 0 (which is transformed to 1)
             register_write_data_int(17 downto 12) <= (others => '0');
-            register_write_data_int(11 downto 2) <= REGISTER_DMA_COUNT;
-            tx_count_target <= to_integer(unsigned(REGISTER_DMA_COUNT)) *4;
+            register_write_data_int(11 downto 2) <= REGISTER_BLK_COUNT(9 downto 0);
+            tx_count_target <= to_integer(unsigned(REGISTER_BLK_COUNT)) *4;
           else
             register_write_data_int(17 downto 2) <= register_dma_count_int;
             tx_count_target <= to_integer(unsigned(register_dma_count_int)) *4;
@@ -1378,16 +1381,16 @@ begin
 
   -- Make a copy of the register_access_int signal to prevent strange
   -- behavior between the two clock domains
-  register_access_clock_transfer : process ( REGISTER_CLK )
+  register_access_clock_transfer : process ( GTX_CLK_BUFG )
   begin
-    if rising_edge( REGISTER_CLK ) then
+    if rising_edge( GTX_CLK_BUFG ) then
       register_access_clk_sync <= register_access_int;
     end if;
   end process;
 
-  register_output : process ( REGISTER_CLK ) --, register_access_int, register_dma_int )
+  register_output : process ( GTX_CLK_BUFG ) --, register_access_int, register_dma_int )
   begin
-    if rising_edge( REGISTER_CLK ) then
+    if rising_edge( GTX_CLK_BUFG ) then
       register_access_delayed <= register_access_clk_sync;
       register_read_ready_delayed <= REGISTER_READ_READY;
       -- register_dma_empty_delayed <= REGISTER_DMA_EMPTY;
@@ -1397,7 +1400,7 @@ begin
         REGISTER_ADDR <= register_addr_int;
         REGISTER_WRITE_DATA <= register_write_data_int;
         REGISTER_WRITE_OR_READ <= register_write_or_read_int;
-        REGISTER_DMA <= register_dma_int;
+        REGISTER_BLK_EN <= register_dma_int;
 
         -- Without this wait the reading of the register value
         -- would happen just on the edge. Sometimes this leads
@@ -1437,7 +1440,7 @@ begin
           REGISTER_ADDR <= (others => '0');
           REGISTER_WRITE_OR_READ <= '0';
           REGISTER_WRITE_DATA <= (others => '0');
-          REGISTER_DMA <= '0';
+          REGISTER_BLK_EN <= '0';
           register_read_data_int <= (others => '0');
         -- end if;
         REGISTER_ACCESS <= '0';
@@ -1456,45 +1459,45 @@ begin
   ------------------------------------------------------------------------------
   -- Instantiate the FIFO for buffering the DMA block transfer data
   ------------------------------------------------------------------------------
-  udp_block_data_fifo : entity work.udp_block_data_fifo
-  PORT MAP (
-    RST     => fifo_dma_reset,
-    WR_CLK  => REGISTER_CLK,
-    RD_CLK  => GTX_CLK_BUFG,
-    DIN     => fifo_dma_din,
-    WR_EN   => fifo_dma_write_en,
-    RD_EN   => fifo_dma_read_en,
-    DOUT    => fifo_dma_dout,
-    FULL    => fifo_dma_full,
-    EMPTY   => fifo_dma_empty
-  );
+  -- udp_block_data_fifo : entity work.udp_block_data_fifo
+  -- PORT MAP (
+  --   RST     => fifo_dma_reset,
+  --   WR_CLK  => GTX_CLK_BUFG,
+  --   RD_CLK  => GTX_CLK_BUFG,
+  --   DIN     => fifo_dma_din,
+  --   WR_EN   => fifo_dma_write_en,
+  --   RD_EN   => fifo_dma_read_en,
+  --   DOUT    => fifo_dma_dout,
+  --   FULL    => fifo_dma_full,
+  --   EMPTY   => fifo_dma_empty
+  -- );
 
-  -- get the DMA block data and transfer it to the UDP block data fifo
-  get_dma_data : process (
-    glbl_rst, reset_dma_access, REGISTER_READ_READY, set_what_to_do,
-    fifo_dma_transfer_end, REGISTER_DMA_END, REGISTER_DMA_EMPTY, fifo_dma_full )
-  begin
-    fifo_dma_reset <= reset_dma_access or glbl_rst;
-    fifo_dma_din <= REGISTER_READ_DATA;
-    REGISTER_DMA_WAIT <= fifo_dma_full;-- or finish_get_dma_data;
+  -- -- get the DMA block data and transfer it to the UDP block data fifo
+  -- get_dma_data : process (
+  --   glbl_rst, reset_dma_access, REGISTER_READ_READY, set_what_to_do,
+  --   fifo_dma_transfer_end, REGISTER_DMA_END, REGISTER_DMA_EMPTY, fifo_dma_full )
+  -- begin
+  --   fifo_dma_reset <= reset_dma_access or glbl_rst;
+  --   fifo_dma_din <= REGISTER_READ_DATA;
+  --   REGISTER_DMA_WAIT <= fifo_dma_full;-- or finish_get_dma_data;
 
-    fifo_dma_write_en <= register_dma_int and REGISTER_READ_READY and not finish_get_dma_data;
-        -- (
-        --   (REGISTER_READ_READY and not finish_get_dma_data) or
-        --   (REGISTER_DMA_EMPTY and register_read_ready_delayed)
-        -- );
+  --   fifo_dma_write_en <= register_dma_int and REGISTER_READ_READY and not finish_get_dma_data;
+  --       -- (
+  --       --   (REGISTER_READ_READY and not finish_get_dma_data) or
+  --       --   (REGISTER_DMA_EMPTY and register_read_ready_delayed)
+  --       -- );
 
-    fifo_dma_transfer_end <= REGISTER_DMA_END or fifo_dma_full; --REGISTER_DMA_EMPTY or fifo_dma_full;
+  --   fifo_dma_transfer_end <= REGISTER_DMA_END or fifo_dma_full; --REGISTER_DMA_EMPTY or fifo_dma_full;
 
-    finish_get_dma_data <= ( finish_get_dma_data or fifo_dma_transfer_end ) and not set_what_to_do;
+  --   finish_get_dma_data <= ( finish_get_dma_data or fifo_dma_transfer_end ) and not set_what_to_do;
 
-    -- if ( fifo_dma_transfer_end = '1' ) then
-    --   finish_get_dma_data <= '1';
-    -- elsif ( fifo_dma_reset = '1' ) then
-    --   finish_get_dma_data <= '0';
-    -- -- else
-    -- --   finish_get_dma_data <= finish_get_dma_data;
-    -- end if;
-  end process;
+  --   -- if ( fifo_dma_transfer_end = '1' ) then
+  --   --   finish_get_dma_data <= '1';
+  --   -- elsif ( fifo_dma_reset = '1' ) then
+  --   --   finish_get_dma_data <= '0';
+  --   -- -- else
+  --   -- --   finish_get_dma_data <= finish_get_dma_data;
+  --   -- end if;
+  -- end process;
 
 end Behavorial;
