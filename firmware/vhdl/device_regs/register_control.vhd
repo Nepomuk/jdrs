@@ -40,11 +40,14 @@ entity RegisterControl is
 
     -- bulk transfer
     REG_BLK_EN      : in  std_logic;  -- bulk register access
+    REG_BLK_RDEN    : in  std_logic;  -- read enable for dev0 daq fifo (comes from eth)
+    REG_BLK_DOUT    : out std_logic_vector(REG_BULK_LEN-1 downto 0);        -- to eth
+    REG_BLK_COUNT   : out std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0); -- fill level of fifo
+    REG_BLK_EMPTY   : out std_logic;  -- the selected daq fifo is empty
+    REG_BLK_VALID   : out std_logic;  -- do we have valid data on the output line?
+
     BLK_DEV0_WREN   : in  std_logic;  -- write enable for dev0 daq fifo (comes from dev)
-    BLK_DEV0_RDEN   : in  std_logic;  -- read enable for dev0 daq fifo (comes from eth)
-    BLK_DEV0_DIN    : in  std_logic_vector(REG_BULK_LEN-1 downto 0);  -- from dev
-    BLK_DEV0_DOUT   : out std_logic_vector(REG_BULK_LEN-1 downto 0);  -- to eth
-    BLK_DEV0_COUNT  : out std_logic_vector(15 downto 0)   -- fill level of fifo
+    BLK_DEV0_DIN    : in  std_logic_vector(REG_BULK_LEN-1 downto 0)         -- from dev
   );
 end RegisterControl;
 
@@ -97,6 +100,7 @@ architecture rtl of RegisterControl is
   signal dev0_fifo_full         : std_logic;
   signal dev0_fifo_din          : std_logic_vector(REG_BULK_LEN-1 downto 0);
   signal dev0_fifo_dout         : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal dev0_fifo_count        : std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0);
   signal dev0_fifo_single_read  : std_logic;
   signal dev0_fifo_single_read_d1 : std_logic;
 
@@ -107,8 +111,11 @@ architecture rtl of RegisterControl is
   signal r_dev0_fifo_fillType   : std_logic_vector(2 downto 0) := "001";
 
 
+  signal bulk_device_select     : integer range 0 to 1 := 0;
+  signal dev0_fifo_blk_en       : std_logic;
   signal dev0_fifo_fill_ctr     : std_logic_vector(REG_BULK_LEN-1 downto 0);
   signal dev0_fifo_fill_ctr_en  : std_logic;
+
   signal one_hertz_counter      : std_logic_vector(7 downto 0);
   signal knight_rider           : std_logic_vector(7 downto 0);
 
@@ -181,23 +188,8 @@ begin
     DOUT          => dev0_fifo_dout,
     FULL          => dev0_fifo_full,
     EMPTY         => dev0_fifo_empty,
-    RD_DATA_COUNT => BLK_DEV0_COUNT
+    RD_DATA_COUNT => dev0_fifo_count
   );
-
-  -- read from the fifo
-  dev0_fifo_single_read <= '1' when single_register_read = '1' and
-      register_address = RA_DEV0_BULK_DATA and dev0_fifo_empty = '0' else '0';
-
-  process ( CLK ) begin
-    if rising_edge( CLK ) then
-      dev0_fifo_single_read_d1 <= dev0_fifo_single_read;
-    end if;
-  end process;
-
-  dev0_fifo_rden <= (
-      (REG_BLK_EN and BLK_DEV0_RDEN) or                         -- regular bulk transfer
-      (dev0_fifo_single_read and not dev0_fifo_single_read_d1)  -- read only one word
-    ) and not dev0_fifo_empty;
 
 
   -- fill the fifo
@@ -216,6 +208,38 @@ begin
     Q   => dev0_fifo_fill_ctr
   );
 
+
+  -- read from the fifo
+  dev0_fifo_single_read <= '1' when single_register_read = '1' and
+      register_address = RA_DEV0_BULK_DATA and dev0_fifo_empty = '0' else '0';
+
+  process ( CLK ) begin
+    if rising_edge( CLK ) then
+      dev0_fifo_single_read_d1 <= dev0_fifo_single_read;
+    end if;
+  end process;
+
+  dev0_fifo_blk_en <= '1' when REG_BLK_EN = '1' and bulk_device_select = 0 else '0';
+
+  dev0_fifo_rden <= (
+      (dev0_fifo_blk_en and REG_BLK_RDEN) or                    -- regular bulk transfer
+      (dev0_fifo_single_read and not dev0_fifo_single_read_d1)  -- read only one word
+    ) and not dev0_fifo_empty;
+
+
+  -- bulk output multiplexer
+  REG_BLK_DOUT <= dev0_fifo_dout when dev0_fifo_blk_en = '1' else
+    (others => '0');
+
+  REG_BLK_COUNT <= dev0_fifo_count when dev0_fifo_blk_en = '1' else
+    (others => '0');
+
+  REG_BLK_EMPTY <= dev0_fifo_empty when dev0_fifo_blk_en = '1' else
+    '0';
+
+  -- TODO: meaningful valid signal
+  REG_BLK_VALID <= '1' when dev0_fifo_blk_en = '1' else
+    '0';
 
   -- ---------------------------------------------------------------------------
   --  internal register effects

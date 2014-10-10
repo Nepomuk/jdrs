@@ -120,6 +120,13 @@ architecture Behavioral of topl is
   signal register_dma_end       : std_logic;
   signal register_dma_empty     : std_logic;
   signal register_dma_count     : std_logic_vector(17 downto 0);
+
+  signal register_blk_en        : std_logic;
+  signal register_blk_rden      : std_logic;
+  signal register_blk_data      : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal register_blk_count     : std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0);
+  signal register_blk_empty     : std_logic;
+  signal register_blk_valid     : std_logic;
   -- signal register_dt_ack       : std_logic;
 
   -- generic device registers
@@ -356,13 +363,13 @@ begin
     REGISTER_WRITE_OR_READ  => register_write_or_read,
     REGISTER_READ_DATA      => register_read_data,
     REGISTER_WRITE_DATA     => register_write_data,
-    REGISTER_DMA            => register_dma,
-    REGISTER_DMA_WAIT       => register_dma_wait,
-    REGISTER_DMA_END        => register_dma_end,
-    REGISTER_DMA_EMPTY      => register_dma_empty,
-    REGISTER_DMA_COUNT      => register_dma_count,
-    REGISTER_CLK            => gtx_clk_bufg --sregs_clk
 
+    REGISTER_BLK_EN         => register_blk_en,
+    REGISTER_BLK_RDEN       => register_blk_rden,
+    REGISTER_BLK_DATA       => register_blk_data,
+    REGISTER_BLK_COUNT      => register_blk_count,
+    REGISTER_BLK_EMPTY      => register_blk_empty,
+    REGISTER_BLK_VALID      => register_blk_valid
   );
 
 
@@ -481,12 +488,14 @@ begin
     REG_DEV1_STATUS => reg_dev1_status,
 
     -- bulk transfer
-    REG_BLK_EN      => register_dma,
+    REG_BLK_EN      => register_blk_en,
+    REG_BLK_RDEN    => register_blk_rden,
+    REG_BLK_DOUT    => register_blk_data,
+    REG_BLK_COUNT   => register_blk_count,
+    REG_BLK_EMPTY   => register_blk_empty,
+    REG_BLK_VALID   => register_blk_valid,
     BLK_DEV0_WREN   => '0',
-    BLK_DEV0_RDEN   => '0',
-    BLK_DEV0_DIN    => (others => '0'),
-    BLK_DEV0_DOUT   => open,
-    BLK_DEV0_COUNT  => open
+    BLK_DEV0_DIN    => (others => '0')
   );
 
 
