@@ -392,7 +392,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal rx_pkg_ctr_int       : std_logic_vector(31 downto 0);  -- how many UDP packages were received?
   signal tx_count_target      : integer range 0 to 1500 := 0;  -- how many bytes should we send back?
   constant timeout_for_waiting  : integer := 20;  -- how many cycles should we wait until sending back a timeout?
-  constant waiting_for_write    : integer := 100;  -- how many cycles should we wait for the writing process?
+  constant waiting_for_write    : integer := 100; -- how many cycles should we wait for the writing process?
   signal tx_hdr               : udp_tx_header_type;
   signal tx_start_reg         : std_logic;
   signal tx_started_reg       : std_logic;
@@ -434,26 +434,20 @@ architecture Behavorial of ethernet_core_wrapper is
   signal set_register_read_dma_cnt2 : std_logic;
   signal set_register_dma_count     : std_logic;
   signal set_fifo_dma_read_next     : std_logic;
-  --signal set_register_read_data     : std_logic;
 
   -- register handling
   signal register_access_int         : std_logic := '0';
-  signal register_access_clk_sync    : std_logic := '0';
   signal register_access_delayed     : std_logic := '0';
-  -- signal register_access_delayed_2   : std_logic;
   signal register_read_ready_delayed : std_logic;
-  -- signal register_dma_empty_delayed  : std_logic;
   signal register_write_or_read_int  : std_logic; -- write: '1'  read: '0'
   signal register_addr_int           : std_logic_vector(15 downto 0);
   signal register_write_data_int     : std_logic_vector(31 downto 0);
   signal register_read_data_int      : std_logic_vector(31 downto 0);
-  --signal wait_with_register_access   : std_logic;
 
   -- dma block fifo
   signal register_dma_count_int   : std_logic_vector(15 downto 0);
   signal register_dma_int         : std_logic := '0';
   signal register_dma_is_empty    : std_logic;
-  -- signal register_dma_access_init : std_logic;
   signal fifo_dma_reset           : std_logic;
   signal fifo_dma_din             : std_logic_vector(31 downto 0);
   signal fifo_dma_dout            : std_logic_vector(31 downto 0);
@@ -899,7 +893,6 @@ begin
     set_register_dma_count <= '0';
     set_register_read_dma_cnt1 <= '0';
     set_register_read_dma_cnt2 <= '0';
-    -- set_register_read_data <= '0';
     set_fifo_dma_read_next <= '0';
     reset_register_access <= '0';
     reset_dma_access <= '0';
@@ -990,22 +983,11 @@ begin
             -- came with the request. Assume, that the address 0x00 is requested.
             set_register_access <= '1';
             set_register_addr_zero <= '1';
-          -- elsif ( REGISTER_READ_READY = '1' ) then
-          --  --set_register_read_data <= '1';
-          --  continue_to_send_data := '1';
           end if;
           continue_to_send_data := '1';
 
         elsif ( what_to_do = do_write_register ) then
-          -- if ( waiting_for_write_count = waiting_for_write-1 ) then
-          --  set_timeout_for_waiting_exeeded <= '1';
-          --  continue_to_send_data := '1';
-          -- elsif ( REGISTER_READ_READY = '1' ) then
-            continue_to_send_data := '1';
-            -- unset_register_access <= '1';
-          -- else
-          --  set_waiting_for_write_count <= INCR;
-          -- end if;
+          continue_to_send_data := '1';
 
         elsif ( what_to_do = do_read_dma ) then
           if ( register_access_int = '0' ) then
@@ -1215,7 +1197,6 @@ begin
         register_addr_int <= (others => '0');
         register_write_or_read_int <= '0';
         register_write_data_int <= (others => '0');
-        -- register_read_data_int <= (others => '0');
         register_dma_int <= '0';
         register_dma_count_int <= (others => '0');
         register_dma_is_empty <= '0';
@@ -1331,7 +1312,6 @@ begin
         if ( set_register_read_dma_cnt2 = '1' ) then register_dma_count_int(7 downto 0)   <= udp_rx_int.data.data_in; end if;
         if ( set_register_access = '1' )    then register_access_int <= '1'; end if;
         if ( unset_register_access = '1' )    then register_access_int <= '0'; end if;
-        --if ( set_register_read_data = '1' )   then register_read_data_int <= REGISTER_READ_DATA; end if;
 
         if ( set_register_dma_count = '1' ) then
           register_write_data_int(31 downto 18) <= (others => '0');
@@ -1364,7 +1344,6 @@ begin
           register_addr_int <= (others => '0');
           register_write_or_read_int <= '0';
           register_write_data_int <= (others => '0');
-          -- register_read_data_int  <= (others => '0');
         end if;
 
         if ( reset_dma_access = '1' ) then
@@ -1375,28 +1354,16 @@ begin
 
       end if;
     end if;
-
-
   end process;
 
-  -- Make a copy of the register_access_int signal to prevent strange
-  -- behavior between the two clock domains
-  register_access_clock_transfer : process ( GTX_CLK_BUFG )
-  begin
-    if rising_edge( GTX_CLK_BUFG ) then
-      register_access_clk_sync <= register_access_int;
-    end if;
-  end process;
 
   register_output : process ( GTX_CLK_BUFG ) --, register_access_int, register_dma_int )
   begin
     if rising_edge( GTX_CLK_BUFG ) then
-      register_access_delayed <= register_access_clk_sync;
+      register_access_delayed <= register_access_int;
       register_read_ready_delayed <= REGISTER_READ_READY;
-      -- register_dma_empty_delayed <= REGISTER_DMA_EMPTY;
-      --register_access_delayed_2 <= register_access_delayed;
 
-      if ( register_access_clk_sync = '1' ) then
+      if ( register_access_int = '1' ) then
         REGISTER_ADDR <= register_addr_int;
         REGISTER_WRITE_DATA <= register_write_data_int;
         REGISTER_WRITE_OR_READ <= register_write_or_read_int;
@@ -1405,99 +1372,21 @@ begin
         -- Without this wait the reading of the register value
         -- would happen just on the edge. Sometimes this leads
         -- to wrong values.
-        -- Furthermore we do not set REGISTER_ACCESS with DMA mode
-        REGISTER_ACCESS <= not register_dma_int and register_access_clk_sync and not register_access_delayed;
-
-        --if ( register_dma_int = '0' ) then
-
-          -- if ( wait_with_register_access = '0' ) then
-          --   wait_with_register_access <= '1';
-          -- else
-          --   REGISTER_ACCESS <= '1';
-          -- end if;
-
-        -- We also have to do something about the DMA access.
-        -- The access signal only needs to be active for
-        -- one clock cycle.
-        --else
-        --  REGISTER_ACCESS <= '0';
-          -- if ( register_dma_access_init = '1' ) then
-          --   REGISTER_ACCESS <= '0';
-          -- else
-          --   REGISTER_ACCESS <= '1';
-          --   register_dma_access_init <= '1';
-          -- end if;
-        --end if;
+        -- Furthermore we do not set REGISTER_ACCESS with BULK mode
+        REGISTER_ACCESS <= not register_dma_int and register_access_int and not register_access_delayed;
 
         if ( REGISTER_READ_READY = '1' and register_read_ready_delayed = '0' ) then
           register_read_data_int <= REGISTER_READ_DATA;
         end if;
       else
-        -- if ( wait_with_register_access = '1' ) then
-        --  wait_with_register_access <= '0';
-        -- else
-        -- if ( register_access_delayed = '0' ) then
-          REGISTER_ADDR <= (others => '0');
-          REGISTER_WRITE_OR_READ <= '0';
-          REGISTER_WRITE_DATA <= (others => '0');
-          REGISTER_BLK_EN <= '0';
-          register_read_data_int <= (others => '0');
-        -- end if;
+        REGISTER_ADDR <= (others => '0');
+        REGISTER_WRITE_OR_READ <= '0';
+        REGISTER_WRITE_DATA <= (others => '0');
+        REGISTER_BLK_EN <= '0';
+        register_read_data_int <= (others => '0');
         REGISTER_ACCESS <= '0';
-        -- register_dma_access_init <= '0';
       end if;
     end if;
-
-    -- if ( register_access_int = '1' and register_dma_int = '1' and finish_get_dma_data = '1' ) then
-    --   REGISTER_ACCESS <= '0';
-    --   --REGISTER_DMA <= '0';
-    --   --REGISTER_WRITE_DATA(31) <= '1';
-    -- end if;
   end process;
-
-
-  ------------------------------------------------------------------------------
-  -- Instantiate the FIFO for buffering the DMA block transfer data
-  ------------------------------------------------------------------------------
-  -- udp_block_data_fifo : entity work.udp_block_data_fifo
-  -- PORT MAP (
-  --   RST     => fifo_dma_reset,
-  --   WR_CLK  => GTX_CLK_BUFG,
-  --   RD_CLK  => GTX_CLK_BUFG,
-  --   DIN     => fifo_dma_din,
-  --   WR_EN   => fifo_dma_write_en,
-  --   RD_EN   => fifo_dma_read_en,
-  --   DOUT    => fifo_dma_dout,
-  --   FULL    => fifo_dma_full,
-  --   EMPTY   => fifo_dma_empty
-  -- );
-
-  -- -- get the DMA block data and transfer it to the UDP block data fifo
-  -- get_dma_data : process (
-  --   glbl_rst, reset_dma_access, REGISTER_READ_READY, set_what_to_do,
-  --   fifo_dma_transfer_end, REGISTER_DMA_END, REGISTER_DMA_EMPTY, fifo_dma_full )
-  -- begin
-  --   fifo_dma_reset <= reset_dma_access or glbl_rst;
-  --   fifo_dma_din <= REGISTER_READ_DATA;
-  --   REGISTER_DMA_WAIT <= fifo_dma_full;-- or finish_get_dma_data;
-
-  --   fifo_dma_write_en <= register_dma_int and REGISTER_READ_READY and not finish_get_dma_data;
-  --       -- (
-  --       --   (REGISTER_READ_READY and not finish_get_dma_data) or
-  --       --   (REGISTER_DMA_EMPTY and register_read_ready_delayed)
-  --       -- );
-
-  --   fifo_dma_transfer_end <= REGISTER_DMA_END or fifo_dma_full; --REGISTER_DMA_EMPTY or fifo_dma_full;
-
-  --   finish_get_dma_data <= ( finish_get_dma_data or fifo_dma_transfer_end ) and not set_what_to_do;
-
-  --   -- if ( fifo_dma_transfer_end = '1' ) then
-  --   --   finish_get_dma_data <= '1';
-  --   -- elsif ( fifo_dma_reset = '1' ) then
-  --   --   finish_get_dma_data <= '0';
-  --   -- -- else
-  --   -- --   finish_get_dma_data <= finish_get_dma_data;
-  --   -- end if;
-  -- end process;
 
 end Behavorial;
