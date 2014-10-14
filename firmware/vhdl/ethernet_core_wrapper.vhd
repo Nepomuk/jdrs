@@ -387,6 +387,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal state                : state_type;
   signal rx_count             : unsigned (7 downto 0) := x"00";
   signal tx_count             : unsigned (15 downto 0) := x"0000";
+  signal tx_blk_byte_count    : unsigned (3 downto 0) := x"0";
   signal waiting_for_write_count    : unsigned (11 downto 0) := x"000";
   signal timeout_for_waiting_count  : unsigned (7 downto 0) := x"00";
   signal rx_pkg_ctr_int       : std_logic_vector(31 downto 0);  -- how many UDP packages were received?
@@ -403,6 +404,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal set_state            : std_logic;
   signal set_rx_count         : count_mode_type;
   signal set_tx_count         : count_mode_type;
+  signal set_tx_blk_byte_count          : count_mode_type;
   signal set_timeout_for_waiting_count  : count_mode_type;
   signal set_waiting_for_write_count    : count_mode_type;
   signal set_pkg_count        : count_mode_type;
@@ -445,6 +447,8 @@ architecture Behavorial of ethernet_core_wrapper is
   signal register_read_data_int      : std_logic_vector(31 downto 0);
 
   -- bulk register read
+  constant UDP_PAYLOAD_BYTES        : integer := 1472;  -- maximum number of bytes in one IP/UDP payload
+  constant MAX_BLK_WORDS_PER_PKG    : integer := (UDP_PAYLOAD_BYTES-4) / REG_BULK_LEN_BYTES; -- 4 bytes needed for information
   signal bulk_mode_int              : std_logic;  -- bulk read mode
   signal bulk_get_next_word         : std_logic;  -- get the next word from fifo
   signal bulk_read_cnt_req          : std_logic_vector(15 downto 0);  -- # requested words from DAQ fifo
@@ -861,7 +865,9 @@ begin
     -- registers
     register_access_int, bulk_mode_int, REGISTER_BLK_EMPTY, bulk_read_target_set
     )
-    variable continue_to_send_data : std_logic;
+    variable continue_to_send_data  : std_logic;
+    variable blk_data_start_bit     : integer range 0 to 2**4;
+    variable blk_data_stop_bit      : integer range 0 to 2**4;
   begin
 
     -- set output_followers
@@ -874,6 +880,7 @@ begin
     set_state <= '0';
     set_rx_count <= HOLD;
     set_tx_count <= HOLD;
+    set_tx_blk_byte_count <= HOLD;
     set_waiting_for_write_count <= HOLD;
     set_timeout_for_waiting_count <= HOLD;
     set_hdr <= '0';
@@ -919,6 +926,7 @@ begin
           set_tx_fin <= CLR;
           set_rx_count <= RST;
           set_tx_count <= RST;
+          set_tx_blk_byte_count <= RST;
           set_waiting_for_write_count <= RST;
           set_timeout_for_waiting_count <= RST;
           if udp_rx_int.data.data_in_last = '1' then
@@ -1099,28 +1107,25 @@ begin
               when do_bulk_read =>
                 if tx_count = 0 then
                   udp_tx_int.data.data_out <= do_bulk_read;
+                elsif tx_count = 2 then
+                  set_bulk_read_next <= '1';
                 elsif tx_count > 3 then
-                  case tx_count(1 downto 0) is
-                    when "00" =>
-                      udp_tx_int.data.data_out <= REGISTER_BLK_DATA(31 downto 24);
+                  blk_data_start_bit := (REG_BULK_LEN_BYTES - to_integer(tx_blk_byte_count)    ) * 8 - 1;
+                  blk_data_stop_bit  := (REG_BULK_LEN_BYTES - to_integer(tx_blk_byte_count) - 1) * 8;
+                  udp_tx_int.data.data_out <= REGISTER_BLK_DATA(blk_data_start_bit downto blk_data_stop_bit);
 
-                    when "01" =>
-                      udp_tx_int.data.data_out <= REGISTER_BLK_DATA(23 downto 16);
+                  -- it takes two clock cycles for the read enable signal to propagate to the register control
+                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-2 and
+                       tx_count < tx_count_target-2 and REGISTER_BLK_EMPTY = '0' ) then
+                    set_bulk_read_next <= '1';
+                  end if;
 
-                      -- it takes two clock cycles to get a new word from the fifo
-                      if ( tx_count < tx_count_target-2 and REGISTER_BLK_EMPTY = '0' ) then
-                        set_bulk_read_next <= '1';
-                      end if;
-
-                    when "10" =>
-                      udp_tx_int.data.data_out <= REGISTER_BLK_DATA(15 downto 8);
-
-                    when "11" =>
-                      udp_tx_int.data.data_out <= REGISTER_BLK_DATA(7 downto 0);
-
-                    when others =>
-                      udp_tx_int.data.data_out <= (others => '0');
-                  end case;
+                  -- one word finished, go on to the next one
+                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-1 ) then
+                    set_tx_blk_byte_count <= RST;
+                  else
+                    set_tx_blk_byte_count <= INCR;
+                  end if;
                 else
                   udp_tx_int.data.data_out <= (others => '0');
                 end if;
@@ -1192,6 +1197,7 @@ begin
         state <= IDLE;
         rx_count <= x"00";
         tx_count <= x"0000";
+        tx_blk_byte_count <= x"0";
         waiting_for_write_count <= x"000";
         timeout_for_waiting_count <= x"00";
         rx_pkg_ctr_int <= x"00000000";
@@ -1232,6 +1238,11 @@ begin
           when RST =>     tx_count <= x"0000";
           when INCR =>    tx_count <= tx_count + 1;
           when HOLD =>    tx_count <= tx_count;
+        end case;
+        case set_tx_blk_byte_count is
+          when RST =>     tx_blk_byte_count <= x"0";
+          when INCR =>    tx_blk_byte_count <= tx_blk_byte_count + 1;
+          when HOLD =>    tx_blk_byte_count <= tx_blk_byte_count;
         end case;
         case set_waiting_for_write_count is
           when RST =>     waiting_for_write_count <= x"000";
@@ -1331,12 +1342,11 @@ begin
           bulk_fifo     := to_integer(unsigned(REGISTER_BLK_COUNT));
 
           -- determine the number we should/can deliver
-          if ( bulk_request > 367 and bulk_fifo > 367 ) then -- max: 367 32-bit-words per UDP (make dynamic!)
-            bulk_read_target_tmp := 367;
+          if ( bulk_request > MAX_BLK_WORDS_PER_PKG and bulk_fifo > MAX_BLK_WORDS_PER_PKG ) then
+            bulk_read_target_tmp := MAX_BLK_WORDS_PER_PKG;
           elsif ( bulk_fifo = 0 ) then
             bulk_read_target_tmp := 0;
           elsif ( bulk_request > bulk_fifo ) then
-            --not ( bulk_fifo = 1 and REGISTER_BLK_EMPTY = '0' ) ) then  -- when the fifo is full, the counter shows 0 (which is transformed to 1)
             bulk_read_target_tmp := bulk_fifo;
           else
             bulk_read_target_tmp := bulk_request;
@@ -1347,7 +1357,7 @@ begin
           tx_count_target <= (bulk_read_target_tmp+1)*4;
         end if;
 
-        bulk_get_next_word <= set_bulk_read_next or set_bulk_access;
+        bulk_get_next_word <= set_bulk_read_next;
 
 
         if ( reset_register_access = '1' ) then
