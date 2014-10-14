@@ -108,7 +108,7 @@ architecture rtl of RegisterControl is
   signal r_led_config           : std_logic_vector(4 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
   signal r_dev1_config          : reg_devX_config_type;
-  signal r_dev0_fifo_fillType   : std_logic_vector(2 downto 0) := "001";
+  signal r_dev0_fifo_fillType   : std_logic_vector(2 downto 0);
 
 
   signal bulk_device_select     : integer range 0 to 1 := 0;
@@ -290,6 +290,9 @@ begin
           when RA_LED_REG =>
             r_led_config <= REG_DATA(r_led_config'range);
 
+          when RA_DEV0_BULK_DATA_FILL =>
+            r_dev0_fifo_fillType <= REG_DATA(r_dev0_fifo_fillType'range);
+
           when others =>
         end case;
       end if;
@@ -306,6 +309,7 @@ begin
 
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
+      register_address = RA_DEV0_BULK_DATA_FILL or
       dev0_fifo_single_read = '1' or
       register_address_scope = DEV0_SCOPE or
       register_address_scope = DEV1_SCOPE
@@ -313,8 +317,9 @@ begin
 
 
   REG_DATA_OUT <=
-    EXT2SLV(r_led_config) when single_register_read = '1' and register_address = RA_LED_REG else
-    EXT2SLV(dev0_fifo_dout) when dev0_fifo_single_read = '1' else
+    EXT2SLV(r_led_config)         when single_register_read = '1' and register_address = RA_LED_REG else
+    EXT2SLV(r_dev0_fifo_fillType) when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_FILL else
+    EXT2SLV(dev0_fifo_dout)       when dev0_fifo_single_read = '1' else
 
     -- MMCM data out
     EXT2SLV(mmcm_data_out) when single_register_read = '1' and (

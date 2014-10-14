@@ -454,6 +454,9 @@ architecture Behavorial of ethernet_core_wrapper is
   signal bulk_read_cnt_req          : std_logic_vector(15 downto 0);  -- # requested words from DAQ fifo
   signal bulk_read_target           : integer range 0 to 2**BLK_FIFO_DEPTH_BITS-1;
   signal bulk_read_target_set       : std_logic;
+  signal bulk_data_local            : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal bulk_next_word_available   : std_logic;
+  signal bulk_get_next_word_delayed : std_logic;
 
   -- dma block fifo
   -- signal register_dma_count_int   : std_logic_vector(15 downto 0);
@@ -1107,16 +1110,14 @@ begin
               when do_bulk_read =>
                 if tx_count = 0 then
                   udp_tx_int.data.data_out <= do_bulk_read;
-                elsif tx_count = 2 then
+                elsif tx_count = 1 and REGISTER_BLK_EMPTY = '0' then
                   set_bulk_read_next <= '1';
                 elsif tx_count > 3 then
-                  blk_data_start_bit := (REG_BULK_LEN_BYTES - to_integer(tx_blk_byte_count)    ) * 8 - 1;
-                  blk_data_stop_bit  := (REG_BULK_LEN_BYTES - to_integer(tx_blk_byte_count) - 1) * 8;
-                  udp_tx_int.data.data_out <= REGISTER_BLK_DATA(blk_data_start_bit downto blk_data_stop_bit);
+                  udp_tx_int.data.data_out <= bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
 
                   -- it takes two clock cycles for the read enable signal to propagate to the register control
-                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-2 and
-                       tx_count < tx_count_target-2 and REGISTER_BLK_EMPTY = '0' ) then
+                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-3 and
+                       tx_count < tx_count_target-3 and REGISTER_BLK_EMPTY = '0' ) then
                     set_bulk_read_next <= '1';
                   end if;
 
@@ -1358,6 +1359,14 @@ begin
         end if;
 
         bulk_get_next_word <= set_bulk_read_next;
+        bulk_next_word_available <= bulk_get_next_word;
+        -- bulk_next_word_available <= bulk_get_next_word_delayed;
+        if bulk_next_word_available = '1' then
+          bulk_data_local <= REGISTER_BLK_DATA;
+        elsif udp_tx_data_out_ready_int = '1' then
+          bulk_data_local <= bulk_data_local(REG_BULK_LEN-9 downto 0) &
+                             bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
+        end if;
 
 
         if ( reset_register_access = '1' ) then
@@ -1379,38 +1388,31 @@ begin
   end process;
 
 
-  register_output : process ( GTX_CLK_BUFG ) --, register_access_int, register_dma_int )
+  process ( GTX_CLK_BUFG )
   begin
     if rising_edge( GTX_CLK_BUFG ) then
       register_access_delayed <= register_access_int;
       register_read_ready_delayed <= REGISTER_READ_READY;
 
       if ( register_access_int = '1' ) then
-        REGISTER_ADDR <= register_addr_int;
-        REGISTER_WRITE_DATA <= register_write_data_int;
-        REGISTER_WRITE_OR_READ <= register_write_or_read_int;
-        REGISTER_BLK_EN <= bulk_mode_int;
-        REGISTER_BLK_RDEN <= bulk_get_next_word;
-
-        -- Without this wait the reading of the register value
-        -- would happen just on the edge. Sometimes this leads
-        -- to wrong values.
-        -- Furthermore we do not set REGISTER_ACCESS with BULK mode
-        REGISTER_ACCESS <= not bulk_mode_int and register_access_int and not register_access_delayed;
-
         if ( REGISTER_READ_READY = '1' and register_read_ready_delayed = '0' ) then
           register_read_data_int <= REGISTER_READ_DATA;
         end if;
       else
-        REGISTER_ADDR <= (others => '0');
-        REGISTER_WRITE_OR_READ <= '0';
-        REGISTER_WRITE_DATA <= (others => '0');
-        REGISTER_BLK_EN <= '0';
-        REGISTER_BLK_RDEN <= '0';
         register_read_data_int <= (others => '0');
-        REGISTER_ACCESS <= '0';
       end if;
     end if;
   end process;
+
+  -- Without this wait the reading of the register value would happen just on
+  -- the edge. Sometimes this leads to wrong values.
+  -- Furthermore we do not set REGISTER_ACCESS with BULK mode
+  REGISTER_ACCESS <= not bulk_mode_int and register_access_int and not register_access_delayed;
+
+  REGISTER_ADDR <= register_addr_int when register_access_int = '1' else (others => '0');
+  REGISTER_WRITE_DATA <= register_write_data_int when register_access_int = '1' else (others => '0');
+  REGISTER_WRITE_OR_READ <= register_write_or_read_int and register_access_int;
+  REGISTER_BLK_EN <= bulk_mode_int and register_access_int;
+  REGISTER_BLK_RDEN <= bulk_get_next_word and register_access_int;
 
 end Behavorial;
