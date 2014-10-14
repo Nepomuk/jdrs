@@ -62,7 +62,7 @@ void MainWindow::on_pushButton_DMAread_clicked() {
 
     TMrfData DMAdata;
     _topixcrtl.readOutputBuffer(DMAdata, length);
-    ui->label_DMAwordcount->setText(QString("%1").arg(DMAdata.getNumWords()));
+    ui->label_DMAwordcount->setText(QString("%1").arg(DMAdata.getNumWords()-1));
 
     if ( DMAdata.getNumWords() > 0 ) {
         QString line;
@@ -73,7 +73,7 @@ void MainWindow::on_pushButton_DMAread_clicked() {
         else
             while ( number > 0 ) { number /= 10; digits++; }
 
-        for ( unsigned int i = 0; i < DMAdata.getNumWords(); i++ ) {
+        for ( unsigned int i = 1; i < DMAdata.getNumWords(); i++ ) {
             line = QString("%1: 0x%2").arg(i,digits,10,QLatin1Char('0')).arg((unsigned int)DMAdata.getWord(i),0,16);
             ui->textEdit_DMAoutput->append( line );
         }

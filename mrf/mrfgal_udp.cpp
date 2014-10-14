@@ -122,7 +122,7 @@ int TMrfGal_Udp::doIoctl(const int &request) const
 
 int TMrfGal_Udp::doIoctl(const int &requestType, void *arg) const
 {
-    if ( (u_int32_t)requestType != udpDataFlag::readDMA )
+    if ( (u_int32_t)requestType != udpDataFlag::bulkRead )
         return -1;
 
     // put together the request to send
@@ -143,7 +143,7 @@ int TMrfGal_Udp::doIoctl(const int &requestType, void *arg) const
     }
 
     // read the answer that we get from the board
-    if ( _readBuffer(req->memoryAddress, (req->wordcount)*4, &(req->wordcount)) != 0 ) {
+    if ( _readBuffer(req->memoryAddress, req->wordcount*4 + 4, &(req->wordcount)) != 0 ) {
         errcode = mrf_error::read_failed;
     }
 
@@ -361,8 +361,8 @@ int TMrfGal_Udp::_readBuffer(char* const dataStartAddress, u_int32_t length, u_i
     // TODO! remove this stuff! We should be directly writing to the MrfData
     // buffer for receiving data and final byte vector
     //char recvBuffer[MAX_BLOCKS_PER_UDP_PACKAGE*4] = {0};
-    if ( length > MAX_BLOCKS_PER_UDP_PACKAGE*4 )
-        length = MAX_BLOCKS_PER_UDP_PACKAGE*4;
+    if ( length > MAX_BYTES_PER_UDP_PACKAGE )
+        length = MAX_BYTES_PER_UDP_PACKAGE;
 
     if ( !deviceIsOpen() ) {
         std::cerr << "SEND failed, device not open." << std::endl;
@@ -398,7 +398,7 @@ int TMrfGal_Udp::_readBuffer(char* const dataStartAddress, u_int32_t length, u_i
         // todo: reserve memory once?
         size_t nBytesRecv = 0;
 
-        const size_t recvLength = MAX_BLOCKS_PER_UDP_PACKAGE*4;
+        const size_t recvLength = MAX_BYTES_PER_UDP_PACKAGE;
         char recv[recvLength];
 
         // receive the data from the buffer
@@ -444,7 +444,7 @@ int TMrfGal_Udp::_readBuffer(char* const dataStartAddress, u_int32_t length, u_i
 
         // if an address for the wordcount is given, set it to the read words
         if ( wordcount != 0 ) {
-            *wordcount = (nBytesRecv/4);
+            *wordcount = ((nBytesRecv-4)/4);
         }
 
         return 0;

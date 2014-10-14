@@ -21,8 +21,11 @@
 #include "sis1100_var.h"
 
 
-//! Define how many 4 byte blocks we are able to send in one UDP package
+//! Define how many bytes we are able to send in one UDP package
 #define MAX_BLOCKS_PER_UDP_PACKAGE 368
+#define MAX_BYTES_PER_UDP_PACKAGE 1472
+#define REG_SIZE 4
+#define BULK_WORD_SIZE 4
 
 
 //! Definitions of the type flag
@@ -50,7 +53,7 @@ namespace udpDataFlag {
     static const u_int32_t registerWrite	= 0x12 << 3*8;  //!< Set a register with a new value.
     static const u_int32_t pkgCountRead		= 0x13 << 3*8;  //!< Read out the package counter in the ML605.
     static const u_int32_t pkgCountReset	= 0x14 << 3*8;  //!< Reset the package counter in the ML605.
-    static const u_int32_t readDMA          = 0x21 << 3*8;  //!< Read from the DMA buffer (multiple data with one request)
+    static const u_int32_t bulkRead         = 0x21 << 3*8;  //!< Read in bulk mode from the DAQ fifo
 }
 
 //! Define a UDP request, handled by doIoctl

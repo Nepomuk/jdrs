@@ -83,8 +83,8 @@ int TMrfTal_RBUDP::readOutputBuffer(TMrfData& data, const u_int32_t& wordcount, 
 {
     if (deviceIsOpen()) {
         int words_read;
-        if (data.getNumWords() < appendat + wordcount /*+ 1*/) {
-            data.setNumWords(appendat + wordcount /*+ 1*/);
+        if (data.getNumWords() < appendat + wordcount + 1) {
+            data.setNumWords(appendat + wordcount + 1);
         }
         if (initReadout() < 0) {
             if (truncate) {
@@ -100,7 +100,7 @@ int TMrfTal_RBUDP::readOutputBuffer(TMrfData& data, const u_int32_t& wordcount, 
             return 0;
         } else {
             if (truncate) {
-                data.setNumWords(appendat + words_read /*+ 1*/);
+                data.setNumWords(appendat + words_read + 1);
             }
             //rb_errcode = 0;
             return words_read;
@@ -200,7 +200,7 @@ int TMrfTal_RBUDP::doReadout(const u_int32_t& wordcount, u_int8_t* const startad
 {
     if (deviceIsOpen()) {
         udpRequest req;
-        req.dataFlag = udpDataFlag::readDMA;
+        req.dataFlag = udpDataFlag::bulkRead;
         req.registerAddress = rb_address::ident;
         req.memoryAddress = (char*)startaddress;
         req.wordcount = wordcount;
@@ -213,7 +213,7 @@ int TMrfTal_RBUDP::doReadout(const u_int32_t& wordcount, u_int8_t* const startad
             return -1;
         }
 
-        // If the DMA buffer is empty, 0xeeeeeeee is returned. Check for that...
+        // If the DAQ buffer is empty, 0xeeeeeeee is returned. Check for that...
         if ( *(u_int32_t*)(req.memoryAddress) == 0xeeeeeeee && req.wordcount == 1 )
             req.wordcount = 0;
 
