@@ -448,7 +448,7 @@ architecture Behavorial of ethernet_core_wrapper is
 
   -- bulk register read
   constant UDP_PAYLOAD_BYTES        : integer := 1472;  -- maximum number of bytes in one IP/UDP payload
-  constant MAX_BLK_WORDS_PER_PKG    : integer := (UDP_PAYLOAD_BYTES-4) / REG_BULK_LEN_BYTES; -- 4 bytes needed for information
+  constant MAX_BLK_WORDS_PER_PKG    : integer := UDP_PAYLOAD_BYTES / REG_BULK_LEN_BYTES - 1; -- one word needed for header
   signal bulk_mode_int              : std_logic;  -- bulk read mode
   signal bulk_get_next_word         : std_logic;  -- get the next word from fifo
   signal bulk_read_cnt_req          : std_logic_vector(15 downto 0);  -- # requested words from DAQ fifo
@@ -869,8 +869,6 @@ begin
     register_access_int, bulk_mode_int, REGISTER_BLK_EMPTY, bulk_read_target_set
     )
     variable continue_to_send_data  : std_logic;
-    variable blk_data_start_bit     : integer range 0 to 2**4;
-    variable blk_data_stop_bit      : integer range 0 to 2**4;
   begin
 
     -- set output_followers
@@ -1110,12 +1108,16 @@ begin
               when do_bulk_read =>
                 if tx_count = 0 then
                   udp_tx_int.data.data_out <= do_bulk_read;
-                elsif tx_count = 1 and REGISTER_BLK_EMPTY = '0' then
+                elsif tx_count = REG_BULK_LEN_BYTES-3 and REGISTER_BLK_EMPTY = '0' then
                   set_bulk_read_next <= '1';
-                elsif tx_count > 3 then
+                elsif tx_count > REG_BULK_LEN_BYTES-1 then
+                  -- take the first 8 bits of the local bulk data buffer,
+                  -- the buffer itself is rotating the data each clock cycle
                   udp_tx_int.data.data_out <= bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
 
-                  -- it takes two clock cycles for the read enable signal to propagate to the register control
+                  -- it takes three clock cycles for the read enable signal to
+                  -- propagate to the register control and the data to arrive
+                  -- at the local buffer
                   if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-3 and
                        tx_count < tx_count_target-3 and REGISTER_BLK_EMPTY = '0' ) then
                     set_bulk_read_next <= '1';
@@ -1338,6 +1340,7 @@ begin
         if ( unset_register_access = '1' )    then register_access_int <= '0'; end if;
         if ( set_bulk_access = '1' )          then register_access_int <= '1'; bulk_mode_int <= '1'; end if;
 
+        -- how many data words will be sent back?
         if ( set_bulk_read_counter = '1' ) then
           bulk_request  := to_integer(unsigned(bulk_read_cnt_req));
           bulk_fifo     := to_integer(unsigned(REGISTER_BLK_COUNT));
@@ -1353,17 +1356,24 @@ begin
             bulk_read_target_tmp := bulk_request;
           end if;
 
-          bulk_read_target <= bulk_read_target_tmp;
+          -- information for the state machine to proceed
           bulk_read_target_set <= '1';
-          tx_count_target <= (bulk_read_target_tmp+1)*4;
+
+          -- the amount of data words to be read
+          bulk_read_target <= bulk_read_target_tmp;
+
+          -- the amount of words we'll actually send (including one header word)
+          tx_count_target <= (bulk_read_target_tmp+1)*REG_BULK_LEN_BYTES;
         end if;
 
+        -- Get the bulk data as soon as it is available and then rotate it. This
+        -- way we only need to look at the first 8 bits when sending out data.
         bulk_get_next_word <= set_bulk_read_next;
         bulk_next_word_available <= bulk_get_next_word;
-        -- bulk_next_word_available <= bulk_get_next_word_delayed;
         if bulk_next_word_available = '1' then
           bulk_data_local <= REGISTER_BLK_DATA;
         elsif udp_tx_data_out_ready_int = '1' then
+          -- rotate
           bulk_data_local <= bulk_data_local(REG_BULK_LEN-9 downto 0) &
                              bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
         end if;
