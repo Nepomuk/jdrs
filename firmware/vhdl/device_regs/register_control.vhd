@@ -238,8 +238,7 @@ begin
     '0';
 
   -- TODO: meaningful valid signal
-  REG_BLK_VALID <= '1' when dev0_fifo_blk_en = '1' else
-    '0';
+  REG_BLK_VALID <= dev0_fifo_blk_en;
 
   -- ---------------------------------------------------------------------------
   --  internal register effects
