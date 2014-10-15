@@ -22,7 +22,7 @@
 --    devices, or systems.  Use in such applications are expressly            --
 --    prohibited.                                                             --
 --                                                                            --
---    (c) Copyright 1995-2012 Xilinx, Inc.                                    --
+--    (c) Copyright 1995-2014 Xilinx, Inc.                                    --
 --    All rights reserved.                                                    --
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -80,13 +80,13 @@ END COMPONENT;
       c_has_spo => 1,
       c_has_spra => 0,
       c_has_we => 0,
-      c_mem_init_file => "no_coe_file_loaded",
+      c_mem_init_file => "drp_rom.mif",
       c_mem_type => 0,
       c_parser_type => 1,
       c_pipeline_stages => 0,
       c_qce_joined => 0,
       c_qualify_we => 0,
-      c_read_mif => 0,
+      c_read_mif => 1,
       c_reg_a_d_inputs => 0,
       c_reg_dpra_input => 0,
       c_sync_enable => 1,

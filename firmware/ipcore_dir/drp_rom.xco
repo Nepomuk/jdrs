@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 13.4
-# Date: Tue Sep 25 14:31:26 2012
+# Xilinx Core Generator version 14.2
+# Date: Tue Oct  7 14:45:23 2014
 #
 ##############################################################
 #
@@ -40,7 +40,7 @@ SELECT Distributed_Memory_Generator xilinx.com:ip:dist_mem_gen:6.3
 # END Select
 # BEGIN Parameters
 CSET ce_overrides=ce_overrides_sync_controls
-CSET coefficient_file=no_coe_file_loaded
+CSET coefficient_file=./drp_rom.coe
 CSET common_output_ce=false
 CSET common_output_clk=false
 CSET component_name=drp_rom
@@ -70,4 +70,4 @@ CSET sync_reset_qspo=false
 MISC pkg_timestamp=2011-10-15T10:45:00Z
 # END Extra information
 GENERATE
-# CRC: 7d260543
+# CRC: 4e53d2f5

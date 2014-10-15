@@ -1,4 +1,7 @@
+# build directories
 build-software*
+software.build/
+
 */*.swp
 *.swp
 *.directory

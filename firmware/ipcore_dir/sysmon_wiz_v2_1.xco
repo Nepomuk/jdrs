@@ -1,7 +1,7 @@
 ##############################################################
 #
-# Xilinx Core Generator version 13.4
-# Date: Tue Sep 25 14:31:13 2012
+# Xilinx Core Generator version 14.2
+# Date: Wed Oct  1 11:37:35 2014
 #
 ##############################################################
 #
@@ -160,7 +160,7 @@ CSET vccint_alarm_lower=0.95
 CSET vccint_alarm_upper=1.05
 # END Parameters
 # BEGIN Extra information
-MISC pkg_timestamp=2012-01-07T15:29:19Z
+MISC pkg_timestamp=2012-07-21T06:31:03Z
 # END Extra information
 GENERATE
-# CRC:  e286062
+# CRC: 940545de

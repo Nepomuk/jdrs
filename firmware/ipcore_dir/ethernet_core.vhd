@@ -1,13 +1,13 @@
 --------------------------------------------------------------------------------
--- Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+-- Copyright (c) 1995-2012 Xilinx, Inc.  All rights reserved.
 --------------------------------------------------------------------------------
 --   ____  ____
 --  /   /\/   /
 -- /___/  \  /    Vendor: Xilinx
--- \   \   \/     Version: O.87xd
+-- \   \   \/     Version: P.28xd
 --  \   \         Application: netgen
 --  /   /         Filename: ethernet_core.vhd
--- /___/   /\     Timestamp: Tue Sep 25 16:31:03 2012
+-- /___/   /\     Timestamp: Wed Oct  1 13:37:28 2014
 -- \   \  /  \ 
 --  \___\/\___\
 --             
@@ -17,7 +17,7 @@
 -- Output file	: ./tmp/_cg/ethernet_core.vhd
 -- # of Entities	: 1
 -- Design Name	: ethernet_core
--- Xilinx	: /private/goerres/xilinx_13.4/ISE_DS/ISE/
+-- Xilinx	: /private/goerres/Xilinx/14.2/ISE_DS/ISE/
 --             
 -- Purpose:    
 --     This VHDL netlist is a verification model and uses simulation 
@@ -91,13 +91,13 @@ architecture STRUCTURE of ethernet_core is
   signal NlwRenamedSig_OI_tx_collision : STD_LOGIC; 
   signal NlwRenamedSig_OI_tx_statistics_valid : STD_LOGIC; 
   signal NlwRenamedSig_OI_speed_is_10_100 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514 : STD_LOGIC; 
-  signal BU2_N64 : STD_LOGIC; 
-  signal BU2_N62 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516 : STD_LOGIC; 
+  signal BU2_N60 : STD_LOGIC; 
   signal BU2_N58 : STD_LOGIC; 
-  signal BU2_N56 : STD_LOGIC; 
   signal BU2_N53 : STD_LOGIC; 
   signal BU2_N52 : STD_LOGIC; 
+  signal BU2_N50 : STD_LOGIC; 
+  signal BU2_N49 : STD_LOGIC; 
   signal BU2_N47 : STD_LOGIC; 
   signal BU2_N46 : STD_LOGIC; 
   signal BU2_N44 : STD_LOGIC; 
@@ -115,122 +115,126 @@ architecture STRUCTURE of ethernet_core is
   signal BU2_N22 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_retransmit_tx_state_3_OR_17_o : STD_LOGIC; 
   signal BU2_N20 : STD_LOGIC; 
-  signal BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_490 : STD_LOGIC; 
-  signal BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_489 : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_rstpot_488 : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_487 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_end_rstpot_486 : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_485 : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_484 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_no_burst_rstpot_483 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_482 : STD_LOGIC; 
-  signal BU2_U0_SYNC_TX_RESET_I_R4_rstpot_481 : STD_LOGIC; 
-  signal BU2_U0_SYNC_RX_RESET_I_R4_rstpot_480 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_two_byte_tx_rstpot_479 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_valid_glue_set_478 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_ignore_packet_glue_set_477 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_early_deassert_glue_set_476 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_early_underrun_475 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_early_underrun_glue_set_474 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_burst2_473 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_burst2_glue_set_472 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_assert_glue_set_471 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_burst1_470 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_burst1_glue_set_469 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_underrun_glue_set_468 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tlast_reg_467 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tlast_reg_glue_set_466 : STD_LOGIC; 
-  signal BU2_U0_MATCH_FRAME_INT_glue_set_465 : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_464 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_ack_wire_tx_state_3_OR_29_o : STD_LOGIC; 
+  signal BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_491 : STD_LOGIC; 
+  signal BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_490 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_489 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_end_rstpot_488 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_487 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_486 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_no_burst_rstpot_485 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_484 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_two_byte_tx_rstpot_483 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_valid_glue_set_482 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_ignore_packet_glue_set_481 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_early_deassert_glue_set_480 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_early_underrun_479 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_early_underrun_glue_set_478 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_burst2_477 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_burst2_glue_set_476 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_assert_glue_set_475 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_burst1_474 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_burst1_glue_set_473 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_underrun_glue_set_472 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tlast_reg_471 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tlast_reg_glue_set_470 : STD_LOGIC; 
+  signal BU2_U0_MATCH_FRAME_INT_glue_set_469 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_tx_en1 : STD_LOGIC; 
   signal BU2_N16 : STD_LOGIC; 
-  signal BU2_U0_MATCH_FRAME_INT_461 : STD_LOGIC; 
+  signal BU2_U0_MATCH_FRAME_INT_466 : STD_LOGIC; 
   signal BU2_N14 : STD_LOGIC; 
   signal BU2_N12 : STD_LOGIC; 
   signal BU2_N10 : STD_LOGIC; 
   signal BU2_N8 : STD_LOGIC; 
   signal BU2_N6 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_end_455 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_end_460 : STD_LOGIC; 
   signal BU2_N4 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_452 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_451 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_450 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_457 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_456 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_455 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_In : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_448 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_453 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o2 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_early_deassert_446 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_445 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_force_assert_444 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_early_deassert_451 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_450 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_force_assert_449 : STD_LOGIC; 
   signal BU2_N2 : STD_LOGIC; 
   signal BU2_U0_rx_axi_shim_next_rx_state_1_rx_state_1_OR_15_o12 : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_frame_complete_441 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_frame_complete_446 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_state_3_tx_state_3_OR_37_o : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_state_3_AND_44_o : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_data_valid_two_byte_tx_OR_34_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_two_byte_tx_438 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_two_byte_tx_442 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_no_burst_435 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_ignore_packet_434 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_no_burst_439 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_ignore_packet_438 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436 : STD_LOGIC; 
+  signal BU2_U0_SYNC_TX_RESET_I_R3_PWR_21_o_MUX_108_o : STD_LOGIC; 
+  signal BU2_U0_SYNC_TX_RESET_I_R3_434 : STD_LOGIC; 
+  signal BU2_U0_SYNC_RX_RESET_I_R3_PWR_21_o_MUX_108_o : STD_LOGIC; 
+  signal BU2_U0_SYNC_RX_RESET_I_R3_432 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress_r_431 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_429 : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_428 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r2_411 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r1_410 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_er_r2_409 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_er_r1_408 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_tx_stats_byte_valid_AND_6_o : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_404 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_PWR_18_o_MUX_33_o : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_inv : STD_LOGIC; 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1 : STD_LOGIC; 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_394 : STD_LOGIC; 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_392 : STD_LOGIC; 
   signal BU2_U0_rx_axi_shim_rx_state_1_rx_enable_AND_17_o : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380 : STD_LOGIC; 
   signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_In : STD_LOGIC; 
-  signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380 : STD_LOGIC; 
+  signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378 : STD_LOGIC; 
   signal BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_In : STD_LOGIC; 
-  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_362 : STD_LOGIC; 
-  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_361 : STD_LOGIC; 
+  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_360 : STD_LOGIC; 
+  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_359 : STD_LOGIC; 
   signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_In : STD_LOGIC; 
-  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359 : STD_LOGIC; 
-  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_358 : STD_LOGIC; 
+  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357 : STD_LOGIC; 
+  signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_356 : STD_LOGIC; 
   signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_n0048 : STD_LOGIC; 
   signal BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_n0056_inv : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_ack_reg_339 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_mac_tready_reg_338 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_ack_reg_337 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_mac_tready_reg_336 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_gate_tready_336 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_gate_tready_334 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_PWR_20_o_tx_enable_MUX_106_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_0_dpot_334 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_1_dpot_333 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_2_dpot_332 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_3_dpot_331 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_4_dpot_330 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_5_dpot_329 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_6_dpot_328 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_data_7_dpot_327 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_enable_reg_326 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_0_dpot_332 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_1_dpot_331 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_2_dpot_330 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_3_dpot_329 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_4_dpot_328 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_5_dpot_327 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_6_dpot_326 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_data_7_dpot_325 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_enable_reg_324 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_29_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_322 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_321 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_320 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_319 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_28_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_70_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_PWR_20_o_equal_74_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_In : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_313 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_311 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_71_o : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_310 : STD_LOGIC; 
-  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_308 : STD_LOGIC; 
+  signal BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307 : STD_LOGIC; 
   signal BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_72_o : STD_LOGIC; 
   signal BU2_U0_RX_STATS_SHIFT_6_PWR_14_o_mux_4_OUT_0_Q : STD_LOGIC; 
   signal BU2_U0_RX_STATS_SHIFT_6_PWR_14_o_mux_4_OUT_1_Q : STD_LOGIC; 
@@ -260,11 +264,9 @@ architecture STRUCTURE of ethernet_core is
   signal BU2_U0_RX_STATS_SHIFT_6_PWR_14_o_mux_4_OUT_25_Q : STD_LOGIC; 
   signal BU2_U0_RX_STATS_SHIFT_6_PWR_14_o_mux_4_OUT_26_Q : STD_LOGIC; 
   signal BU2_U0_RX_STATS_SHIFT_6_PWR_14_o_mux_4_OUT_27_Q : STD_LOGIC; 
-  signal BU2_U0_SYNC_TX_RESET_I_R3_247 : STD_LOGIC; 
-  signal BU2_U0_SYNC_TX_RESET_I_R2_246 : STD_LOGIC; 
-  signal BU2_U0_SYNC_TX_RESET_I_R1_245 : STD_LOGIC; 
+  signal BU2_U0_SYNC_TX_RESET_I_R2_245 : STD_LOGIC; 
+  signal BU2_U0_SYNC_TX_RESET_I_R1_244 : STD_LOGIC; 
   signal BU2_U0_INT_TX_RST_ASYNCH : STD_LOGIC; 
-  signal BU2_U0_SYNC_RX_RESET_I_R3_243 : STD_LOGIC; 
   signal BU2_U0_SYNC_RX_RESET_I_R2_242 : STD_LOGIC; 
   signal BU2_U0_SYNC_RX_RESET_I_R1_241 : STD_LOGIC; 
   signal BU2_U0_INT_RX_RST_ASYNCH : STD_LOGIC; 
@@ -298,6 +300,7 @@ architecture STRUCTURE of ethernet_core is
   signal BU2_encommaalign : STD_LOGIC; 
   signal BU2_aninterrupt : STD_LOGIC; 
   signal BU2_tx_axi_clk_out : STD_LOGIC; 
+  signal BU2_N0 : STD_LOGIC; 
   signal NLW_BU2_U0_v6_emac_HOSTMIIMRDY_UNCONNECTED : STD_LOGIC; 
   signal NLW_BU2_U0_v6_emac_DCRHOSTDONEIR_UNCONNECTED : STD_LOGIC; 
   signal NLW_BU2_U0_v6_emac_EMACCLIENTRXFRAMEDROP_UNCONNECTED : STD_LOGIC; 
@@ -392,8 +395,8 @@ architecture STRUCTURE of ethernet_core is
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_hinbl_r1 : STD_LOGIC_VECTOR ( 3 downto 0 ); 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count_r : STD_LOGIC_VECTOR ( 1 downto 0 ); 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count : STD_LOGIC_VECTOR ( 1 downto 0 ); 
-  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count : STD_LOGIC_VECTOR ( 1 downto 0 ); 
   signal BU2_U0_FCSBLKGEN_fcs_blk_inst_Result : STD_LOGIC_VECTOR ( 1 downto 0 ); 
+  signal BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count : STD_LOGIC_VECTOR ( 1 downto 0 ); 
   signal BU2_U0_rx_axi_shim_rx_data_reg : STD_LOGIC_VECTOR ( 7 downto 0 ); 
   signal BU2_U0_rx_axi_shim_fsmfake1 : STD_LOGIC_VECTOR ( 0 downto 0 ); 
   signal BU2_U0_rx_axi_shim_next_rx_state : STD_LOGIC_VECTOR ( 0 downto 0 ); 
@@ -407,7 +410,6 @@ architecture STRUCTURE of ethernet_core is
   signal BU2_U0_GMII_TXD_INT : STD_LOGIC_VECTOR ( 7 downto 0 ); 
   signal BU2_U0_RX_DATA : STD_LOGIC_VECTOR ( 7 downto 0 ); 
   signal BU2_U0_tx_axi_shim_tx_data : STD_LOGIC_VECTOR ( 7 downto 0 ); 
-  signal BU2_rx_axis_filter_tuser : STD_LOGIC_VECTOR ( 0 downto 0 ); 
 begin
   tx_statistics_vector(31) <= NlwRenamedSig_OI_tx_statistics_vector(31);
   tx_statistics_vector(30) <= NlwRenamedSig_OI_tx_statistics_vector(30);
@@ -541,25 +543,25 @@ begin
     port map (
       G => N0
     );
-  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv1_INV_0 : INV
-    port map (
-      I => BU2_U0_GMII_TX_EN_INT,
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv
-    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_inv1_INV_0 : INV
     port map (
       I => BU2_U0_TX_STATS_BYTEVLD,
       O => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_inv
     );
+  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv1_INV_0 : INV
+    port map (
+      I => BU2_U0_GMII_TX_EN_INT,
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv
+    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mcount_tx_en_count_xor_0_11_INV_0 : INV
     port map (
       I => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count(0),
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(0)
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mcount_tx_byte_count_xor_0_11_INV_0 : INV
     port map (
       I => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(0),
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(0)
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_Mcount_tx_stats_bytevld_ctr_xor_0_11_INV_0 : INV
     port map (
@@ -576,91 +578,91 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(7),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_7_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_7_dpot_327
+      O => BU2_U0_tx_axi_shim_tx_data_7_dpot_325
     );
   BU2_U0_tx_axi_shim_tx_data_6_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(6),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_6_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_6_dpot_328
+      O => BU2_U0_tx_axi_shim_tx_data_6_dpot_326
     );
   BU2_U0_tx_axi_shim_tx_data_5_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(5),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_5_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_5_dpot_329
+      O => BU2_U0_tx_axi_shim_tx_data_5_dpot_327
     );
   BU2_U0_tx_axi_shim_tx_data_4_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(4),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_4_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_4_dpot_330
+      O => BU2_U0_tx_axi_shim_tx_data_4_dpot_328
     );
   BU2_U0_tx_axi_shim_tx_data_3_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(3),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_3_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_3_dpot_331
+      O => BU2_U0_tx_axi_shim_tx_data_3_dpot_329
     );
   BU2_U0_tx_axi_shim_tx_data_2_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(2),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_2_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_2_dpot_332
+      O => BU2_U0_tx_axi_shim_tx_data_2_dpot_330
     );
   BU2_U0_tx_axi_shim_tx_data_1_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(1),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_1_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_1_dpot_333
+      O => BU2_U0_tx_axi_shim_tx_data_1_dpot_331
     );
   BU2_U0_tx_axi_shim_tx_data_0_dpot : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514,
+      I0 => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516,
       I1 => BU2_U0_tx_axi_shim_tx_data(0),
       I2 => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_0_Q,
-      O => BU2_U0_tx_axi_shim_tx_data_0_dpot_334
+      O => BU2_U0_tx_axi_shim_tx_data_0_dpot_332
     );
   BU2_U0_tx_axi_shim_n0246_inv1_rstpot : LUT4
     generic map(
       INIT => X"FFFE"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
       I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
-      O => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_514
+      O => BU2_U0_tx_axi_shim_n0246_inv1_rstpot_516
     );
   BU2_U0_tx_axi_shim_ignore_packet_glue_set : LUT6
     generic map(
@@ -668,45 +670,45 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I2 => BU2_N64,
-      I3 => BU2_U0_tx_axi_shim_gate_tready_336,
-      I4 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
+      I1 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I2 => BU2_N60,
+      I3 => BU2_U0_tx_axi_shim_gate_tready_334,
+      I4 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
       I5 => tx_axis_mac_tlast,
-      O => BU2_U0_tx_axi_shim_ignore_packet_glue_set_477
+      O => BU2_U0_tx_axi_shim_ignore_packet_glue_set_481
     );
   BU2_U0_tx_axi_shim_ignore_packet_glue_set_SW1 : LUT2
     generic map(
       INIT => X"7"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
       I1 => tx_axis_mac_tuser,
-      O => BU2_N64
+      O => BU2_N60
     );
   BU2_U0_MATCH_FRAME_INT_glue_set : LUT4
     generic map(
       INIT => X"FA2A"
     )
     port map (
-      I0 => BU2_U0_MATCH_FRAME_INT_461,
+      I0 => BU2_U0_MATCH_FRAME_INT_466,
       I1 => BU2_U0_RX_BAD_FRAME,
       I2 => BU2_U0_RX_CLIENT_CE,
       I3 => BU2_U0_RX_GOOD_FRAME,
-      O => BU2_U0_MATCH_FRAME_INT_glue_set_465
+      O => BU2_U0_MATCH_FRAME_INT_glue_set_469
     );
   BU2_U0_rx_axi_shim_rx_frame_complete_rstpot : LUT6
     generic map(
       INIT => X"EEEEEEEEEEEEA2AA"
     )
     port map (
-      I0 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
+      I0 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
       I1 => BU2_U0_RX_CLIENT_CE,
-      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
-      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
+      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
+      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
       I4 => BU2_U0_RX_BAD_FRAME,
       I5 => BU2_U0_RX_GOOD_FRAME,
-      O => BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_487
+      O => BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_489
     );
   BU2_U0_tx_axi_shim_two_byte_tx_rstpot : LUT4
     generic map(
@@ -714,83 +716,32 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tlast,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319,
-      I3 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      O => BU2_U0_tx_axi_shim_two_byte_tx_rstpot_479
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317,
+      I3 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      O => BU2_U0_tx_axi_shim_two_byte_tx_rstpot_483
     );
   BU2_U0_tx_axi_shim_force_burst2_glue_set : LUT6
     generic map(
       INIT => X"FFA2A2A2A2A2A2A2"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_force_burst2_473,
-      I1 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      I2 => BU2_U0_tx_axi_shim_force_burst1_470,
-      I3 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      I4 => BU2_N62,
-      I5 => BU2_U0_tx_axi_shim_tlast_reg_467,
-      O => BU2_U0_tx_axi_shim_force_burst2_glue_set_472
+      I0 => BU2_U0_tx_axi_shim_force_burst2_477,
+      I1 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      I2 => BU2_U0_tx_axi_shim_force_burst1_474,
+      I3 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      I4 => BU2_N58,
+      I5 => BU2_U0_tx_axi_shim_tlast_reg_471,
+      O => BU2_U0_tx_axi_shim_force_burst2_glue_set_476
     );
   BU2_U0_tx_axi_shim_force_burst2_glue_set_SW0 : LUT2
     generic map(
       INIT => X"8"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313,
       I1 => tx_axis_mac_tvalid,
-      O => BU2_N62
-    );
-  BU2_U0_tx_axi_shim_early_underrun_glue_set : LUT6
-    generic map(
-      INIT => X"0040000055555555"
-    )
-    port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      I1 => BU2_U0_tx_axi_shim_gate_tready_336,
-      I2 => tx_axis_mac_tuser,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I4 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
-      I5 => BU2_N58,
-      O => BU2_U0_tx_axi_shim_early_underrun_glue_set_474
-    );
-  BU2_U0_tx_axi_shim_early_underrun_glue_set_SW0 : LUT6
-    generic map(
-      INIT => X"FFFFEF2FFFFF0F0F"
-    )
-    port map (
-      I0 => BU2_U0_TX_ACK,
-      I1 => NlwRenamedSig_OI_speed_is_10_100,
-      I2 => BU2_U0_tx_axi_shim_early_underrun_475,
-      I3 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
       O => BU2_N58
-    );
-  BU2_U0_tx_axi_shim_force_assert_glue_set : LUT6
-    generic map(
-      INIT => X"FFAAFFFA22AAF2FA"
-    )
-    port map (
-      I0 => BU2_U0_tx_axi_shim_force_assert_444,
-      I1 => BU2_U0_tx_axi_shim_tx_data_valid_186,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      I4 => BU2_N10,
-      I5 => BU2_N56,
-      O => BU2_U0_tx_axi_shim_force_assert_glue_set_471
-    );
-  BU2_U0_tx_axi_shim_force_assert_glue_set_SW0 : LUT5
-    generic map(
-      INIT => X"0EF002F0"
-    )
-    port map (
-      I0 => BU2_U0_TX_ACK,
-      I1 => NlwRenamedSig_OI_speed_is_10_100,
-      I2 => BU2_U0_tx_axi_shim_force_burst2_473,
-      I3 => BU2_U0_tx_axi_shim_force_burst1_470,
-      I4 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      O => BU2_N56
     );
   BU2_U0_tx_axi_shim_no_burst_rstpot : LUT3
     generic map(
@@ -799,28 +750,18 @@ begin
     port map (
       I0 => tx_axis_mac_tvalid,
       I1 => NlwRenamedSig_OI_tx_reset_out,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311,
-      O => BU2_U0_tx_axi_shim_no_burst_rstpot_483
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309,
+      O => BU2_U0_tx_axi_shim_no_burst_rstpot_485
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot : LUT3
     generic map(
       INIT => X"08"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
       I1 => tx_axis_mac_tvalid,
       I2 => NlwRenamedSig_OI_tx_reset_out,
-      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_482
-    );
-  BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_rstpot : LUT3
-    generic map(
-      INIT => X"F8"
-    )
-    port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_464,
-      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r2_411,
-      I2 => NlwRenamedSig_OI_tx_collision,
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_rstpot_488
+      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_484
     );
   BU2_U0_tx_axi_shim_tlast_reg_glue_set : LUT5
     generic map(
@@ -828,11 +769,11 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tlast,
-      I1 => BU2_U0_tx_axi_shim_gate_tready_336,
-      I2 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
-      I3 => BU2_U0_tx_axi_shim_tlast_reg_467,
-      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      O => BU2_U0_tx_axi_shim_tlast_reg_glue_set_466
+      I1 => BU2_U0_tx_axi_shim_gate_tready_334,
+      I2 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
+      I3 => BU2_U0_tx_axi_shim_tlast_reg_471,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_U0_tx_axi_shim_tlast_reg_glue_set_470
     );
   BU2_U0_INT_RX_STATISTICS_VALID_rstpot1 : LUT5
     generic map(
@@ -844,7 +785,7 @@ begin
       I2 => NlwRenamedSig_OI_rx_statistics_valid,
       I3 => BU2_U0_RX_STATS_SHIFT_VLD,
       I4 => NlwRenamedSig_OI_rx_statistics_vector(6),
-      O => BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_490
+      O => BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_491
     );
   BU2_U0_INT_TX_STATISTICS_VALID_rstpot1 : LUT5
     generic map(
@@ -856,19 +797,19 @@ begin
       I2 => NlwRenamedSig_OI_tx_statistics_valid,
       I3 => NlwRenamedSig_OI_tx_statistics_vector(0),
       I4 => BU2_U0_TX_STATS_SHIFT_VLD,
-      O => BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_489
+      O => BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_490
     );
   BU2_U0_tx_axi_shim_early_deassert_two_byte_tx_OR_38_o1_SW1_G : LUT6
     generic map(
-      INIT => X"AB03AA00FBF3AA00"
+      INIT => X"AB03AA00EFCFAA00"
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_TX_ACK,
-      I2 => NlwRenamedSig_OI_speed_is_10_100,
-      I3 => BU2_U0_tx_axi_shim_tlast_reg_467,
-      I4 => BU2_U0_tx_axi_shim_force_burst1_470,
-      I5 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
+      I1 => NlwRenamedSig_OI_speed_is_10_100,
+      I2 => BU2_U0_TX_ACK,
+      I3 => BU2_U0_tx_axi_shim_tlast_reg_471,
+      I4 => BU2_U0_tx_axi_shim_force_burst1_474,
+      I5 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
       O => BU2_N53
     );
   BU2_U0_tx_axi_shim_early_deassert_two_byte_tx_OR_38_o1_SW1_F : LUT3
@@ -877,29 +818,101 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_tlast_reg_467,
-      I2 => BU2_U0_tx_axi_shim_force_burst1_470,
+      I1 => BU2_U0_tx_axi_shim_tlast_reg_471,
+      I2 => BU2_U0_tx_axi_shim_force_burst1_474,
       O => BU2_N52
     );
   BU2_U0_tx_axi_shim_early_deassert_two_byte_tx_OR_38_o1_SW1 : MUXF7
     port map (
       I0 => BU2_N52,
       I1 => BU2_N53,
-      S => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      S => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_N47
+    );
+  BU2_U0_SYNC_TX_RESET_I_R3 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => tx_axi_clk,
+      D => BU2_U0_SYNC_TX_RESET_I_R2_245,
+      Q => BU2_U0_SYNC_TX_RESET_I_R3_434
+    );
+  BU2_U0_SYNC_TX_RESET_I_R4 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => tx_axi_clk,
+      D => BU2_U0_SYNC_TX_RESET_I_R3_PWR_21_o_MUX_108_o,
+      Q => NlwRenamedSig_OI_tx_reset_out
+    );
+  BU2_U0_SYNC_RX_RESET_I_R3 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => rx_axi_clk,
+      D => BU2_U0_SYNC_RX_RESET_I_R2_242,
+      Q => BU2_U0_SYNC_RX_RESET_I_R3_432
+    );
+  BU2_U0_SYNC_RX_RESET_I_R4 : FD
+    generic map(
+      INIT => '1'
+    )
+    port map (
+      C => rx_axi_clk,
+      D => BU2_U0_SYNC_RX_RESET_I_R3_PWR_21_o_MUX_108_o,
+      Q => NlwRenamedSig_OI_rx_reset_out
+    );
+  BU2_U0_tx_axi_shim_force_assert_glue_set : LUT5
+    generic map(
+      INIT => X"FFCE3B0A"
+    )
+    port map (
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
+      I2 => BU2_N10,
+      I3 => BU2_N49,
+      I4 => BU2_N50,
+      O => BU2_U0_tx_axi_shim_force_assert_glue_set_475
+    );
+  BU2_U0_tx_axi_shim_early_deassert_force_burst2_OR_36_o_SW2 : LUT5
+    generic map(
+      INIT => X"3BCEAAAA"
+    )
+    port map (
+      I0 => BU2_U0_tx_axi_shim_force_assert_449,
+      I1 => BU2_U0_tx_axi_shim_force_burst2_477,
+      I2 => BU2_U0_tx_axi_shim_tx_data_valid_186,
+      I3 => BU2_U0_tx_axi_shim_force_burst1_474,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_N50
+    );
+  BU2_U0_tx_axi_shim_early_deassert_force_burst2_OR_36_o_SW1 : LUT5
+    generic map(
+      INIT => X"2AEE2A2A"
+    )
+    port map (
+      I0 => BU2_U0_tx_axi_shim_force_assert_449,
+      I1 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      I2 => BU2_U0_tx_axi_shim_tx_data_valid_186,
+      I3 => BU2_U0_tx_axi_shim_force_burst1_474,
+      I4 => BU2_U0_tx_axi_shim_force_burst2_477,
+      O => BU2_N49
     );
   BU2_U0_tx_axi_shim_force_burst1_glue_set : LUT6
     generic map(
       INIT => X"FFFFECA0135F0000"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315,
-      I1 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I2 => BU2_U0_tx_axi_shim_two_byte_tx_438,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313,
+      I1 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I2 => BU2_U0_tx_axi_shim_two_byte_tx_442,
       I3 => BU2_U0_tx_axi_shim_tx_state_3_tx_state_3_OR_37_o,
       I4 => BU2_N46,
       I5 => BU2_N47,
-      O => BU2_U0_tx_axi_shim_force_burst1_glue_set_469
+      O => BU2_U0_tx_axi_shim_force_burst1_glue_set_473
     );
   BU2_U0_tx_axi_shim_early_deassert_two_byte_tx_OR_38_o1_SW0 : LUT5
     generic map(
@@ -908,9 +921,9 @@ begin
     port map (
       I0 => BU2_U0_TX_ACK,
       I1 => NlwRenamedSig_OI_speed_is_10_100,
-      I2 => BU2_U0_tx_axi_shim_force_burst1_470,
-      I3 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_force_burst1_474,
+      I3 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_N46
     );
   BU2_U0_tx_axi_shim_tx_underrun_glue_set : LUT6
@@ -919,20 +932,20 @@ begin
     )
     port map (
       I0 => BU2_U0_tx_axi_shim_tx_underrun_184,
-      I1 => BU2_U0_tx_axi_shim_force_end_455,
-      I2 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I1 => BU2_U0_tx_axi_shim_force_end_460,
+      I2 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I4 => BU2_N44,
       I5 => BU2_N8,
-      O => BU2_U0_tx_axi_shim_tx_underrun_glue_set_468
+      O => BU2_U0_tx_axi_shim_tx_underrun_glue_set_472
     );
   BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_ack_wire_OR_32_o_SW1 : LUT2
     generic map(
       INIT => X"D"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_early_underrun_475,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
+      I0 => BU2_U0_tx_axi_shim_early_underrun_479,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
       O => BU2_N44
     );
   BU2_U0_tx_axi_shim_Mmux_tx_data_7_tx_mac_tdata_7_mux_64_OUT81 : LUT6
@@ -942,8 +955,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(7),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(7),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_7_Q
@@ -955,8 +968,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(6),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(6),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_6_Q
@@ -968,8 +981,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(5),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(5),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_5_Q
@@ -981,8 +994,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(4),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(4),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_4_Q
@@ -994,8 +1007,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(3),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(3),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_3_Q
@@ -1007,8 +1020,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(2),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(2),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_2_Q
@@ -1020,8 +1033,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(1),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(1),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_1_Q
@@ -1033,8 +1046,8 @@ begin
     port map (
       I0 => tx_axis_mac_tdata_5(0),
       I1 => BU2_U0_tx_axi_shim_tx_data_hold(0),
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_N28,
       O => BU2_U0_tx_axi_shim_tx_data_7_tx_mac_tdata_7_mux_64_OUT_0_Q
@@ -1044,9 +1057,9 @@ begin
       INIT => X"FE"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
       O => BU2_N28
     );
   BU2_U0_tx_axi_shim_Mmux_PWR_20_o_tx_enable_MUX_106_o11 : LUT6
@@ -1055,7 +1068,7 @@ begin
     )
     port map (
       I0 => BU2_U0_TX_AXI_CLK_OUT_INT2,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
       I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2,
       I3 => BU2_N26,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
@@ -1067,8 +1080,8 @@ begin
       INIT => X"E"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      I1 => BU2_U0_tx_axi_shim_early_deassert_446,
+      I0 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      I1 => BU2_U0_tx_axi_shim_early_deassert_451,
       O => BU2_N26
     );
   BU2_U0_tx_axi_shim_force_end_rstpot : LUT6
@@ -1077,20 +1090,20 @@ begin
     )
     port map (
       I0 => NlwRenamedSig_OI_tx_retransmit,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_313,
-      I2 => BU2_U0_tx_axi_shim_force_end_455,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_311,
+      I2 => BU2_U0_tx_axi_shim_force_end_460,
       I3 => BU2_N24,
       I4 => BU2_U0_tx_axi_shim_tx_retransmit_tx_state_3_OR_17_o,
-      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
-      O => BU2_U0_tx_axi_shim_force_end_rstpot_486
+      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
+      O => BU2_U0_tx_axi_shim_force_end_rstpot_488
     );
   BU2_U0_tx_axi_shim_n02411_SW0 : LUT2
     generic map(
       INIT => X"1"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
       O => BU2_N24
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5 : LUT6
@@ -1101,7 +1114,7 @@ begin
       I0 => tx_axis_mac_tvalid,
       I1 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o2,
       I2 => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_71_o,
-      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_448,
+      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_453,
       I4 => BU2_N22,
       I5 => BU2_U0_tx_axi_shim_next_tx_state_3_PWR_20_o_equal_74_o,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o
@@ -1112,10 +1125,10 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tlast,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_321,
-      I2 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I4 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_319,
+      I2 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I4 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
       O => BU2_N22
     );
   BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot : LUT3
@@ -1124,9 +1137,9 @@ begin
     )
     port map (
       I0 => BU2_U0_RX_CLIENT_CE,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
       I2 => BU2_U0_rx_axi_shim_next_rx_state_1_rx_state_1_OR_15_o12,
-      O => BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_485
+      O => BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_487
     );
   BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot : LUT4
     generic map(
@@ -1134,10 +1147,10 @@ begin
     )
     port map (
       I0 => BU2_U0_RX_CLIENT_CE,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
-      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
+      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
       I3 => BU2_U0_rx_axi_shim_next_rx_state_1_rx_state_1_OR_15_o12,
-      O => BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_484
+      O => BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_486
     );
   BU2_U0_tx_axi_shim_early_deassert_glue_set : LUT6
     generic map(
@@ -1145,12 +1158,12 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
+      I1 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2,
       I5 => BU2_U0_tx_axi_shim_tx_data_valid_two_byte_tx_OR_34_o,
-      O => BU2_U0_tx_axi_shim_early_deassert_glue_set_476
+      O => BU2_U0_tx_axi_shim_early_deassert_glue_set_480
     );
   BU2_U0_tx_axi_shim_tx_retransmit_tx_state_3_OR_17_o1 : LUT6
     generic map(
@@ -1160,9 +1173,9 @@ begin
       I0 => NlwRenamedSig_OI_tx_retransmit,
       I1 => BU2_U0_TX_ACK,
       I2 => NlwRenamedSig_OI_speed_is_10_100,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_313,
-      I4 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_311,
+      I4 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_U0_tx_axi_shim_tx_retransmit_tx_state_3_OR_17_o
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_In1 : LUT6
@@ -1173,9 +1186,9 @@ begin
       I0 => BU2_U0_TX_ACK,
       I1 => NlwRenamedSig_OI_speed_is_10_100,
       I2 => BU2_N20,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315,
-      I4 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313,
+      I4 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_71_o
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o11_SW0 : LUT2
@@ -1187,182 +1200,163 @@ begin
       I1 => tx_axis_mac_tlast,
       O => BU2_N20
     );
+  BU2_U0_tx_axi_shim_tx_ack_wire_tx_state_3_OR_29_o1 : LUT6
+    generic map(
+      INIT => X"FFFFFFE2FFFFFF00"
+    )
+    port map (
+      I0 => BU2_U0_TX_ACK,
+      I1 => NlwRenamedSig_OI_speed_is_10_100,
+      I2 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_U0_tx_axi_shim_tx_ack_wire_tx_state_3_OR_29_o
+    );
   BU2_U0_tx_axi_shim_tx_data_valid_glue_set : LUT3
     generic map(
       INIT => X"AE"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_445,
+      I0 => BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_450,
       I1 => BU2_U0_tx_axi_shim_tx_data_valid_186,
       I2 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o,
-      O => BU2_U0_tx_axi_shim_tx_data_valid_glue_set_478
+      O => BU2_U0_tx_axi_shim_tx_data_valid_glue_set_482
+    );
+  BU2_U0_tx_axi_shim_early_underrun_glue_set : LUT3
+    generic map(
+      INIT => X"CE"
+    )
+    port map (
+      I0 => BU2_U0_tx_axi_shim_early_underrun_479,
+      I1 => BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_state_3_AND_44_o,
+      I2 => BU2_U0_tx_axi_shim_tx_ack_wire_tx_state_3_OR_29_o,
+      O => BU2_U0_tx_axi_shim_early_underrun_glue_set_478
     );
   BU2_U0_INT_RX_STATISTICS_VALID : FD
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_490,
+      D => BU2_U0_INT_RX_STATISTICS_VALID_rstpot1_491,
       Q => NlwRenamedSig_OI_rx_statistics_valid
     );
   BU2_U0_INT_TX_STATISTICS_VALID : FD
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_489,
+      D => BU2_U0_INT_TX_STATISTICS_VALID_rstpot1_490,
       Q => NlwRenamedSig_OI_tx_statistics_valid
-    );
-  BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r : FD
-    port map (
-      C => tx_axi_clk,
-      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_rstpot_488,
-      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_464
     );
   BU2_U0_rx_axi_shim_rx_frame_complete : FD
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_487,
-      Q => BU2_U0_rx_axi_shim_rx_frame_complete_441
+      D => BU2_U0_rx_axi_shim_rx_frame_complete_rstpot_489,
+      Q => BU2_U0_rx_axi_shim_rx_frame_complete_446
     );
   BU2_U0_tx_axi_shim_force_end : FD
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_force_end_rstpot_486,
-      Q => BU2_U0_tx_axi_shim_force_end_455
+      D => BU2_U0_tx_axi_shim_force_end_rstpot_488,
+      Q => BU2_U0_tx_axi_shim_force_end_460
     );
   BU2_U0_rx_axi_shim_rx_mac_tvalid : FD
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_485,
+      D => BU2_U0_rx_axi_shim_rx_mac_tvalid_rstpot_487,
       Q => rx_axis_mac_tvalid
     );
   BU2_U0_rx_axi_shim_rx_mac_tlast : FD
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_484,
+      D => BU2_U0_rx_axi_shim_rx_mac_tlast_rstpot_486,
       Q => rx_axis_mac_tlast
     );
   BU2_U0_tx_axi_shim_no_burst : FD
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_no_burst_rstpot_483,
-      Q => BU2_U0_tx_axi_shim_no_burst_435
+      D => BU2_U0_tx_axi_shim_no_burst_rstpot_485,
+      Q => BU2_U0_tx_axi_shim_no_burst_439
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd1 : FD
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_482,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432
-    );
-  BU2_U0_SYNC_TX_RESET_I_R4 : FD
-    generic map(
-      INIT => '1'
-    )
-    port map (
-      C => tx_axi_clk,
-      D => BU2_U0_SYNC_TX_RESET_I_R4_rstpot_481,
-      Q => NlwRenamedSig_OI_tx_reset_out
-    );
-  BU2_U0_SYNC_TX_RESET_I_R4_rstpot : LUT2
-    generic map(
-      INIT => X"E"
-    )
-    port map (
-      I0 => BU2_U0_SYNC_TX_RESET_I_R3_247,
-      I1 => BU2_U0_SYNC_TX_RESET_I_R2_246,
-      O => BU2_U0_SYNC_TX_RESET_I_R4_rstpot_481
-    );
-  BU2_U0_SYNC_RX_RESET_I_R4 : FD
-    generic map(
-      INIT => '1'
-    )
-    port map (
-      C => rx_axi_clk,
-      D => BU2_U0_SYNC_RX_RESET_I_R4_rstpot_480,
-      Q => NlwRenamedSig_OI_rx_reset_out
-    );
-  BU2_U0_SYNC_RX_RESET_I_R4_rstpot : LUT2
-    generic map(
-      INIT => X"E"
-    )
-    port map (
-      I0 => BU2_U0_SYNC_RX_RESET_I_R3_243,
-      I1 => BU2_U0_SYNC_RX_RESET_I_R2_242,
-      O => BU2_U0_SYNC_RX_RESET_I_R4_rstpot_480
+      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_rstpot_484,
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436
     );
   BU2_U0_tx_axi_shim_two_byte_tx : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_two_byte_tx_rstpot_479,
+      D => BU2_U0_tx_axi_shim_two_byte_tx_rstpot_483,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_two_byte_tx_438
+      Q => BU2_U0_tx_axi_shim_two_byte_tx_442
     );
   BU2_U0_tx_axi_shim_tx_data_valid : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tx_data_valid_glue_set_478,
+      D => BU2_U0_tx_axi_shim_tx_data_valid_glue_set_482,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data_valid_186
     );
   BU2_U0_tx_axi_shim_ignore_packet : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_ignore_packet_glue_set_477,
+      D => BU2_U0_tx_axi_shim_ignore_packet_glue_set_481,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_ignore_packet_434
+      Q => BU2_U0_tx_axi_shim_ignore_packet_438
     );
   BU2_U0_tx_axi_shim_early_deassert : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_early_deassert_glue_set_476,
+      D => BU2_U0_tx_axi_shim_early_deassert_glue_set_480,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_early_deassert_446
+      Q => BU2_U0_tx_axi_shim_early_deassert_451
     );
   BU2_U0_tx_axi_shim_early_underrun : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_early_underrun_glue_set_474,
+      D => BU2_U0_tx_axi_shim_early_underrun_glue_set_478,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_early_underrun_475
+      Q => BU2_U0_tx_axi_shim_early_underrun_479
     );
   BU2_U0_tx_axi_shim_force_burst2 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_force_burst2_glue_set_472,
+      D => BU2_U0_tx_axi_shim_force_burst2_glue_set_476,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_force_burst2_473
+      Q => BU2_U0_tx_axi_shim_force_burst2_477
     );
   BU2_U0_tx_axi_shim_force_assert : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_force_assert_glue_set_471,
+      D => BU2_U0_tx_axi_shim_force_assert_glue_set_475,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_force_assert_444
+      Q => BU2_U0_tx_axi_shim_force_assert_449
     );
   BU2_U0_tx_axi_shim_force_burst1 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_force_burst1_glue_set_469,
+      D => BU2_U0_tx_axi_shim_force_burst1_glue_set_473,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_force_burst1_470
+      Q => BU2_U0_tx_axi_shim_force_burst1_474
     );
   BU2_U0_tx_axi_shim_tx_underrun : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tx_underrun_glue_set_468,
+      D => BU2_U0_tx_axi_shim_tx_underrun_glue_set_472,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_underrun_184
     );
   BU2_U0_tx_axi_shim_tlast_reg : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tlast_reg_glue_set_466,
+      D => BU2_U0_tx_axi_shim_tlast_reg_glue_set_470,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tlast_reg_467
+      Q => BU2_U0_tx_axi_shim_tlast_reg_471
     );
   BU2_U0_MATCH_FRAME_INT : FDR
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_MATCH_FRAME_INT_glue_set_465,
+      D => BU2_U0_MATCH_FRAME_INT_glue_set_469,
       R => NlwRenamedSig_OI_rx_reset_out,
-      Q => BU2_U0_MATCH_FRAME_INT_461
+      Q => BU2_U0_MATCH_FRAME_INT_466
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_tx_en12 : LUT6
     generic map(
@@ -1370,10 +1364,10 @@ begin
     )
     port map (
       I0 => BU2_U0_GMII_TX_EN_INT,
-      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_464,
+      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_404,
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r2_411,
       I3 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress_r_431,
-      I4 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I4 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I5 => BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_tx_en1,
       O => gmii_tx_en
     );
@@ -1394,20 +1388,20 @@ begin
       INIT => X"0808080808080800"
     )
     port map (
-      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
+      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
       I2 => BU2_N16,
       I3 => BU2_U0_rx_axi_shim_fsmfake1(0),
-      I4 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
+      I4 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
       I5 => BU2_U0_RX_DATA_VALID,
-      O => BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_394
+      O => BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_392
     );
   BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_SW0 : LUT2
     generic map(
       INIT => X"B"
     )
     port map (
-      I0 => BU2_U0_MATCH_FRAME_INT_461,
+      I0 => BU2_U0_MATCH_FRAME_INT_466,
       I1 => BU2_U0_RX_CLIENT_CE,
       O => BU2_N16
     );
@@ -1418,11 +1412,11 @@ begin
     port map (
       I0 => BU2_U0_TX_AXI_CLK_OUT_INT2,
       I1 => pause_req,
-      I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_361,
+      I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_359,
       I3 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_tx_stats_bytevld_ctr(2),
-      I4 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I4 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I5 => BU2_N14,
-      O => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_358
+      O => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_356
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_SW0 : LUT3
     generic map(
@@ -1439,9 +1433,9 @@ begin
       INIT => X"FF10FF0010100000"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I1 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
+      I0 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I1 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
       I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2,
       I5 => BU2_N12,
@@ -1453,20 +1447,20 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_N12
     );
   BU2_U0_tx_axi_shim_early_deassert_force_burst2_OR_36_o_SW0 : LUT3
     generic map(
-      INIT => X"F7"
+      INIT => X"BF"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_early_deassert_446,
+      I0 => tx_axis_mac_tlast,
       I1 => tx_axis_mac_tvalid,
-      I2 => tx_axis_mac_tlast,
+      I2 => BU2_U0_tx_axi_shim_early_deassert_451,
       O => BU2_N10
     );
   BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_ack_wire_OR_32_o_SW0 : LUT5
@@ -1476,9 +1470,9 @@ begin
     port map (
       I0 => tx_axis_mac_tvalid,
       I1 => tx_axis_mac_tuser,
-      I2 => BU2_U0_tx_axi_shim_gate_tready_336,
-      I3 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
+      I2 => BU2_U0_tx_axi_shim_gate_tready_334,
+      I3 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
       O => BU2_N8
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In : LUT5
@@ -1487,22 +1481,22 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_force_end_455,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
-      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
+      I1 => BU2_U0_tx_axi_shim_force_end_460,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
+      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
       I4 => BU2_N6,
-      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_310
+      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_308
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_SW0 : LUT6
     generic map(
       INIT => X"FC00FEAAFF00FFAA"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311,
-      I1 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I2 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309,
+      I1 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I2 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I5 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2,
       O => BU2_N6
     );
@@ -1512,12 +1506,12 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_313,
-      I2 => BU2_U0_tx_axi_shim_force_end_455,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_311,
+      I2 => BU2_U0_tx_axi_shim_force_end_460,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
       I4 => BU2_N4,
-      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
-      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_322
+      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
+      O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_320
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_SW0 : LUT4
     generic map(
@@ -1526,8 +1520,8 @@ begin
     port map (
       I0 => tx_axis_mac_tlast,
       I1 => tx_axis_mac_tuser,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_321,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_319,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317,
       O => BU2_N4
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o4 : LUT5
@@ -1535,11 +1529,11 @@ begin
       INIT => X"AAAAAA80"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I0 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
-      I2 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_452,
-      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_450,
-      I4 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_451,
+      I2 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_457,
+      I3 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_455,
+      I4 => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_456,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3 : LUT3
@@ -1548,9 +1542,9 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_452
+      I1 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o3_457
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2 : LUT5
     generic map(
@@ -1559,20 +1553,20 @@ begin
     port map (
       I0 => tx_axis_mac_tvalid,
       I1 => tx_axis_mac_tuser,
-      I2 => BU2_U0_tx_axi_shim_no_burst_435,
-      I3 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_451
+      I2 => BU2_U0_tx_axi_shim_no_burst_439,
+      I3 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o2_456
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1 : LUT3
     generic map(
       INIT => X"EA"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317,
-      I2 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_450
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I2 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_tx_state_3_OR_24_o1_455
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_In2 : LUT6
     generic map(
@@ -1580,9 +1574,9 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1,
       I5 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_In,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_29_o
@@ -1594,10 +1588,10 @@ begin
     port map (
       I0 => tx_axis_mac_tvalid,
       I1 => tx_axis_mac_tuser,
-      I2 => BU2_U0_tx_axi_shim_no_burst_435,
-      I3 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_no_burst_439,
+      I3 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_In
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o4 : LUT6
@@ -1606,20 +1600,20 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tuser,
-      I1 => BU2_U0_tx_axi_shim_no_burst_435,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_448
+      I1 => BU2_U0_tx_axi_shim_no_burst_439,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o5_453
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1 : LUT2
     generic map(
       INIT => X"1"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_early_deassert_446,
-      I1 => BU2_U0_tx_axi_shim_two_byte_tx_438,
+      I0 => BU2_U0_tx_axi_shim_early_deassert_451,
+      I1 => BU2_U0_tx_axi_shim_two_byte_tx_442,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o2
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o : LUT6
@@ -1628,12 +1622,12 @@ begin
     )
     port map (
       I0 => BU2_N2,
-      I1 => BU2_U0_tx_axi_shim_force_assert_444,
-      I2 => BU2_U0_tx_axi_shim_no_burst_435,
-      I3 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
-      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_445
+      I1 => BU2_U0_tx_axi_shim_force_assert_449,
+      I2 => BU2_U0_tx_axi_shim_no_burst_439,
+      I3 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      I5 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_450
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_force_assert_OR_22_o_SW0 : LUT2
     generic map(
@@ -1650,7 +1644,7 @@ begin
     )
     port map (
       I0 => BU2_U0_TX_STATS_BYTEVLD,
-      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_429,
+      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_428,
       O => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_tx_stats_byte_valid_AND_6_o
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_tx_er11 : LUT3
@@ -1658,17 +1652,27 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TX_ER_INT,
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_er_r2_409,
       O => gmii_tx_er
+    );
+  BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_collision_r_PWR_18_o_MUX_33_o11 : LUT3
+    generic map(
+      INIT => X"F8"
+    )
+    port map (
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r2_411,
+      I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_404,
+      I2 => NlwRenamedSig_OI_tx_collision,
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_PWR_18_o_MUX_33_o
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mmux_txd81 : LUT3
     generic map(
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(7),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_hinbl_r2(3),
       O => gmii_txd_2(7)
@@ -1678,7 +1682,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(6),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_hinbl_r2(2),
       O => gmii_txd_2(6)
@@ -1688,7 +1692,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(5),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_hinbl_r2(1),
       O => gmii_txd_2(5)
@@ -1698,7 +1702,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(4),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_hinbl_r2(0),
       O => gmii_txd_2(4)
@@ -1708,7 +1712,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(3),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r2(3),
       O => gmii_txd_2(3)
@@ -1718,7 +1722,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(2),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r2(2),
       O => gmii_txd_2(2)
@@ -1728,7 +1732,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(1),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r2(1),
       O => gmii_txd_2(1)
@@ -1738,7 +1742,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428,
+      I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429,
       I1 => BU2_U0_GMII_TXD_INT(0),
       I2 => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r2(0),
       O => gmii_txd_2(0)
@@ -1750,7 +1754,7 @@ begin
     port map (
       I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count(1),
       I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count(0),
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(1)
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_Mcount_tx_byte_count_xor_1_11 : LUT2
     generic map(
@@ -1759,7 +1763,7 @@ begin
     port map (
       I0 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(1),
       I1 => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(0),
-      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1
+      O => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(1)
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress1 : LUT6
     generic map(
@@ -1780,8 +1784,8 @@ begin
     )
     port map (
       I0 => BU2_U0_RX_CLIENT_CE,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
-      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
+      I2 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
       O => BU2_U0_rx_axi_shim_rx_state_1_rx_enable_AND_17_o
     );
   BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_In1 : LUT5
@@ -1789,10 +1793,10 @@ begin
       INIT => X"2AEE2AAA"
     )
     port map (
-      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
+      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
       I1 => BU2_U0_RX_CLIENT_CE,
-      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
-      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
+      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
+      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
       I4 => BU2_U0_RX_DATA_VALID,
       O => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_In
     );
@@ -1801,9 +1805,9 @@ begin
       INIT => X"80AACCAA"
     )
     port map (
-      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
-      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
+      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
+      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
       I3 => BU2_U0_RX_CLIENT_CE,
       I4 => BU2_U0_RX_DATA_VALID,
       O => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_In
@@ -1815,9 +1819,9 @@ begin
     port map (
       I0 => BU2_U0_RX_DATA_VALID,
       I1 => BU2_U0_rx_axi_shim_fsmfake1(0),
-      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
-      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
-      I4 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
+      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
+      I3 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
+      I4 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
       I5 => NlwRenamedSig_OI_rx_reset_out,
       O => BU2_U0_rx_axi_shim_next_rx_state_1_rx_state_1_OR_15_o12
     );
@@ -1826,9 +1830,9 @@ begin
       INIT => X"DD999980"
     )
     port map (
-      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380,
-      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382,
-      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_441,
+      I0 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378,
+      I1 => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380,
+      I2 => BU2_U0_rx_axi_shim_rx_frame_complete_446,
       I3 => BU2_U0_RX_DATA_VALID,
       I4 => BU2_U0_rx_axi_shim_fsmfake1(0),
       O => BU2_U0_rx_axi_shim_next_rx_state(0)
@@ -1847,10 +1851,10 @@ begin
       INIT => X"AE04"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_req,
-      I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_361,
-      I3 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_362,
+      I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_359,
+      I3 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_360,
       O => BU2_U0_PAUSE_REQ_INT
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_Mcount_tx_stats_bytevld_ctr_xor_1_11 : LUT2
@@ -1867,7 +1871,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(9),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(9),
       O => BU2_U0_PAUSE_VAL_INT(9)
@@ -1877,7 +1881,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(8),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(8),
       O => BU2_U0_PAUSE_VAL_INT(8)
@@ -1887,7 +1891,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(7),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(7),
       O => BU2_U0_PAUSE_VAL_INT(7)
@@ -1897,7 +1901,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(6),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(6),
       O => BU2_U0_PAUSE_VAL_INT(6)
@@ -1907,7 +1911,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(5),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(5),
       O => BU2_U0_PAUSE_VAL_INT(5)
@@ -1917,7 +1921,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(4),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(4),
       O => BU2_U0_PAUSE_VAL_INT(4)
@@ -1927,7 +1931,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(3),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(3),
       O => BU2_U0_PAUSE_VAL_INT(3)
@@ -1937,7 +1941,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(2),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(2),
       O => BU2_U0_PAUSE_VAL_INT(2)
@@ -1947,7 +1951,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(1),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(1),
       O => BU2_U0_PAUSE_VAL_INT(1)
@@ -1957,7 +1961,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(15),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(15),
       O => BU2_U0_PAUSE_VAL_INT(15)
@@ -1967,7 +1971,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(14),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(14),
       O => BU2_U0_PAUSE_VAL_INT(14)
@@ -1977,7 +1981,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(13),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(13),
       O => BU2_U0_PAUSE_VAL_INT(13)
@@ -1987,7 +1991,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(12),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(12),
       O => BU2_U0_PAUSE_VAL_INT(12)
@@ -1997,7 +2001,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(11),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(11),
       O => BU2_U0_PAUSE_VAL_INT(11)
@@ -2007,7 +2011,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(10),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(10),
       O => BU2_U0_PAUSE_VAL_INT(10)
@@ -2017,7 +2021,7 @@ begin
       INIT => X"E4"
     )
     port map (
-      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359,
+      I0 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357,
       I1 => pause_val_7(0),
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg(0),
       O => BU2_U0_PAUSE_VAL_INT(0)
@@ -2028,7 +2032,7 @@ begin
     )
     port map (
       I0 => BU2_U0_TX_AXI_CLK_OUT_INT2,
-      I1 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_361,
+      I1 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_359,
       I2 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_tx_stats_bytevld_ctr(3),
       I3 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_tx_stats_bytevld_ctr(2),
       I4 => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_tx_stats_bytevld_ctr(1),
@@ -2072,8 +2076,8 @@ begin
       INIT => X"8"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
-      I1 => BU2_U0_tx_axi_shim_gate_tready_336,
+      I0 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
+      I1 => BU2_U0_tx_axi_shim_gate_tready_334,
       O => NlwRenamedSig_OI_tx_axis_mac_tready
     );
   BU2_U0_tx_axi_shim_tx_state_tx_state_3_tx_state_3_OR_37_o1 : LUT2
@@ -2081,9 +2085,21 @@ begin
       INIT => X"E"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
       O => BU2_U0_tx_axi_shim_tx_state_3_tx_state_3_OR_37_o
+    );
+  BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_state_3_AND_44_o1 : LUT5
+    generic map(
+      INIT => X"00000080"
+    )
+    port map (
+      I0 => tx_axis_mac_tuser,
+      I1 => BU2_U0_tx_axi_shim_gate_tready_334,
+      I2 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
+      O => BU2_U0_tx_axi_shim_tx_mac_tready_int_tx_state_3_AND_44_o
     );
   BU2_U0_tx_axi_shim_tx_data_valid_two_byte_tx_OR_34_o1 : LUT5
     generic map(
@@ -2092,9 +2108,9 @@ begin
     port map (
       I0 => tx_axis_mac_tvalid,
       I1 => BU2_U0_tx_axi_shim_tx_data_valid_186,
-      I2 => BU2_U0_tx_axi_shim_two_byte_tx_438,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I2 => BU2_U0_tx_axi_shim_two_byte_tx_442,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I4 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       O => BU2_U0_tx_axi_shim_tx_data_valid_two_byte_tx_OR_34_o
     );
   BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o11 : LUT4
@@ -2104,9 +2120,9 @@ begin
     port map (
       I0 => BU2_U0_TX_ACK,
       I1 => NlwRenamedSig_OI_speed_is_10_100,
-      I2 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
-      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433
+      I2 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
+      I3 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      O => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_In1 : LUT4
     generic map(
@@ -2114,9 +2130,9 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tvalid,
-      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309,
-      I2 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323,
+      I1 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307,
+      I2 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_72_o
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In11 : LUT3
@@ -2126,7 +2142,7 @@ begin
     port map (
       I0 => NlwRenamedSig_OI_speed_is_10_100,
       I1 => BU2_U0_TX_ACK,
-      I2 => BU2_U0_tx_axi_shim_tx_ack_reg_339,
+      I2 => BU2_U0_tx_axi_shim_tx_ack_reg_337,
       O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In1
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In21 : LUT3
@@ -2135,8 +2151,8 @@ begin
     )
     port map (
       I0 => tx_axis_mac_tlast,
-      I1 => BU2_U0_tx_axi_shim_gate_tready_336,
-      I2 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338,
+      I1 => BU2_U0_tx_axi_shim_gate_tready_334,
+      I2 => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336,
       O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_In2
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_In1 : LUT6
@@ -2144,12 +2160,12 @@ begin
       INIT => X"0000000000004000"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_ignore_packet_434,
-      I1 => BU2_U0_tx_axi_shim_tx_enable_reg_326,
+      I0 => BU2_U0_tx_axi_shim_ignore_packet_438,
+      I1 => BU2_U0_tx_axi_shim_tx_enable_reg_324,
       I2 => tx_axis_mac_tvalid,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323,
       I4 => tx_axis_mac_tuser,
-      I5 => BU2_U0_tx_axi_shim_no_burst_435,
+      I5 => BU2_U0_tx_axi_shim_no_burst_439,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_28_o
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_In1 : LUT3
@@ -2157,7 +2173,7 @@ begin
       INIT => X"2A"
     )
     port map (
-      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_321,
+      I0 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_319,
       I1 => tx_axis_mac_tlast,
       I2 => tx_axis_mac_tuser,
       O => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_70_o
@@ -2169,10 +2185,10 @@ begin
     port map (
       I0 => tx_axis_mac_tuser,
       I1 => tx_axis_mac_tlast,
-      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319,
-      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315,
-      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_432,
-      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_433,
+      I2 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317,
+      I3 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313,
+      I4 => BU2_U0_tx_axi_shim_tx_state_FSM_FFd1_436,
+      I5 => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o1_437,
       O => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_In
     );
   BU2_U0_INT_TX_RST_ASYNCH1 : LUT2
@@ -2192,6 +2208,24 @@ begin
       I0 => glbl_rstn,
       I1 => rx_axi_rstn,
       O => BU2_U0_INT_RX_RST_ASYNCH
+    );
+  BU2_U0_SYNC_TX_RESET_I_Mmux_R3_PWR_21_o_MUX_108_o11 : LUT2
+    generic map(
+      INIT => X"E"
+    )
+    port map (
+      I0 => BU2_U0_SYNC_TX_RESET_I_R2_245,
+      I1 => BU2_U0_SYNC_TX_RESET_I_R3_434,
+      O => BU2_U0_SYNC_TX_RESET_I_R3_PWR_21_o_MUX_108_o
+    );
+  BU2_U0_SYNC_RX_RESET_I_Mmux_R3_PWR_21_o_MUX_108_o11 : LUT2
+    generic map(
+      INIT => X"E"
+    )
+    port map (
+      I0 => BU2_U0_SYNC_RX_RESET_I_R2_242,
+      I1 => BU2_U0_SYNC_RX_RESET_I_R3_432,
+      O => BU2_U0_SYNC_RX_RESET_I_R3_PWR_21_o_MUX_108_o
     );
   BU2_U0_Mmux_TX_STATS_SHIFT_PWR_14_o_mux_8_OUT321 : LUT2
     generic map(
@@ -2789,13 +2823,6 @@ begin
       D => BU2_U0_GMII_TXD_INT(3),
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r1(3)
     );
-  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r1 : FDC
-    port map (
-      C => tx_axi_clk,
-      CLR => NlwRenamedSig_OI_tx_reset_out,
-      D => BU2_U0_GMII_TX_EN_INT,
-      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r1_410
-    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_er_r1 : FDC
     port map (
       C => tx_axi_clk,
@@ -2803,23 +2830,30 @@ begin
       D => BU2_U0_GMII_TX_ER_INT,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_er_r1_408
     );
+  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r1 : FDC
+    port map (
+      C => tx_axi_clk,
+      CLR => NlwRenamedSig_OI_tx_reset_out,
+      D => BU2_U0_GMII_TX_EN_INT,
+      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_r1_410
+    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress_r : FD
     port map (
       C => tx_axi_clk,
       D => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_suppress_r_431
     );
-  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r : FD
-    port map (
-      C => tx_axi_clk,
-      D => BU2_U0_TX_STATS_BYTEVLD,
-      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_429
-    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r : FD
     port map (
       C => tx_axi_clk,
       D => NlwRenamedSig_OI_speed_is_10_100,
-      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_428
+      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_speed_is_10_100_r_429
+    );
+  BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r : FD
+    port map (
+      C => tx_axi_clk,
+      D => BU2_U0_TX_STATS_BYTEVLD,
+      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_r_428
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_txd_lonbl_r2_0 : FDC
     port map (
@@ -2905,31 +2939,37 @@ begin
       D => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(1),
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count_r(1)
     );
+  BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r : FD
+    port map (
+      C => tx_axi_clk,
+      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_PWR_18_o_MUX_33_o,
+      Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_collision_r_404
+    );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count_0 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1,
+      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(0),
       R => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_inv,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(0)
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count_1 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1,
+      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(1),
       R => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_stats_byte_valid_inv,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_byte_count(1)
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count_0 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(0),
+      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_0_1,
       R => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count(0)
     );
   BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count_1 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result(1),
+      D => BU2_U0_FCSBLKGEN_fcs_blk_inst_Result_1_1,
       R => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_from_mac_inv,
       Q => BU2_U0_FCSBLKGEN_fcs_blk_inst_tx_en_count(1)
     );
@@ -2992,7 +3032,7 @@ begin
   BU2_U0_rx_axi_shim_rx_mac_tuser : FDR
     port map (
       C => rx_axi_clk,
-      D => BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_394,
+      D => BU2_U0_rx_axi_shim_next_rx_state_1_rx_enable_AND_16_o_392,
       R => NlwRenamedSig_OI_rx_reset_out,
       Q => rx_axis_mac_tuser
     );
@@ -3073,14 +3113,14 @@ begin
       C => rx_axi_clk,
       D => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_In,
       R => NlwRenamedSig_OI_rx_reset_out,
-      Q => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_382
+      Q => BU2_U0_rx_axi_shim_rx_state_FSM_FFd2_380
     );
   BU2_U0_rx_axi_shim_rx_state_FSM_FFd1 : FDR
     port map (
       C => rx_axi_clk,
       D => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_In,
       R => NlwRenamedSig_OI_rx_reset_out,
-      Q => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_380
+      Q => BU2_U0_rx_axi_shim_rx_state_FSM_FFd1_378
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_VAL_reg_0 : FDRE
     port map (
@@ -3216,21 +3256,21 @@ begin
       CE => BU2_U0_TX_AXI_CLK_OUT_INT2,
       D => pause_req,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_362
+      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_PAUSE_REQ_reg_360
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_In,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_361
+      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd2_359
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_358,
+      D => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_In_356,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_359
+      Q => BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_pausereq_mux_slt_FSM_FFd1_357
     );
   BU2_U0_PAUSESHIM_8_GEN_pausereq_shim_inst_tx_stats_bytevld_ctr_0 : FDRE
     generic map(
@@ -3280,7 +3320,7 @@ begin
     port map (
       C => tx_axi_clk,
       D => BU2_U0_TX_AXI_CLK_OUT_INT2,
-      Q => BU2_U0_tx_axi_shim_tx_enable_reg_326
+      Q => BU2_U0_tx_axi_shim_tx_enable_reg_324
     );
   BU2_U0_tx_axi_shim_tx_data_hold_0 : FDRE
     port map (
@@ -3350,83 +3390,83 @@ begin
     port map (
       C => tx_axi_clk,
       D => BU2_U0_TX_ACK,
-      Q => BU2_U0_tx_axi_shim_tx_ack_reg_339
+      Q => BU2_U0_tx_axi_shim_tx_ack_reg_337
     );
   BU2_U0_tx_axi_shim_tx_mac_tready_reg : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_ignore_packet_OR_48_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_mac_tready_reg_338
+      Q => BU2_U0_tx_axi_shim_tx_mac_tready_reg_336
     );
   BU2_U0_tx_axi_shim_gate_tready : FDS
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_PWR_20_o_tx_enable_MUX_106_o,
       S => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_gate_tready_336
+      Q => BU2_U0_tx_axi_shim_gate_tready_334
     );
   BU2_U0_tx_axi_shim_tx_data_0 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_0_dpot_334,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_0_dpot_332,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(0)
     );
   BU2_U0_tx_axi_shim_tx_data_1 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_1_dpot_333,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_1_dpot_331,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(1)
     );
   BU2_U0_tx_axi_shim_tx_data_2 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_2_dpot_332,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_2_dpot_330,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(2)
     );
   BU2_U0_tx_axi_shim_tx_data_3 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_3_dpot_331,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_3_dpot_329,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(3)
     );
   BU2_U0_tx_axi_shim_tx_data_4 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_4_dpot_330,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_4_dpot_328,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(4)
     );
   BU2_U0_tx_axi_shim_tx_data_5 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_5_dpot_329,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_5_dpot_327,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(5)
     );
   BU2_U0_tx_axi_shim_tx_data_6 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_6_dpot_328,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_6_dpot_326,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(6)
     );
   BU2_U0_tx_axi_shim_tx_data_7 : FDRE
     port map (
       C => tx_axi_clk,
-      CE => BU2_U0_tx_axi_shim_tx_enable_reg_326,
-      D => BU2_U0_tx_axi_shim_tx_data_7_dpot_327,
+      CE => BU2_U0_tx_axi_shim_tx_enable_reg_324,
+      D => BU2_U0_tx_axi_shim_tx_data_7_dpot_325,
       R => NlwRenamedSig_OI_tx_reset_out,
       Q => BU2_U0_tx_axi_shim_tx_data(7)
     );
@@ -3435,63 +3475,63 @@ begin
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_29_o,
       S => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_325
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd10_323
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd7 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_322,
+      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_In_320,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_323
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd7_321
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd9 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_28_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_321
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd9_319
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd8 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_70_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_319
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd8_317
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd4 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_PWR_20_o_equal_74_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_317
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd4_315
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd6 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_In,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_315
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd6_313
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd5 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_71_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_313
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd5_311
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd3 : FDR
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_310,
+      D => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_In_308,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_311
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd3_309
     );
   BU2_U0_tx_axi_shim_tx_state_FSM_FFd2 : FDR
     port map (
       C => tx_axi_clk,
       D => BU2_U0_tx_axi_shim_next_tx_state_3_GND_20_o_equal_72_o,
       R => NlwRenamedSig_OI_tx_reset_out,
-      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_309
+      Q => BU2_U0_tx_axi_shim_tx_state_FSM_FFd2_307
     );
   BU2_U0_INT_RX_STATISTICS_VECTOR_0 : FDRE
     port map (
@@ -3973,24 +4013,15 @@ begin
       S => NlwRenamedSig_OI_tx_reset_out,
       Q => NlwRenamedSig_OI_tx_statistics_vector(31)
     );
-  BU2_U0_SYNC_TX_RESET_I_R3 : FD
-    generic map(
-      INIT => '1'
-    )
-    port map (
-      C => tx_axi_clk,
-      D => BU2_U0_SYNC_TX_RESET_I_R2_246,
-      Q => BU2_U0_SYNC_TX_RESET_I_R3_247
-    );
   BU2_U0_SYNC_TX_RESET_I_R2 : FDP
     generic map(
       INIT => '1'
     )
     port map (
       C => tx_axi_clk,
-      D => BU2_U0_SYNC_TX_RESET_I_R1_245,
+      D => BU2_U0_SYNC_TX_RESET_I_R1_244,
       PRE => BU2_U0_INT_TX_RST_ASYNCH,
-      Q => BU2_U0_SYNC_TX_RESET_I_R2_246
+      Q => BU2_U0_SYNC_TX_RESET_I_R2_245
     );
   BU2_U0_SYNC_TX_RESET_I_R1 : FDP
     generic map(
@@ -3998,18 +4029,9 @@ begin
     )
     port map (
       C => tx_axi_clk,
-      D => BU2_rx_axis_filter_tuser(0),
+      D => BU2_N0,
       PRE => BU2_U0_INT_TX_RST_ASYNCH,
-      Q => BU2_U0_SYNC_TX_RESET_I_R1_245
-    );
-  BU2_U0_SYNC_RX_RESET_I_R3 : FD
-    generic map(
-      INIT => '1'
-    )
-    port map (
-      C => rx_axi_clk,
-      D => BU2_U0_SYNC_RX_RESET_I_R2_242,
-      Q => BU2_U0_SYNC_RX_RESET_I_R3_243
+      Q => BU2_U0_SYNC_TX_RESET_I_R1_244
     );
   BU2_U0_SYNC_RX_RESET_I_R2 : FDP
     generic map(
@@ -4027,7 +4049,7 @@ begin
     )
     port map (
       C => rx_axi_clk,
-      D => BU2_rx_axis_filter_tuser(0),
+      D => BU2_N0,
       PRE => BU2_U0_INT_RX_RST_ASYNCH,
       Q => BU2_U0_SYNC_RX_RESET_I_R1_241
     );
@@ -4083,19 +4105,19 @@ begin
       EMACPHYSYNCACQSTATUS => BU2_syncacqstatus,
       EMACCLIENTTXSTATSBYTEVLD => BU2_U0_TX_STATS_BYTEVLD,
       DCRHOSTDONEIR => NLW_BU2_U0_v6_emac_DCRHOSTDONEIR_UNCONNECTED,
-      PHYEMACGTXCLK => BU2_rx_axis_filter_tuser(0),
+      PHYEMACGTXCLK => BU2_N0,
       EMACPHYMGTRXRESET => BU2_mgtrxreset,
       PHYEMACRXCLK => rx_axi_clk,
-      DCREMACENABLE => BU2_rx_axis_filter_tuser(0),
+      DCREMACENABLE => BU2_N0,
       EMACSPEEDIS10100 => NlwRenamedSig_OI_speed_is_10_100,
       PHYEMACTXGMIIMIICLKIN => tx_axi_clk,
       EMACCLIENTTXACK => BU2_U0_TX_ACK,
       EMACPHYTXCHARISK => BU2_txcharisk,
       PHYEMACRXRUNDISP => N0,
       PHYEMACMIITXCLK => tx_axi_clk,
-      CLIENTEMACTXFIRSTBYTE => BU2_rx_axis_filter_tuser(0),
+      CLIENTEMACTXFIRSTBYTE => BU2_N0,
       EMACPHYTXGMIIMIICLKOUT => BU2_tx_axi_clk_out,
-      HOSTMIIMSEL => BU2_rx_axis_filter_tuser(0),
+      HOSTMIIMSEL => BU2_N0,
       EMACCLIENTANINTERRUPT => BU2_aninterrupt,
       EMACPHYENCOMMAALIGN => BU2_encommaalign,
       EMACPHYMDTRI => BU2_mdio_tri,
@@ -4103,8 +4125,8 @@ begin
       EMACPHYTXEN => BU2_U0_GMII_TX_EN_INT,
       PHYEMACRXNOTINTABLE => N0,
       EMACCLIENTRXGOODFRAME => BU2_U0_RX_GOOD_FRAME,
-      DCREMACCLK => BU2_rx_axis_filter_tuser(0),
-      DCREMACWRITE => BU2_rx_axis_filter_tuser(0),
+      DCREMACCLK => BU2_N0,
+      DCREMACWRITE => BU2_N0,
       CLIENTEMACDCMLOCKED => N1,
       PHYEMACRXDV => gmii_rx_dv,
       PHYEMACRXCHARISK => N0,
@@ -4115,11 +4137,11 @@ begin
       EMACCLIENTRXFRAMEDROP => NLW_BU2_U0_v6_emac_EMACCLIENTRXFRAMEDROP_UNCONNECTED,
       EMACCLIENTRXDVLDMSW => NLW_BU2_U0_v6_emac_EMACCLIENTRXDVLDMSW_UNCONNECTED,
       EMACCLIENTRXCLIENTCLKOUT => BU2_U0_RX_CLIENT_CE,
-      CLIENTEMACTXCLIENTCLKIN => BU2_rx_axis_filter_tuser(0),
+      CLIENTEMACTXCLIENTCLKIN => BU2_N0,
       PHYEMACCRS => gmii_crs,
       EMACCLIENTTXRETRANSMIT => NlwRenamedSig_OI_tx_retransmit,
       PHYEMACMCLKIN => N0,
-      CLIENTEMACTXDVLDMSW => BU2_rx_axis_filter_tuser(0),
+      CLIENTEMACTXDVLDMSW => BU2_N0,
       EMACCLIENTRXSTATSBYTEVLD => NLW_BU2_U0_v6_emac_EMACCLIENTRXSTATSBYTEVLD_UNCONNECTED,
       EMACPHYTXCHARDISPVAL => BU2_txchardispval,
       PHYEMACRXDISPERR => N0,
@@ -4133,7 +4155,7 @@ begin
       EMACCLIENTTXCOLLISION => NlwRenamedSig_OI_tx_collision,
       PHYEMACSIGNALDET => N0,
       EMACCLIENTRXSTATSVLD => BU2_U0_RX_STATS_SHIFT_VLD,
-      HOSTREQ => BU2_rx_axis_filter_tuser(0),
+      HOSTREQ => BU2_N0,
       EMACDCRACK => NLW_BU2_U0_v6_emac_EMACDCRACK_UNCONNECTED,
       HOSTCLK => N0,
       PHYEMACRXER => gmii_rx_er,
@@ -4141,19 +4163,19 @@ begin
       EMACPHYTXER => BU2_U0_GMII_TX_ER_INT,
       EMACPHYPOWERDOWN => BU2_powerdown,
       EMACPHYLOOPBACKMSB => BU2_loopbackmsb,
-      CLIENTEMACRXCLIENTCLKIN => BU2_rx_axis_filter_tuser(0),
+      CLIENTEMACRXCLIENTCLKIN => BU2_N0,
       EMACCLIENTTXSTATS => BU2_U0_TX_STATS_SHIFT,
       RESET => BU2_U0_INT_GLBL_RST,
-      DCREMACREAD => BU2_rx_axis_filter_tuser(0),
+      DCREMACREAD => BU2_N0,
       EMACCLIENTRXBADFRAME => BU2_U0_RX_BAD_FRAME,
-      CLIENTEMACTXD(15) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(14) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(13) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(12) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(11) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(10) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(9) => BU2_rx_axis_filter_tuser(0),
-      CLIENTEMACTXD(8) => BU2_rx_axis_filter_tuser(0),
+      CLIENTEMACTXD(15) => BU2_N0,
+      CLIENTEMACTXD(14) => BU2_N0,
+      CLIENTEMACTXD(13) => BU2_N0,
+      CLIENTEMACTXD(12) => BU2_N0,
+      CLIENTEMACTXD(11) => BU2_N0,
+      CLIENTEMACTXD(10) => BU2_N0,
+      CLIENTEMACTXD(9) => BU2_N0,
+      CLIENTEMACTXD(8) => BU2_N0,
       CLIENTEMACTXD(7) => BU2_U0_tx_axi_shim_tx_data(7),
       CLIENTEMACTXD(6) => BU2_U0_tx_axi_shim_tx_data(6),
       CLIENTEMACTXD(5) => BU2_U0_tx_axi_shim_tx_data(5),
@@ -4162,38 +4184,38 @@ begin
       CLIENTEMACTXD(2) => BU2_U0_tx_axi_shim_tx_data(2),
       CLIENTEMACTXD(1) => BU2_U0_tx_axi_shim_tx_data(1),
       CLIENTEMACTXD(0) => BU2_U0_tx_axi_shim_tx_data(0),
-      HOSTWRDATA(31) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(30) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(29) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(28) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(27) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(26) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(25) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(24) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(23) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(22) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(21) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(20) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(19) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(18) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(17) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(16) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(15) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(14) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(13) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(12) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(11) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(10) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(9) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(8) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(7) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(6) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(5) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(4) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(3) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(2) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(1) => BU2_rx_axis_filter_tuser(0),
-      HOSTWRDATA(0) => BU2_rx_axis_filter_tuser(0),
+      HOSTWRDATA(31) => BU2_N0,
+      HOSTWRDATA(30) => BU2_N0,
+      HOSTWRDATA(29) => BU2_N0,
+      HOSTWRDATA(28) => BU2_N0,
+      HOSTWRDATA(27) => BU2_N0,
+      HOSTWRDATA(26) => BU2_N0,
+      HOSTWRDATA(25) => BU2_N0,
+      HOSTWRDATA(24) => BU2_N0,
+      HOSTWRDATA(23) => BU2_N0,
+      HOSTWRDATA(22) => BU2_N0,
+      HOSTWRDATA(21) => BU2_N0,
+      HOSTWRDATA(20) => BU2_N0,
+      HOSTWRDATA(19) => BU2_N0,
+      HOSTWRDATA(18) => BU2_N0,
+      HOSTWRDATA(17) => BU2_N0,
+      HOSTWRDATA(16) => BU2_N0,
+      HOSTWRDATA(15) => BU2_N0,
+      HOSTWRDATA(14) => BU2_N0,
+      HOSTWRDATA(13) => BU2_N0,
+      HOSTWRDATA(12) => BU2_N0,
+      HOSTWRDATA(11) => BU2_N0,
+      HOSTWRDATA(10) => BU2_N0,
+      HOSTWRDATA(9) => BU2_N0,
+      HOSTWRDATA(8) => BU2_N0,
+      HOSTWRDATA(7) => BU2_N0,
+      HOSTWRDATA(6) => BU2_N0,
+      HOSTWRDATA(5) => BU2_N0,
+      HOSTWRDATA(4) => BU2_N0,
+      HOSTWRDATA(3) => BU2_N0,
+      HOSTWRDATA(2) => BU2_N0,
+      HOSTWRDATA(1) => BU2_N0,
+      HOSTWRDATA(0) => BU2_N0,
       EMACCLIENTRXD(15) => NLW_BU2_U0_v6_emac_EMACCLIENTRXD_15_UNCONNECTED,
       EMACCLIENTRXD(14) => NLW_BU2_U0_v6_emac_EMACCLIENTRXD_14_UNCONNECTED,
       EMACCLIENTRXD(13) => NLW_BU2_U0_v6_emac_EMACCLIENTRXD_13_UNCONNECTED,
@@ -4277,48 +4299,48 @@ begin
       EMACDCRDBUS(29) => NLW_BU2_U0_v6_emac_EMACDCRDBUS_29_UNCONNECTED,
       EMACDCRDBUS(30) => NLW_BU2_U0_v6_emac_EMACDCRDBUS_30_UNCONNECTED,
       EMACDCRDBUS(31) => NLW_BU2_U0_v6_emac_EMACDCRDBUS_31_UNCONNECTED,
-      HOSTADDR(9) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(8) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(7) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(6) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(5) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(4) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(3) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(2) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(1) => BU2_rx_axis_filter_tuser(0),
-      HOSTADDR(0) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(0) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(1) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(2) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(3) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(4) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(5) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(6) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(7) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(8) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(9) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(10) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(11) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(12) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(13) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(14) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(15) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(16) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(17) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(18) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(19) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(20) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(21) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(22) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(23) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(24) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(25) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(26) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(27) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(28) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(29) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(30) => BU2_rx_axis_filter_tuser(0),
-      DCREMACDBUS(31) => BU2_rx_axis_filter_tuser(0),
+      HOSTADDR(9) => BU2_N0,
+      HOSTADDR(8) => BU2_N0,
+      HOSTADDR(7) => BU2_N0,
+      HOSTADDR(6) => BU2_N0,
+      HOSTADDR(5) => BU2_N0,
+      HOSTADDR(4) => BU2_N0,
+      HOSTADDR(3) => BU2_N0,
+      HOSTADDR(2) => BU2_N0,
+      HOSTADDR(1) => BU2_N0,
+      HOSTADDR(0) => BU2_N0,
+      DCREMACDBUS(0) => BU2_N0,
+      DCREMACDBUS(1) => BU2_N0,
+      DCREMACDBUS(2) => BU2_N0,
+      DCREMACDBUS(3) => BU2_N0,
+      DCREMACDBUS(4) => BU2_N0,
+      DCREMACDBUS(5) => BU2_N0,
+      DCREMACDBUS(6) => BU2_N0,
+      DCREMACDBUS(7) => BU2_N0,
+      DCREMACDBUS(8) => BU2_N0,
+      DCREMACDBUS(9) => BU2_N0,
+      DCREMACDBUS(10) => BU2_N0,
+      DCREMACDBUS(11) => BU2_N0,
+      DCREMACDBUS(12) => BU2_N0,
+      DCREMACDBUS(13) => BU2_N0,
+      DCREMACDBUS(14) => BU2_N0,
+      DCREMACDBUS(15) => BU2_N0,
+      DCREMACDBUS(16) => BU2_N0,
+      DCREMACDBUS(17) => BU2_N0,
+      DCREMACDBUS(18) => BU2_N0,
+      DCREMACDBUS(19) => BU2_N0,
+      DCREMACDBUS(20) => BU2_N0,
+      DCREMACDBUS(21) => BU2_N0,
+      DCREMACDBUS(22) => BU2_N0,
+      DCREMACDBUS(23) => BU2_N0,
+      DCREMACDBUS(24) => BU2_N0,
+      DCREMACDBUS(25) => BU2_N0,
+      DCREMACDBUS(26) => BU2_N0,
+      DCREMACDBUS(27) => BU2_N0,
+      DCREMACDBUS(28) => BU2_N0,
+      DCREMACDBUS(29) => BU2_N0,
+      DCREMACDBUS(30) => BU2_N0,
+      DCREMACDBUS(31) => BU2_N0,
       EMACCLIENTRXSTATS(6) => BU2_U0_RX_STATS_SHIFT(6),
       EMACCLIENTRXSTATS(5) => BU2_U0_RX_STATS_SHIFT(5),
       EMACCLIENTRXSTATS(4) => BU2_U0_RX_STATS_SHIFT(4),
@@ -4326,18 +4348,18 @@ begin
       EMACCLIENTRXSTATS(2) => BU2_U0_RX_STATS_SHIFT(2),
       EMACCLIENTRXSTATS(1) => BU2_U0_RX_STATS_SHIFT(1),
       EMACCLIENTRXSTATS(0) => BU2_U0_RX_STATS_SHIFT(0),
-      DCREMACABUS(0) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(1) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(2) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(3) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(4) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(5) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(6) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(7) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(8) => BU2_rx_axis_filter_tuser(0),
-      DCREMACABUS(9) => BU2_rx_axis_filter_tuser(0),
-      HOSTOPCODE(1) => BU2_rx_axis_filter_tuser(0),
-      HOSTOPCODE(0) => BU2_rx_axis_filter_tuser(0),
+      DCREMACABUS(0) => BU2_N0,
+      DCREMACABUS(1) => BU2_N0,
+      DCREMACABUS(2) => BU2_N0,
+      DCREMACABUS(3) => BU2_N0,
+      DCREMACABUS(4) => BU2_N0,
+      DCREMACABUS(5) => BU2_N0,
+      DCREMACABUS(6) => BU2_N0,
+      DCREMACABUS(7) => BU2_N0,
+      DCREMACABUS(8) => BU2_N0,
+      DCREMACABUS(9) => BU2_N0,
+      HOSTOPCODE(1) => BU2_N0,
+      HOSTOPCODE(0) => BU2_N0,
       CLIENTEMACTXIFGDELAY(7) => tx_ifg_delay_6(7),
       CLIENTEMACTXIFGDELAY(6) => tx_ifg_delay_6(6),
       CLIENTEMACTXIFGDELAY(5) => tx_ifg_delay_6(5),
@@ -4352,7 +4374,7 @@ begin
       PHYEMACPHYAD(1) => N0,
       PHYEMACPHYAD(0) => N0,
       PHYEMACRXBUFSTATUS(1) => N0,
-      PHYEMACRXBUFSTATUS(0) => BU2_rx_axis_filter_tuser(0),
+      PHYEMACRXBUFSTATUS(0) => BU2_N0,
       HOSTRDDATA(31) => NLW_BU2_U0_v6_emac_HOSTRDDATA_31_UNCONNECTED,
       HOSTRDDATA(30) => NLW_BU2_U0_v6_emac_HOSTRDDATA_30_UNCONNECTED,
       HOSTRDDATA(29) => NLW_BU2_U0_v6_emac_HOSTRDDATA_29_UNCONNECTED,
@@ -4388,7 +4410,7 @@ begin
     );
   BU2_XST_GND : GND
     port map (
-      G => BU2_rx_axis_filter_tuser(0)
+      G => BU2_N0
     );
 
 end STRUCTURE;

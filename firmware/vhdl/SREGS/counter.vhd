@@ -1,20 +1,20 @@
 ----------------------------------------------------------------------------------
--- Company: 
--- Engineer: 
--- 
--- Create Date:    14:22:34 02/07/2011 
--- Design Name: 
--- Module Name:    counter - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
+-- Company:
+-- Engineer:
 --
--- Dependencies: 
+-- Create Date:    14:22:34 02/07/2011
+-- Design Name:
+-- Module Name:    counter - Behavioral
+-- Project Name:
+-- Target Devices:
+-- Tool versions:
+-- Description:
 --
--- Revision: 
+-- Dependencies:
+--
+-- Revision:
 -- Revision 0.01 - File Created
--- Additional Comments: 
+-- Additional Comments:
 --
 ----------------------------------------------------------------------------------
 library IEEE;
@@ -33,11 +33,11 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity one_hertz_counter is
     Port ( CLK : in  STD_LOGIC;
          COUNTER_OUT : out  std_logic_vector (7 downto 0));
-			  
+
 end one_hertz_counter;
 
 architecture Behavioral of one_hertz_counter is
-constant counter_div: integer:=66000000;
+constant counter_div : integer := 125000000;
 signal cnt : integer range 0 to counter_div -1;
 signal ce : std_logic := '0';
 signal counter : std_logic_vector (7 downto 0):="00000000";
@@ -46,7 +46,7 @@ begin
 process(ce)
 begin
 
-if rising_edge(ce) then 
+if rising_edge(ce) then
 
 counter <= counter +1;
 
@@ -56,7 +56,7 @@ end process ;
 process(CLK)
 begin
 if rising_edge(CLK) then
-if cnt=counter_div-1 then 
+if cnt=counter_div-1 then
 	ce<='1';
 	cnt <= 0;
 	else
