@@ -125,7 +125,7 @@ architecture rtl of RegisterControl is
 
   signal bulk_device_select     : integer range 0 to 1 := 0;
   signal dev0_fifo_blk_en       : std_logic;
-  signal dev0_fifo_fill_ctr     : std_logic_vector(REG_BULK_LEN-1 downto 0);
+  signal dev0_fifo_fill_ctr     : std_logic_vector(31 downto 0);
   signal dev0_fifo_fill_ctr_en  : std_logic;
 
   signal one_hertz_counter      : std_logic_vector(7 downto 0);
@@ -208,7 +208,7 @@ begin
   dev0_fifo_wren <= not dev0_fifo_full when r_dev0_fifo_fillType = "001" else
       BLK_DEV0_WREN and not dev0_fifo_full;
 
-  dev0_fifo_din <= dev0_fifo_fill_ctr when r_dev0_fifo_fillType = "001" else
+  dev0_fifo_din <= EXT2SLV(dev0_fifo_fill_ctr, REG_BULK_LEN) when r_dev0_fifo_fillType = "001" else
       BLK_DEV0_DIN;
 
 
