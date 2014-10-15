@@ -131,9 +131,13 @@ architecture Behavioral of topl is
 
   -- generic device registers
   signal reg_dev0_config        : reg_devX_config_type;
+  signal reg_dev0_cfg_wr        : reg_devX_cfg_wr_type;
   signal reg_dev0_status        : reg_devX_status_type;
+  signal reg_dev0_st_rd         : reg_devX_st_rd_type;
   signal reg_dev1_config        : reg_devX_config_type;
+  signal reg_dev1_cfg_wr        : reg_devX_cfg_wr_type;
   signal reg_dev1_status        : reg_devX_status_type;
+  signal reg_dev1_st_rd         : reg_devX_st_rd_type;
 
   -- LCD stuff
   constant lcd_mode_default : std_logic_vector(2 downto 0) := "001";
@@ -483,9 +487,13 @@ begin
 
     -- generic registers
     REG_DEV0_CONFIG => reg_dev0_config,
+    REG_DEV0_CFG_WR => reg_dev0_cfg_wr,
     REG_DEV0_STATUS => reg_dev0_status,
+    REG_DEV0_ST_RD  => reg_dev0_st_rd,
     REG_DEV1_CONFIG => reg_dev1_config,
+    REG_DEV1_CFG_WR => reg_dev1_cfg_wr,
     REG_DEV1_STATUS => reg_dev1_status,
+    REG_DEV1_ST_RD  => reg_dev1_st_rd,
 
     -- bulk transfer
     REG_BLK_EN      => register_blk_en,

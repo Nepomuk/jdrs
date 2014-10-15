@@ -34,9 +34,13 @@ entity RegisterControl is
 
     -- generic registers
     REG_DEV0_CONFIG : out reg_devX_config_type; -- generic config registers for device 0
+    REG_DEV0_CFG_WR : out reg_devX_cfg_wr_type; -- confic register has been updated
     REG_DEV0_STATUS : in  reg_devX_status_type; -- generic status registers for device 0
+    REG_DEV0_ST_RD  : out reg_devX_st_rd_type;  -- status register has been read (useful for fifos)
     REG_DEV1_CONFIG : out reg_devX_config_type; -- generic config registers for device 1
+    REG_DEV1_CFG_WR : out reg_devX_cfg_wr_type; -- confic register has been updated
     REG_DEV1_STATUS : in  reg_devX_status_type; -- generic status registers for device 1
+    REG_DEV1_ST_RD  : out reg_devX_st_rd_type;  -- status register has been read (useful for fifos)
 
     -- bulk transfer
     REG_BLK_EN      : in  std_logic;  -- bulk register access
@@ -79,8 +83,12 @@ architecture rtl of RegisterControl is
 
 
   -- internal control signals
-  signal single_register_read   : std_logic;
-  signal single_register_write  : std_logic;
+  signal single_register_read           : std_logic;
+  signal single_register_read_delayed   : std_logic;
+  signal single_register_read_strobe    : std_logic;
+  signal single_register_write          : std_logic;
+  signal single_register_write_delayed  : std_logic;
+  signal single_register_write_strobe   : std_logic;
   signal register_address       : integer range 0 to 2**REG_ADDR_LEN-1;
   signal register_address_scope : integer range 0 to 2**(REG_ADDR_LEN-8)-1;
   signal register_address_dev   : integer range 0 to 2**8-1;
@@ -107,7 +115,11 @@ architecture rtl of RegisterControl is
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
+  signal r_dev0_cfg_wr          : reg_devX_cfg_wr_type;
+  signal r_dev0_st_rd           : reg_devX_st_rd_type;
   signal r_dev1_config          : reg_devX_config_type;
+  signal r_dev1_cfg_wr          : reg_devX_cfg_wr_type;
+  signal r_dev1_st_rd           : reg_devX_st_rd_type;
   signal r_dev0_fifo_fillType   : std_logic_vector(2 downto 0);
 
 
@@ -254,12 +266,24 @@ begin
   --  register control signals
   -- ---------------------------------------------------------------------------
 
-  single_register_read  <= REG_EN and not REG_WR;
-  single_register_write <= REG_EN and REG_WR;
   register_address        <= to_integer(unsigned(REG_ADDR));
   register_address_scope  <= to_integer(unsigned(REG_ADDR(REG_ADDR_LEN-1 downto 8)));
   register_address_dev    <= to_integer(unsigned(REG_ADDR(7 downto 0)));
 
+  -- create strobes of one clock cycle for reading and writing
+  single_register_read  <= REG_EN and not REG_WR;
+  single_register_write <= REG_EN and REG_WR;
+
+  process (clk)
+  begin
+    if rising_edge(clk) then
+      single_register_read_delayed <= single_register_read;
+      single_register_write_delayed <= single_register_write;
+    end if;
+  end process;
+
+  single_register_read_strobe <= single_register_read and not single_register_read_delayed;
+  single_register_write_strobe <= single_register_write and not single_register_write_delayed;
 
   -- ---------------------------------------------------------------------------
   --  register writing
@@ -269,38 +293,52 @@ begin
   begin
     if reset = '1' then
       r_led_config <= (others => '0');
+      r_dev0_fifo_fillType <= (others => '0');
+      r_dev0_cfg_wr <= (others => '0');
+      r_dev1_cfg_wr <= (others => '0');
 
-    elsif rising_edge(clk) and single_register_write = '1' then
+    elsif rising_edge(clk) then
+      -- set all config written flags to '0' (and thus the ones that actually
+      -- have been updated will be set to '1' later)
+      r_dev0_cfg_wr <= (others => '0');
+      r_dev1_cfg_wr <= (others => '0');
 
-      -- first device registers
-      if register_address_scope = DEV0_SCOPE and
-          register_address_dev >= DEVX_CONFIG_START and
-          register_address_dev <= DEVX_CONFIG_END then
-        r_dev0_config(register_address_dev) <= REG_DATA;
+      if single_register_write_strobe = '1' then
 
-      -- second device registers
-      elsif register_address_scope = DEV1_SCOPE and
-          register_address_dev >= DEVX_CONFIG_START and
-          register_address_dev <= DEVX_CONFIG_END then
-        r_dev1_config(register_address_dev) <= REG_DATA;
+        -- first device registers
+        if register_address_scope = DEV0_SCOPE and
+            register_address_dev >= DEVX_CONFIG_START and
+            register_address_dev <= DEVX_CONFIG_END then
+          r_dev0_config(register_address_dev) <= REG_DATA;
+          r_dev0_cfg_wr(register_address_dev) <= '1';
 
-      -- everything else
-      else
-        case register_address is
-          when RA_LED_REG =>
-            r_led_config <= REG_DATA(r_led_config'range);
+        -- second device registers
+        elsif register_address_scope = DEV1_SCOPE and
+            register_address_dev >= DEVX_CONFIG_START and
+            register_address_dev <= DEVX_CONFIG_END then
+          r_dev1_config(register_address_dev) <= REG_DATA;
+          r_dev1_cfg_wr(register_address_dev) <= '1';
 
-          when RA_DEV0_BULK_DATA_FILL =>
-            r_dev0_fifo_fillType <= REG_DATA(r_dev0_fifo_fillType'range);
+        -- everything else
+        else
+          case register_address is
+            when RA_LED_REG =>
+              r_led_config <= REG_DATA(r_led_config'range);
 
-          when others =>
-        end case;
+            when RA_DEV0_BULK_DATA_FILL =>
+              r_dev0_fifo_fillType <= REG_DATA(r_dev0_fifo_fillType'range);
+
+            when others =>
+          end case;
+        end if;
       end if;
     end if;
   end process;
 
   REG_DEV0_CONFIG <= r_dev0_config;
+  REG_DEV0_CFG_WR <= r_dev0_cfg_wr;
   REG_DEV1_CONFIG <= r_dev1_config;
+  REG_DEV1_CFG_WR <= r_dev1_cfg_wr;
 
 
   -- ---------------------------------------------------------------------------
@@ -350,5 +388,32 @@ begin
 
     (others => '0');
 
+
+  process (clk)
+  begin
+    if rising_edge(clk) then
+      r_dev0_st_rd <= (others => '0');
+      r_dev1_st_rd <= (others => '0');
+
+      if single_register_read_strobe = '1' then
+        -- if there has been a read request to one of the status registers,
+        -- set the read information to '1'
+        if register_address_scope = DEV0_SCOPE and
+           register_address_dev >= DEVX_STATUS_START and
+           register_address_dev <= DEVX_STATUS_END then
+          r_dev0_st_rd(register_address_dev) <= '1';
+
+        elsif register_address_scope = DEV1_SCOPE and
+              register_address_dev >= DEVX_STATUS_START and
+              register_address_dev <= DEVX_STATUS_END then
+          r_dev1_st_rd(register_address_dev) <= '1';
+
+        end if;
+      end if;
+    end if;
+  end process;
+
+  REG_DEV0_ST_RD <= r_dev0_st_rd;
+  REG_DEV1_ST_RD <= r_dev1_st_rd;
 
 end rtl;

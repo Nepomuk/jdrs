@@ -71,7 +71,9 @@ package register_config is
   constant DEVX_STATUS_LEN        : integer := DEVX_STATUS_END - DEVX_STATUS_START;
 
   type reg_devX_config_type is array (DEVX_CONFIG_LEN-1 downto 0) of std_logic_vector(REG_LEN-1 downto 0);
+  subtype reg_devX_cfg_wr_type is std_logic_vector(DEVX_CONFIG_LEN-1 downto 0);
   type reg_devX_status_type is array (DEVX_STATUS_LEN-1 downto 0) of std_logic_vector(REG_LEN-1 downto 0);
+  subtype reg_devX_st_rd_type  is std_logic_vector(DEVX_STATUS_LEN-1 downto 0);
 
 
   -- ---------------------------------------------------------------------------
