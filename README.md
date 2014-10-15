@@ -46,3 +46,5 @@ There are some things that haven't been done so far. Following an unordered list
 * Dublicate the register to handle two connected test devices (`register_control.vhd`).
 
 * Include a performance check routine in the software to get the maximum transfer rate.
+
+* Reading a single word from the DAQ fifo (via single register read) retrieves the old word in the output because the fifo is not set as first word fall through. This needs to be fixed, either reconfigure the fifo (then the bulk transfer has to be looked at, probably the request for the next word has to be shifted) or put some work on single register read.
