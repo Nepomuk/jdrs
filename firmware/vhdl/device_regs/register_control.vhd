@@ -348,6 +348,7 @@ begin
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
       register_address = RA_DEV0_BULK_DATA_FILL or
+      register_address = RA_DEV0_BULK_DATA_COUNT or
       dev0_fifo_single_read = '1' or
       register_address_scope = DEV0_SCOPE or
       register_address_scope = DEV1_SCOPE
@@ -357,6 +358,7 @@ begin
   REG_DATA_OUT <=
     EXT2SLV(r_led_config)         when single_register_read = '1' and register_address = RA_LED_REG else
     EXT2SLV(r_dev0_fifo_fillType) when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_FILL else
+    EXT2SLV(dev0_fifo_count)      when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_COUNT else
     EXT2SLV(dev0_fifo_dout)       when dev0_fifo_single_read = '1' else
 
     -- MMCM data out
