@@ -33,10 +33,6 @@ use UNISIM.VComponents.all;
 -- needed for register handling
 use work.register_config.all;
 
--- needed for SREGS stuff
-use work.util_pack.all;
-use work.sample_package.all;
-
 
 entity topl is
   port (
@@ -46,9 +42,6 @@ entity topl is
     -- 200MHz clock input from board
     CLK_IN_P            : in  std_logic;  		--! Differential on-board 200 MHz clock
     CLK_IN_N            : in  std_logic;			--! Differential on-board 200 MHz clock
-
-    -- 66MHz clock input from board
-    CLK66               : in  std_logic;			--! Single-ended on-board 66 MHz clock
 
     -- 125MHz GTX clock
     -- MGTREFCLK_N         : in  std_logic;
@@ -98,9 +91,6 @@ architecture Behavioral of topl is
   signal clk_locked     : std_logic;
   signal clk_50         : std_logic;
 
-  signal pulse_1ms      : std_logic;
-  signal pulse_100ms    : std_logic;
-
   -- the register information bus
   signal register_access        : std_logic;
   signal register_access_ready  : std_logic;
@@ -108,11 +98,6 @@ architecture Behavioral of topl is
   signal register_addr          : std_logic_vector(15 downto 0);
   signal register_read_data     : std_logic_vector(31 downto 0);
   signal register_write_data    : std_logic_vector(31 downto 0);
-  signal register_dma           : std_logic;
-  signal register_dma_wait      : std_logic;
-  signal register_dma_end       : std_logic;
-  signal register_dma_empty     : std_logic;
-  signal register_dma_count     : std_logic_vector(17 downto 0);
 
   signal register_blk_en        : std_logic;
   signal register_blk_rden      : std_logic;
@@ -120,7 +105,6 @@ architecture Behavioral of topl is
   signal register_blk_count     : std_logic_vector(BLK_FIFO_DEPTH_BITS-1 downto 0);
   signal register_blk_empty     : std_logic;
   signal register_blk_valid     : std_logic;
-  -- signal register_dt_ack       : std_logic;
 
   -- generic device registers
   signal reg_dev0_config        : reg_devX_config_type;
@@ -168,26 +152,6 @@ architecture Behavioral of topl is
   signal register_write_or_read_buf : std_logic; -- 0: read, 1: write
   signal register_data_buf          : std_logic_vector(31 downto 0);
 
-  -- buffer the register information a while until SREGS is finished
---  constant sregs_buffer_counter_max     : integer := 125000; -- 1ms
---  signal sregs_buffer_counter         : integer range 0 to sregs_buffer_counter_max := 0;
---  signal sregs_buffer_active          : std_logic;
---  signal sregs_buffer_enable          : std_logic;
---  signal sregs_buffer_register_access     : std_logic;
---  signal sregs_buffer_write_or_read     : std_logic;
---  signal sregs_buffer_address         : std_logic_vector(7 downto 0);
---  signal sregs_buffer_write_data        : std_logic_vector(31 downto 0);
-
-  -- SREGS signals
-  signal sregs_clk            : std_logic;
-  signal sys_mode             : std_logic_vector(15 downto 0);
-  signal sregs_regaddr        : std_logic_vector(11 downto 0); --(12 downto 2);
-  alias regadr                : std_logic_vector(8 downto 0) is sregs_regaddr(10 downto 2);
-
-  signal test_display_int     : std_logic;
-  signal test_display_output  : std_logic;
-
-
 
 begin
 
@@ -213,16 +177,6 @@ begin
     RESET         => GLBL_RST,
     LOCKED        => clk_locked
   );
-
-  -- REFCLK_GTX_IBUFDS : IBUFDS_GTXE1
-  -- port map (
-  --   O     => gtx_clk_bufg,
-  --   ODIV2 => open,
-  --   CEB   => '0',
-  --   I     => MGTREFCLK_P,
-  --   IB    => MGTREFCLK_N
-  -- );
-
 
 
   ------------------------------------------------------------------------------
@@ -413,92 +367,9 @@ begin
 
 
   ------------------------------------------------------------------------------
-  -- SREGS register control
+  -- Register control
   ------------------------------------------------------------------------------
 
-  PULSE_EVERY_1MS : entity work.pulse_every
-  generic map (
-    CLOCK_CYCLES_PER_PULSE  => 50000
-  )
-  port map (
-    CLK   => clk_50,
-    RST   => GLBL_RST,
-    PULSE => pulse_1ms
-  );
-
-  PULSE_EVERY_100MS : entity work.pulse_every
-  generic map (
-    CLOCK_CYCLES_PER_PULSE  => 100
-  )
-  port map (
-    CLK   => pulse_1ms,
-    RST   => GLBL_RST,
-    PULSE => pulse_100ms
-  );
-
-  -- dma_register_read : process ( CLK66 )
-  -- begin
-  --  if rising_edge( CLK66 ) then
-  --    if ( register_addr = x"0400" ) then
-  --      register_dt_ack <= register_access_ready;
-  --    else
-  --      register_dt_ack <= '0';
-  --    end if;
-  --  end if;
-  -- end process;
-
-
-  -- get rid of the first and last bits of the address
-  -- (equivalent to dividing by 4)
-  -- sregs_regaddr <= register_addr(12 downto 2);
-
-  -- U_SREGS : entity work.SREGS
-  -- generic map (
-  --   SC_VERSION  => SC_VERSION
-  -- )
-  -- port map (
-  --   LCLK        => sregs_clk,
-  --   BASECLOCK   => gtx_clk_bufg,--CLK66,
-  --   CLK66       => CLK66, -- a direct clock connection is needed for the MMCM
-  --   GRESET      => open,  -- a reset from the SREGS
-  --   P1MS        => pulse_1ms,
-  --   LED         => USER_LED,
-  --   USER_SWITCH => USER_SWITCH,
-
-  -- -- -------------------------- local bus to communication port ------------- --
-  --   P_REG       => register_access,
-  --   P_WR        => register_write_or_read,
-  --   P_A         => sregs_regaddr,
-  --   P_D         => register_write_data,
-  --   P_D_O       => register_read_data,
-  --   P_RDY       => register_access_ready,
-  --   P_BLK       => register_dma,
-  --   P_WAIT      => register_dma_wait,
-  --   P_END       => register_dma_end,
-  --   DMD_DMA     => sys_mode(0),
-  --   EV_DATACOUNT  => register_dma_count, --ev_datacount,
-
-  -- -- -------------------------- direct block transfer ----------------------- --
-  --   DT_REQ      => open, --p_dt_req,
-  --   DT_ACK      => '0', --register_dt_ack, --p_dt_ack,
-  --   DT_DEN      => open, --p_dt_den,
-  --   FIFO_EMPTY  => register_dma_empty, --fifo_empty_i,
-
-  -- -- -------------------------- write to Host register request -------------- --
-  --   HREG_REQ    => open, --hreg_req,
-  --   HREG_A      => open, --hreg_a,
-  --   HREG_D      => open, --hreg_d,
-  --   HREG_ACK    => '0', --hreg_ack,
-
-  -- -- -------------------------- control/status ------------------------------ --
-  --   SYS_MODE    => sys_mode,
-
-  -- -- -------------------------- host doorbell ------------------------------- --
-  --   P100MS      => pulse_100ms,
-  --   DMD_WR      => '0' --p_dt_den
-  -- );
-
-  sregs_regaddr <= register_addr(11 downto 0);
   REG_CTRL : entity work.RegisterControl
   port map (
     CLK             => gtx_clk_bufg,
@@ -516,7 +387,7 @@ begin
     -- register handling
     REG_EN          => register_access,
     REG_WR          => register_write_or_read,
-    REG_ADDR        => sregs_regaddr,
+    REG_ADDR        => register_addr(11 downto 0),
     REG_DATA        => register_write_data,
     REG_DATA_OUT    => register_read_data,
     REG_VALID       => register_access_ready,
@@ -543,20 +414,4 @@ begin
   );
 
 
-  test_display_int <= (register_access and register_write_or_read) and
-                B2SL(regadr = std_logic_vector(to_unsigned(LED_REG, regadr'length)) );
-
-  Test_Display : entity work.led_eine_sec
-  port map (
-    CLK       => gtx_clk_bufg,
-    TRIGGER   => test_display_int,
-    LED_TEST  => open,
-    LED_OUT   => test_display_output
-  );
-
-  --USER_LED(0) <= test_display_output;
-  --USER_LED(7 downto 1) <= (others => '0');
-
-
 end Behavioral;
-

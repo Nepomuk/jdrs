@@ -79,8 +79,6 @@ CONFIG PART = xc6vlx240tff1156-1;
 NET CLK_IN_P         LOC = J9   | IOSTANDARD = LVDS_25  | DIFF_TERM = TRUE;
 NET CLK_IN_N         LOC = H9   | IOSTANDARD = LVDS_25  | DIFF_TERM = TRUE;
 
-NET CLK66		  		LOC = U23  | IOSTANDARD = LVCMOS25;
-
 #NET MGTREFCLK_N		LOC = H5   | IOSTANDARD = LVDS_25  | DIFF_TERM = TRUE;
 #NET MGTREFCLK_P		LOC = H6   | IOSTANDARD = LVDS_25  | DIFF_TERM = TRUE;
 
@@ -212,10 +210,6 @@ TIMESPEC "TS_ethernet_core_clk_in_p" = PERIOD "clk_in_p" 5.000 ns HIGH 50% INPUT
 NET "gtx_clk_bufg" TNM_NET = "gtx_clk_bufg";
 TIMEGRP "ethernet_core_clk_ref_gtx" = "gtx_clk_bufg";
 TIMESPEC "TS_ethernet_core_clk_ref_gtx" = PERIOD "ethernet_core_clk_ref_gtx" 8 ns HIGH 50 %;
-
-## 66 MHz clock for MMCM and SREGS
-NET "CLK66" TNM_NET = "CLK66";
-TIMESPEC "TS_CLK66" = PERIOD "CLK66" 15.1515 ns HIGH 50 %;
 
 ## Multiplexed 1 Gbps, 10/100 Mbps output inherits constraint from GTX_CLK
 NET "*tx_mac_aclk*" TNM_NET  = "clk_tx_mac";
