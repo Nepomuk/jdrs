@@ -92,6 +92,9 @@ entity ethernet_core_wrapper is
     -- Main example design controls
     -------------------------------
     DISPLAY           : out std_logic_vector (7 downto 0);
+    USER_SWITCH       : in  std_logic_vector(3 downto 0);
+    ETH_IP            : out std_logic_vector(31 downto 0);
+    ETH_MAC           : out std_logic_vector(47 downto 0);
     RX_PKG_CTR        : out std_logic_vector (31 downto 0); -- pipe the package counter to the LCD
 
     REGISTER_ACCESS         : out std_logic;            -- a request to access the register
@@ -256,11 +259,11 @@ architecture Behavorial of ethernet_core_wrapper is
   end component;
 
    ------------------------------------------------------------------------------
-   -- Constants used in this top level wrapper.
+   -- Signals used in this top level wrapper - set by the user switches.
    ------------------------------------------------------------------------------
 
-  constant our_ip   : std_logic_vector (31 downto 0) := x"c0a8000a";    -- 192.168.0.10
-  constant our_mac  : std_logic_vector (47 downto 0) := x"000a35022e62";
+  signal our_ip   : std_logic_vector (31 downto 0); -- := x"c0a8000a";    -- 192.168.0.10
+  signal our_mac  : std_logic_vector (47 downto 0); -- := x"000a35022e62";
 
 
   ------------------------------------------------------------------------------
@@ -856,6 +859,11 @@ begin
   end process;
 
 
+  -- handle the IP and mac distribution
+  our_ip  <= x"c0" & x"a8" & x"00" & x"0" & USER_SWITCH;
+  our_mac <= x"00" & x"0a" & x"35" & x"02" & x"2e" & x"6" & USER_SWITCH;
+  ETH_IP  <= our_ip;
+  ETH_MAC <= our_mac;
 
 
   -- AUTO TX process - on receipt of any UDP pkt, send a response. data sent is modified if a broadcast was received.

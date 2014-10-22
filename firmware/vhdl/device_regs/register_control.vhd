@@ -18,7 +18,6 @@ entity RegisterControl is
     CLK             : in  std_logic;  -- 125 MHz (same as for ethernet transceiver)
     RESET           : in  std_logic;
     LED             : out std_logic_vector(7 downto 0);
-    USER_SWITCH     : in  std_logic_vector(4 downto 0);
 
     -- MMCM output
     CLK_MMCM        : out std_logic;
@@ -114,6 +113,7 @@ architecture rtl of RegisterControl is
 
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
+  signal r_led_knight_rider     : std_logic_vector(4 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
   signal r_dev0_cfg_wr          : reg_devX_cfg_wr_type;
   signal r_dev0_st_rd           : reg_devX_st_rd_type;
@@ -146,7 +146,7 @@ begin
   LED_KNIGHT_RIDER : entity work.knight_rider
   port map (
     CLK66       => mmcm_clk, --CLK,
-    USER_SWITCH => USER_SWITCH,
+    USER_SWITCH => r_led_knight_rider,
     LED         => knight_rider
   );
 
@@ -293,6 +293,7 @@ begin
   begin
     if reset = '1' then
       r_led_config <= (others => '0');
+      r_led_knight_rider <= "00101";
       r_dev0_fifo_fillType <= (others => '0');
       r_dev0_cfg_wr <= (others => '0');
       r_dev1_cfg_wr <= (others => '0');
@@ -325,6 +326,9 @@ begin
             when RA_LED_REG =>
               r_led_config <= REG_DATA(r_led_config'range);
 
+            when RA_LED_KNIGHT_RIDER =>
+              r_led_config <= REG_DATA(r_led_knight_rider'range);
+
             when RA_DEV0_BULK_DATA_FILL =>
               r_dev0_fifo_fillType <= REG_DATA(r_dev0_fifo_fillType'range);
 
@@ -347,6 +351,7 @@ begin
 
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
+      register_address = RA_LED_KNIGHT_RIDER or
       register_address = RA_DEV0_BULK_DATA_FILL or
       register_address = RA_DEV0_BULK_DATA_COUNT or
       dev0_fifo_single_read = '1' or
@@ -357,6 +362,7 @@ begin
 
   REG_DATA_OUT <=
     EXT2SLV(r_led_config)         when single_register_read = '1' and register_address = RA_LED_REG else
+    EXT2SLV(r_led_knight_rider)   when single_register_read = '1' and register_address = RA_LED_KNIGHT_RIDER else
     EXT2SLV(r_dev0_fifo_fillType) when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_FILL else
     EXT2SLV(dev0_fifo_count)      when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_COUNT else
     EXT2SLV(dev0_fifo_dout)       when dev0_fifo_single_read = '1' else

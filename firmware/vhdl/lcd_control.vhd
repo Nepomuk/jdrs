@@ -59,6 +59,9 @@ entity lcd_control is
     REGISTER_WRITE_OR_READ  : in std_logic;
     REGISTER_DATA : in std_logic_vector(31 downto 0);
 
+    ETH_IP        : in std_logic_vector(31 downto 0);
+    ETH_MAC       : in std_logic_vector(47 downto 0);
+
     UDP_PKG_CTR   : in std_logic_vector(31 downto 0)    -- how many UDP packages were received?
   );
 end lcd_control;
@@ -650,6 +653,41 @@ begin
         lower_line(13) <= x"20"; --
         lower_line(14) <= hex2char( REGISTER_DATA(7 downto 4) );
         lower_line(15) <= hex2char( REGISTER_DATA(3 downto 0) );
+
+      elsif mode = "100" then
+        upper_line( 0) <= x"20"; --
+        upper_line( 1) <= x"49"; -- I
+        upper_line( 2) <= x"50"; -- P
+        upper_line( 3) <= x"20"; --
+        upper_line( 4) <= hex2char( ETH_IP(31 downto 28) );
+        upper_line( 5) <= hex2char( ETH_IP(27 downto 24) );
+        upper_line( 6) <= x"2e"; -- .
+        upper_line( 7) <= hex2char( ETH_IP(23 downto 20) );
+        upper_line( 8) <= hex2char( ETH_IP(19 downto 16) );
+        upper_line( 9) <= x"2e"; -- .
+        upper_line(10) <= hex2char( ETH_IP(15 downto 12) );
+        upper_line(11) <= hex2char( ETH_IP(11 downto 8) );
+        upper_line(12) <= x"2e"; -- .
+        upper_line(13) <= hex2char( ETH_IP(7 downto 4) );
+        upper_line(14) <= hex2char( ETH_IP(3 downto 0) );
+        upper_line(15) <= x"20"; --
+
+        lower_line( 0) <= x"4d"; -- M
+        lower_line( 1) <= x"41"; -- A
+        lower_line( 2) <= x"43"; -- C
+        lower_line( 3) <= x"20"; --
+        lower_line( 4) <= hex2char( ETH_MAC(47 downto 44) );
+        lower_line( 5) <= hex2char( ETH_MAC(43 downto 40) );
+        lower_line( 6) <= hex2char( ETH_MAC(39 downto 36) );
+        lower_line( 7) <= hex2char( ETH_MAC(35 downto 32) );
+        lower_line( 8) <= hex2char( ETH_MAC(31 downto 28) );
+        lower_line( 9) <= hex2char( ETH_MAC(27 downto 24) );
+        lower_line(10) <= hex2char( ETH_MAC(23 downto 20) );
+        lower_line(11) <= hex2char( ETH_MAC(19 downto 16) );
+        lower_line(12) <= hex2char( ETH_MAC(15 downto 12) );
+        lower_line(13) <= hex2char( ETH_MAC(11 downto 8) );
+        lower_line(14) <= hex2char( ETH_MAC(7 downto 4) );
+        lower_line(15) <= hex2char( ETH_MAC(3 downto 0) );
       end if;
     end if;
   end process what_to_display;

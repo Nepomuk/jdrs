@@ -38,6 +38,7 @@ package register_config is
 
   -- some board features
   constant RA_LED_REG             : integer := 16#010#;
+  constant RA_LED_KNIGHT_RIDER    : integer := 16#011#;
   constant RA_LCD_MODE_REG        : integer := 16#015#;
   constant RA_LCD_FIFO_CHAR_REG   : integer := 16#016#;
 

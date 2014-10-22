@@ -90,8 +90,8 @@ entity topl is
 
     -- Design controls and output
     -------------------------------
-    USER_LED            : out std_logic_vector (7 downto 0);  	--! 8 GPIO LEDs
-    USER_SWITCH         : in  std_logic_vector (4 downto 0)		--! 8 GPIO Switches
+    USER_LED            : out std_logic_vector (7 downto 0);   --! 8 GPIO LEDs
+    USER_SWITCH         : in  std_logic_vector (7 downto 0)    --! 8 GPIO Switches
   );
 end topl;
 
@@ -157,6 +157,17 @@ architecture Behavioral of topl is
   signal register_display_counter         : integer range 0 to register_display_counter_max := 0;
   signal register_display_counter_enable  : std_logic := '0';
   signal register_display_counter_running : std_logic := '0';
+
+  constant lcd_enable_eth_display         : std_logic := '1';
+  constant eth_display_counter_max        : integer := 125000000*10;
+  signal eth_display_counter              : integer range 0 to eth_display_counter_max := 0;
+  signal eth_display_counter_enable       : std_logic := '0';
+  signal eth_display_counter_running      : std_logic := '0';
+  signal eth_switch                       : std_logic_vector(3 downto 0);
+  signal eth_switch_buffer                : std_logic_vector(3 downto 0);
+  signal eth_switch_change                : std_logic;
+  signal eth_ip                           : std_logic_vector(31 downto 0);
+  signal eth_mac                          : std_logic_vector(47 downto 0);
 
   -- register buffer signals, since the information
   -- should be visible on the LCD more than a clock cycle
@@ -254,6 +265,9 @@ begin
     REGISTER_WRITE_OR_READ  => register_write_or_read_buf,
     REGISTER_DATA           => register_data_buf,
 
+    ETH_IP        => eth_ip,
+    ETH_MAC       => eth_mac,
+
     UDP_PKG_CTR   => udp_pkg_ctr
   );
 
@@ -265,7 +279,7 @@ begin
 
 
   -- a command for the register came in, display it on the LCD
-  display_register_set : process ( gtx_clk_bufg, GLBL_RST, register_access, register_access_ready, register_display_counter_running, register_write_or_read )
+  display_register_set : process ( gtx_clk_bufg, GLBL_RST, register_access, register_access_ready, register_display_counter_running, register_write_or_read, eth_switch_change, eth_display_counter_running )
   begin
     if ( register_write_or_read = '1' ) then
       register_display_counter_enable <= register_display_counter_running or register_access;
@@ -278,6 +292,10 @@ begin
       lcd_mode <= lcd_mode_default;
       register_display_counter <= 0;
       register_display_counter_running <= '0';
+
+      eth_display_counter <= 0;
+      eth_display_counter_running <= '0';
+      eth_switch_buffer <= eth_switch;
 
       register_addr_buf <= (others => '0');
       register_write_or_read_buf <= '0';
@@ -307,6 +325,24 @@ begin
           register_display_counter <= register_display_counter + 1;
         end if;
 
+      -- the ethernet configuration has changed, display it
+      elsif ( lcd_enable_eth_display = '1' and ( eth_switch_change = '1' or eth_display_counter_running = '1' ) ) then
+        lcd_mode <= "100";
+
+        if ( eth_switch_change = '1' ) then
+          eth_switch_buffer <= eth_switch;
+          eth_display_counter <= 0;
+          eth_display_counter_running <= '1';
+        elsif ( eth_display_counter = eth_display_counter_max ) then
+          eth_switch_buffer <= eth_switch_buffer;
+          eth_display_counter <= 0;
+          eth_display_counter_running <= '0';
+        else
+          eth_switch_buffer <= eth_switch_buffer;
+          eth_display_counter <= eth_display_counter + 1;
+          eth_display_counter_running <= '1';
+        end if;
+
       -- fall back to displaying the default
       else
         lcd_mode <= lcd_mode_default;
@@ -319,6 +355,13 @@ begin
   ------------------------------------------------------------------------------
   -- Ethernet wrapper
   ------------------------------------------------------------------------------
+
+  eth_switch <= USER_SWITCH(3 downto 0);
+  eth_switch_change <=
+    ( eth_switch(0) xor eth_switch_buffer(0) ) or
+    ( eth_switch(1) xor eth_switch_buffer(1) ) or
+    ( eth_switch(2) xor eth_switch_buffer(2) ) or
+    ( eth_switch(3) xor eth_switch_buffer(3) );
 
   ETH_WRAPPER : entity work.ethernet_core_wrapper
   port map (
@@ -359,6 +402,9 @@ begin
     -- Main example design controls
     -------------------------------
     DISPLAY         => open, --USER_LED,
+    USER_SWITCH     => eth_switch,
+    ETH_IP          => eth_ip,
+    ETH_MAC         => eth_mac,
     RX_PKG_CTR      => udp_pkg_ctr,
 
     REGISTER_ACCESS         => register_access,
@@ -471,7 +517,6 @@ begin
     CLK             => gtx_clk_bufg,
     RESET           => GLBL_RST,
     LED             => USER_LED,
-    USER_SWITCH     => USER_SWITCH,
 
     -- MMCM output
     CLK_MMCM        => open,
