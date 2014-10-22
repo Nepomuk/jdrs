@@ -322,7 +322,7 @@ class TMrfGal_Udp : virtual public TMrfGal
         int _UDPpollInfoResult;
 
         //! The timeout for waiting of receiving data in ms
-        const static int _UDPrecvTimeout = 500;
+        const static int _UDPrecvTimeout = 5;// 500;
 
         //! A generic TMrfData object to not reserve memory for every control access
         TMrfData _genericBuffer;

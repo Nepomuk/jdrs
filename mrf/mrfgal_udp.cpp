@@ -106,7 +106,7 @@ bool TMrfGal_Udp::deviceIsOnline() const
 
     u_int32_t response = udpDataFlag::nothing;
     if ( _readBuffer((char*)&response, sizeof(u_int32_t)) != 0 ||
-         response != udpDataFlag::pong ) {
+         (response & 0xff000000 ) != udpDataFlag::pong ) {
         return false;
     } else {
         return true;
@@ -163,7 +163,7 @@ mrf::registertype TMrfGal_Udp::read(const mrf::addresstype& address) const
 
     u_int32_t response[2] = {0};
     if ( _readBuffer((char*)&response, sizeof(u_int32_t)*2) != 0 ||
-        response[0] != udpDataFlag::registerRead ) {
+        (response[0] & 0xff000000 ) != udpDataFlag::registerRead ) {
         errcode = mrf_error::read_failed;
     }
 
@@ -192,7 +192,7 @@ void TMrfGal_Udp::write(const mrf::addresstype& address, const mrf::registertype
 
     u_int32_t response = udpDataFlag::nothing;
     if ( _readBuffer((char*)&response, sizeof(u_int32_t)) != 0 ||
-         response != udpDataFlag::check ) {
+         (response & 0xff000000 ) != udpDataFlag::check ) {
         errcode = mrf_error::read_failed;
     }
 
