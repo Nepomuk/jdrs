@@ -125,11 +125,18 @@ NET LCD_RW	  	LOC = "AC14"; ## 10 on J41
 NET SM_FAN_PWM      LOC = L10;
 
 
-#### Module Push_Buttons_4Bit constraints
-#Net update_speed     LOC = G26  | IOSTANDARD = LVCMOS15;
-#Net serial_command   LOC = G17  | IOSTANDARD = LVCMOS15;
-Net PAUSE_REQ_S		LOC = A19  | IOSTANDARD = LVCMOS15;
-#Net reset_error      LOC = A18  | IOSTANDARD = LVCMOS15;
+#### User push buttons with associated LEDs
+Net PUSHBTN_SW<0>     LOC = A19  | IOSTANDARD = LVCMOS15;  # N, SW5
+Net PUSHBTN_SW<1>     LOC = A18  | IOSTANDARD = LVCMOS15;  # S, SW6
+Net PUSHBTN_SW<2>     LOC = G17  | IOSTANDARD = LVCMOS15;  # E, SW7
+Net PUSHBTN_SW<3>     LOC = H17  | IOSTANDARD = LVCMOS15;  # W, SW8
+Net PUSHBTN_SW<4>     LOC = G26  | IOSTANDARD = LVCMOS15;  # C, SW9
+
+Net PUSHBTN_LED<0>    LOC = AH27 | IOSTANDARD = LVCMOS25;  # N, SW5
+Net PUSHBTN_LED<1>    LOC = AH28 | IOSTANDARD = LVCMOS25;  # S, SW6
+Net PUSHBTN_LED<2>    LOC = AE21 | IOSTANDARD = LVCMOS25;  # E, SW7
+Net PUSHBTN_LED<3>    LOC = AD21 | IOSTANDARD = LVCMOS25;  # W, SW8
+Net PUSHBTN_LED<4>    LOC = AP24 | IOSTANDARD = LVCMOS25;  # C, SW9
 
 
 #### Module DIP_Switches_4Bit constraints

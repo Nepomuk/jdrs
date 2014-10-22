@@ -78,6 +78,16 @@ entity ethernet_core_wrapper is
     GMII_CRS          : in  std_logic;
     MII_TX_CLK        : in  std_logic;
 
+    -- Serialised statistics vectors
+    --------------------------------
+    -- TX_STATISTICS_S   : out std_logic;
+    -- RX_STATISTICS_S   : out std_logic;
+
+    -- Serialised Pause interface controls
+    --------------------------------------
+    -- PAUSE_REQ_S       : in  std_logic;
+
+
     -- Main example design controls
     -------------------------------
     DISPLAY           : out std_logic_vector (7 downto 0);
@@ -626,7 +636,7 @@ begin
     end if;
   end process gen_shift_rx;
 
-  rx_statistics_s <= rx_stats_shift(29);
+  -- rx_statistics_s <= rx_stats_shift(29);
 
   -- TX STATS
 
@@ -669,7 +679,7 @@ begin
     end if;
   end process gen_shift_tx;
 
-  tx_statistics_s <= tx_stats_shift(33);
+  -- tx_statistics_s <= tx_stats_shift(33);
 
   ------------------------------------------------------------------------------
   -- DESerialize the Pause interface
@@ -681,7 +691,7 @@ begin
   gen_shift_pause : process (gtx_clk_bufg)
   begin
     if gtx_clk_bufg'event and gtx_clk_bufg = '1' then
-      pause_shift <= pause_shift(16 downto 0) & pause_req_s;
+      pause_shift <= pause_shift(16 downto 0) & '0'; --pause_req_s;
     end if;
   end process gen_shift_pause;
 

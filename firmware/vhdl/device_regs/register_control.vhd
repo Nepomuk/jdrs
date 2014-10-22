@@ -19,6 +19,10 @@ entity RegisterControl is
     RESET           : in  std_logic;
     LED             : out std_logic_vector(7 downto 0);
 
+    -- spill control
+    PUSHBTN_SW      : in  std_logic;
+    PUSHBTN_LED     : out std_logic;
+
     -- MMCM output
     CLK_MMCM        : out std_logic;
     RST_MMCM        : out std_logic;
@@ -114,6 +118,7 @@ architecture rtl of RegisterControl is
   -- registers
   signal r_led_config           : std_logic_vector(4 downto 0);
   signal r_led_knight_rider     : std_logic_vector(4 downto 0);
+  signal r_spill_active         : std_logic_vector(0 downto 0);
   signal r_dev0_config          : reg_devX_config_type;
   signal r_dev0_cfg_wr          : reg_devX_cfg_wr_type;
   signal r_dev0_st_rd           : reg_devX_st_rd_type;
@@ -261,6 +266,14 @@ begin
     knight_rider              when std_logic_vector(to_unsigned(1, r_led_config'length)),
     (others => '1')           when others;
 
+  -- spill control
+  PUSHBTN_LED <= r_spill_active(0);
+  process (clk)
+  begin
+    if rising_edge(clk) then
+      r_spill_active(0) <= not PUSHBTN_SW;
+    end if;
+  end process;
 
   -- ---------------------------------------------------------------------------
   --  register control signals
@@ -352,6 +365,7 @@ begin
   REG_VALID <= '1' when single_register_read = '1' and (
       register_address = RA_LED_REG or
       register_address = RA_LED_KNIGHT_RIDER or
+      register_address = RA_SPILL_ACTIVE or
       register_address = RA_DEV0_BULK_DATA_FILL or
       register_address = RA_DEV0_BULK_DATA_COUNT or
       dev0_fifo_single_read = '1' or
@@ -363,6 +377,7 @@ begin
   REG_DATA_OUT <=
     EXT2SLV(r_led_config)         when single_register_read = '1' and register_address = RA_LED_REG else
     EXT2SLV(r_led_knight_rider)   when single_register_read = '1' and register_address = RA_LED_KNIGHT_RIDER else
+    EXT2SLV(r_spill_active)       when single_register_read = '1' and register_address = RA_SPILL_ACTIVE else
     EXT2SLV(r_dev0_fifo_fillType) when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_FILL else
     EXT2SLV(dev0_fifo_count)      when single_register_read = '1' and register_address = RA_DEV0_BULK_DATA_COUNT else
     EXT2SLV(dev0_fifo_dout)       when dev0_fifo_single_read = '1' else

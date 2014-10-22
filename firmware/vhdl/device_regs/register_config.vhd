@@ -41,6 +41,7 @@ package register_config is
   constant RA_LED_KNIGHT_RIDER    : integer := 16#011#;
   constant RA_LCD_MODE_REG        : integer := 16#015#;
   constant RA_LCD_FIFO_CHAR_REG   : integer := 16#016#;
+  constant RA_SPILL_ACTIVE        : integer := 16#01a#; -- register holds the information if beam is available
 
   -- MMCM clock generator (32 addresses)
   constant RA_MMCM_START          : integer := 16#020#; -- up to 16#03F#
