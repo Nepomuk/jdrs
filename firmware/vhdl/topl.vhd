@@ -79,15 +79,6 @@ entity topl is
     GMII_CRS            : in  std_logic;
     MII_TX_CLK          : in  std_logic;
 
-    -- Serialised statistics vectors
-    --------------------------------
-  --  TX_STATISTICS_S     : out std_logic;
-  --  RX_STATISTICS_S     : out std_logic;
-
-    -- Serialised Pause interface controls
-    --------------------------------------
-    PAUSE_REQ_S         : in  std_logic;
-
     -- Design controls and output
     -------------------------------
     USER_LED            : out std_logic_vector (7 downto 0);   --! 8 GPIO LEDs
@@ -389,15 +380,6 @@ begin
     GMII_COL      => GMII_COL,
     GMII_CRS      => GMII_CRS,
     MII_TX_CLK    => MII_TX_CLK,
-
-    -- Serialised statistics vectors
-    --------------------------------
-   -- TX_STATISTICS_S => TX_STATISTICS_S,
-   -- RX_STATISTICS_S => RX_STATISTICS_S,
-
-    -- Serialised Pause interface controls
-    --------------------------------------
-    PAUSE_REQ_S     => PAUSE_REQ_S,
 
     -- Main example design controls
     -------------------------------

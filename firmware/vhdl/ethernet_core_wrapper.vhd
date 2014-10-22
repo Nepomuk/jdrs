@@ -78,17 +78,6 @@ entity ethernet_core_wrapper is
     GMII_CRS          : in  std_logic;
     MII_TX_CLK        : in  std_logic;
 
-    -- RX_CLK            : out std_logic;
-
-    -- Serialised statistics vectors
-    --------------------------------
-    TX_STATISTICS_S   : out std_logic;
-    RX_STATISTICS_S   : out std_logic;
-
-    -- Serialised Pause interface controls
-    --------------------------------------
-    PAUSE_REQ_S       : in  std_logic;
-
     -- Main example design controls
     -------------------------------
     DISPLAY           : out std_logic_vector (7 downto 0);
