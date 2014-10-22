@@ -1059,72 +1059,69 @@ begin
           if ip_rx_hdr_int.is_broadcast = '1' then
             udp_tx_int.data.data_out <= std_logic_vector(rx_count) or x"50";
           else
-            case what_to_do is
-              when do_ping =>
-                if ( tx_count = 0 ) then
+            -- if nothing else applies, send zeros
+            udp_tx_int.data.data_out <= (others => '0');
+
+            -- first send the JDRS header (first four bytes to send)
+            if ( tx_count = 0 ) then
+              -- first byte is the response type identifier
+              case what_to_do is
+                when do_ping =>
                   udp_tx_int.data.data_out <= do_pong;
-                elsif ( tx_count = 2 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                elsif ( tx_count = 3 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                else
-                  udp_tx_int.data.data_out <= (others => '0');
-                end if;
 
-              when do_read_register =>
-                case tx_count(7 downto 0) is
-                  when x"00"  => udp_tx_int.data.data_out <= do_read_register;
-                  when x"01"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"02"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                  when x"03"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                  when x"04"  => udp_tx_int.data.data_out <= register_read_data_int(31 downto 24);
-                  when x"05"  => udp_tx_int.data.data_out <= register_read_data_int(23 downto 16);
-                  when x"06"  => udp_tx_int.data.data_out <= register_read_data_int(15 downto 8);
-                  when x"07"  => udp_tx_int.data.data_out <= register_read_data_int(7 downto 0);
-                  when others => udp_tx_int.data.data_out <= (others => '0');
-                end case;
+                when do_read_register =>
+                  udp_tx_int.data.data_out <= do_read_register;
 
-              when do_write_register =>
-                if ( tx_count = 0 ) then
+                when do_write_register =>
                   udp_tx_int.data.data_out <= do_confirm;
-                else
-                  udp_tx_int.data.data_out <= (others => '0');
+
+                when do_pkg_count_read =>
+                  udp_tx_int.data.data_out <= do_pkg_count_read;
+
+                when do_pkg_count_reset =>
+                  udp_tx_int.data.data_out <= do_confirm;
+
+                when do_bulk_read =>
+                  udp_tx_int.data.data_out <= do_bulk_read;
+
+                when do_timeout =>
+                  udp_tx_int.data.data_out <= do_timeout;
+
+                when others =>
+                  udp_tx_int.data.data_out <= do_error;
+              end case;
+
+            elsif ( tx_count = 1 ) then
+              udp_tx_int.data.data_out <= (others => '0');
+
+            -- third and fourth byte are JDRS sent packages counter
+            elsif ( tx_count = 2 ) then
+              udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+            elsif ( tx_count = 3 ) then
+              udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
+            end if;
+
+
+            -- then do the response specific stuff
+            case what_to_do is
+              when do_read_register =>
+                if    tx_count = 4 then udp_tx_int.data.data_out <= register_read_data_int(31 downto 24);
+                elsif tx_count = 5 then udp_tx_int.data.data_out <= register_read_data_int(23 downto 16);
+                elsif tx_count = 6 then udp_tx_int.data.data_out <= register_read_data_int(15 downto 8);
+                elsif tx_count = 7 then udp_tx_int.data.data_out <= register_read_data_int(7 downto 0);
                 end if;
 
               when do_pkg_count_read =>
-                case tx_count(7 downto 0) is
-                  when x"00"  => udp_tx_int.data.data_out <= do_pkg_count_read;
-                  when x"01"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"02"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                  when x"03"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                  when x"04"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(31 downto 24);
-                  when x"05"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(23 downto 16);
-                  when x"06"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(15 downto 8);
-                  when x"07"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(7 downto 0);
-                  when others => udp_tx_int.data.data_out <= (others => '0');
-                end case;
+                if    tx_count = 4 then udp_tx_int.data.data_out <= rx_pkg_ctr_int(31 downto 24);
+                elsif tx_count = 5 then udp_tx_int.data.data_out <= rx_pkg_ctr_int(23 downto 16);
+                elsif tx_count = 6 then udp_tx_int.data.data_out <= rx_pkg_ctr_int(15 downto 8);
+                elsif tx_count = 7 then udp_tx_int.data.data_out <= rx_pkg_ctr_int(7 downto 0);
+                end if;
 
               when do_pkg_count_reset =>
                 set_pkg_count <= RST;
-                if ( tx_count = 0 ) then
-                  udp_tx_int.data.data_out <= do_confirm;
-                elsif ( tx_count = 2 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                elsif ( tx_count = 3 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                else
-                  udp_tx_int.data.data_out <= (others => '0');
-                end if;
 
               when do_bulk_read =>
-                if tx_count = 0 then
-                  udp_tx_int.data.data_out <= do_bulk_read;
-                elsif ( tx_count = 2 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                elsif ( tx_count = 3 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                end if;
-
                 if tx_count = REG_BULK_LEN_BYTES-3 and REGISTER_BLK_EMPTY = '0' then
                   set_bulk_read_next <= '1';
                 elsif tx_count > REG_BULK_LEN_BYTES-1 then
@@ -1146,23 +1143,9 @@ begin
                   else
                     set_tx_blk_byte_count <= INCR;
                   end if;
-                else
-                  udp_tx_int.data.data_out <= (others => '0');
                 end if;
 
-              when do_timeout =>
-                if ( tx_count = 0 ) then
-                  udp_tx_int.data.data_out <= do_timeout;
-                elsif ( tx_count = 2 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
-                elsif ( tx_count = 3 ) then
-                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
-                else
-                  udp_tx_int.data.data_out <= (others => '0');
-                end if;
-
-              when others =>    -- don't know what to do
-                udp_tx_int.data.data_out <= do_error;
+              when others =>    -- don't do anything
             end case;
           end if;
 
