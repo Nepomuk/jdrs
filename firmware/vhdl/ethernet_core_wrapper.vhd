@@ -391,6 +391,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal waiting_for_write_count    : unsigned (11 downto 0) := x"000";
   signal timeout_for_waiting_count  : unsigned (7 downto 0) := x"00";
   signal rx_pkg_ctr_int       : std_logic_vector(31 downto 0);  -- how many UDP packages were received?
+  signal tx_pkg_ctr_int       : unsigned(15 downto 0);  -- how many UDP packages were sent back?
   signal tx_count_target      : integer range 0 to 1500 := 0;  -- how many bytes should we send back?
   constant timeout_for_waiting  : integer := 20;  -- how many cycles should we wait until sending back a timeout?
   constant waiting_for_write    : integer := 100; -- how many cycles should we wait for the writing process?
@@ -408,6 +409,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal set_timeout_for_waiting_count  : count_mode_type;
   signal set_waiting_for_write_count    : count_mode_type;
   signal set_pkg_count        : count_mode_type;
+  signal set_tx_pkg_count     : count_mode_type;
   signal set_hdr              : std_logic;
   signal set_tx_start         : set_clr_type;
   signal set_last             : std_logic;
@@ -891,6 +893,7 @@ begin
     set_tx_fin <= HOLD;
     set_timeout_for_waiting_exeeded <= '0';
     set_pkg_count <= HOLD;
+    set_tx_pkg_count <= HOLD;
 
     set_what_to_do <= '0';
     set_register_access <= '0';
@@ -1060,6 +1063,10 @@ begin
               when do_ping =>
                 if ( tx_count = 0 ) then
                   udp_tx_int.data.data_out <= do_pong;
+                elsif ( tx_count = 2 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                elsif ( tx_count = 3 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
                 else
                   udp_tx_int.data.data_out <= (others => '0');
                 end if;
@@ -1068,8 +1075,8 @@ begin
                 case tx_count(7 downto 0) is
                   when x"00"  => udp_tx_int.data.data_out <= do_read_register;
                   when x"01"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"02"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"03"  => udp_tx_int.data.data_out <= (others => '0');
+                  when x"02"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                  when x"03"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
                   when x"04"  => udp_tx_int.data.data_out <= register_read_data_int(31 downto 24);
                   when x"05"  => udp_tx_int.data.data_out <= register_read_data_int(23 downto 16);
                   when x"06"  => udp_tx_int.data.data_out <= register_read_data_int(15 downto 8);
@@ -1088,8 +1095,8 @@ begin
                 case tx_count(7 downto 0) is
                   when x"00"  => udp_tx_int.data.data_out <= do_pkg_count_read;
                   when x"01"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"02"  => udp_tx_int.data.data_out <= (others => '0');
-                  when x"03"  => udp_tx_int.data.data_out <= (others => '0');
+                  when x"02"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                  when x"03"  => udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
                   when x"04"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(31 downto 24);
                   when x"05"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(23 downto 16);
                   when x"06"  => udp_tx_int.data.data_out <= rx_pkg_ctr_int(15 downto 8);
@@ -1101,6 +1108,10 @@ begin
                 set_pkg_count <= RST;
                 if ( tx_count = 0 ) then
                   udp_tx_int.data.data_out <= do_confirm;
+                elsif ( tx_count = 2 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                elsif ( tx_count = 3 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
                 else
                   udp_tx_int.data.data_out <= (others => '0');
                 end if;
@@ -1108,7 +1119,13 @@ begin
               when do_bulk_read =>
                 if tx_count = 0 then
                   udp_tx_int.data.data_out <= do_bulk_read;
-                elsif tx_count = REG_BULK_LEN_BYTES-3 and REGISTER_BLK_EMPTY = '0' then
+                elsif ( tx_count = 2 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                elsif ( tx_count = 3 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
+                end if;
+
+                if tx_count = REG_BULK_LEN_BYTES-3 and REGISTER_BLK_EMPTY = '0' then
                   set_bulk_read_next <= '1';
                 elsif tx_count > REG_BULK_LEN_BYTES-1 then
                   -- take the first 8 bits of the local bulk data buffer,
@@ -1136,6 +1153,10 @@ begin
               when do_timeout =>
                 if ( tx_count = 0 ) then
                   udp_tx_int.data.data_out <= do_timeout;
+                elsif ( tx_count = 2 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+                elsif ( tx_count = 3 ) then
+                  udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
                 else
                   udp_tx_int.data.data_out <= (others => '0');
                 end if;
@@ -1181,6 +1202,7 @@ begin
 
         next_state <= IDLE;
         set_state <= '1';
+        set_tx_pkg_count <= INCR;
         reset_what_to_do <= '1';
 
     end case;
@@ -1204,6 +1226,7 @@ begin
         waiting_for_write_count <= x"000";
         timeout_for_waiting_count <= x"00";
         rx_pkg_ctr_int <= x"00000000";
+        tx_pkg_ctr_int <= x"0000";
         tx_start_reg <= '0';
         tx_hdr.dst_ip_addr <= (others => '0');
         tx_hdr.dst_port <= (others => '0');
@@ -1261,6 +1284,11 @@ begin
           when RST =>     rx_pkg_ctr_int <= x"00000000";
           when INCR =>    rx_pkg_ctr_int <= rx_pkg_ctr_int + 1;
           when HOLD =>    rx_pkg_ctr_int <= rx_pkg_ctr_int;
+        end case;
+        case set_tx_pkg_count is
+          when RST =>     tx_pkg_ctr_int <= (others => '0');
+          when INCR =>    tx_pkg_ctr_int <= tx_pkg_ctr_int + 1;
+          when HOLD =>    tx_pkg_ctr_int <= tx_pkg_ctr_int;
         end case;
 
         -- set tx hdr
