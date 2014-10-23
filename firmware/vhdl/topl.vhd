@@ -170,7 +170,7 @@ begin
 
     -- Clock out ports
     CLK_OUT_200   => refclk_bufg,
-    CLK_OUT_125   => gtx_clk_bufg, --gtx_clk_bufg,
+    CLK_OUT_125   => gtx_clk_bufg,
     CLK_OUT_50    => clk_50,
 
     -- Status and control signals

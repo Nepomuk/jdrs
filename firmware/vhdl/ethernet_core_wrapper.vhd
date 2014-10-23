@@ -439,7 +439,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal set_bulk_read_cnt_req1     : std_logic;  -- get counter from incoming data (1/2)
   signal set_bulk_read_cnt_req2     : std_logic;  -- get counter from incoming data (2/2)
   signal set_bulk_read_counter      : std_logic;  -- set the data count to request from the fifo
-  signal set_bulk_read_next         : std_logic;  -- get the next word from the fifo
+  signal get_next_bulk_word         : std_logic;  -- get the next word from the fifo
 
   -- register handling
   signal register_access_int         : std_logic := '0';
@@ -454,12 +454,12 @@ architecture Behavorial of ethernet_core_wrapper is
   constant UDP_PAYLOAD_BYTES        : integer := 1472;  -- maximum number of bytes in one IP/UDP payload
   constant MAX_BLK_WORDS_PER_PKG    : integer := UDP_PAYLOAD_BYTES / REG_BULK_LEN_BYTES - 1; -- one word needed for header
   signal bulk_mode_int              : std_logic;  -- bulk read mode
-  signal bulk_get_next_word         : std_logic;  -- get the next word from fifo
+  signal bulk_read_enable           : std_logic;  -- get the next word from fifo
   signal bulk_read_cnt_req          : std_logic_vector(15 downto 0);  -- # requested words from DAQ fifo
   signal bulk_read_target           : integer range 0 to 2**BLK_FIFO_DEPTH_BITS-1;
   signal bulk_read_target_set       : std_logic;
   signal bulk_data_local            : std_logic_vector(REG_BULK_LEN-1 downto 0);
-  signal bulk_next_word_available   : std_logic;
+  signal bulk_data_wheel            : std_logic_vector(REG_BULK_LEN-1 downto 0);
   signal bulk_get_next_word_delayed : std_logic;
 
   -- dma block fifo
@@ -916,7 +916,7 @@ begin
     set_bulk_read_cnt_req1 <= '0';
     set_bulk_read_cnt_req2 <= '0';
     set_bulk_read_counter <= '0';
-    set_bulk_read_next <= '0';
+    get_next_bulk_word <= '0';
     reset_register_access <= '0';
     reset_bulk_access <= '0';
     reset_what_to_do <= '0';
@@ -1129,19 +1129,18 @@ begin
                 set_pkg_count <= RST;
 
               when do_bulk_read =>
-                if tx_count = REG_BULK_LEN_BYTES-3 and REGISTER_BLK_EMPTY = '0' then
-                  set_bulk_read_next <= '1';
+                if tx_count = REG_BULK_LEN_BYTES-1 and REGISTER_BLK_EMPTY = '0' then
+                  get_next_bulk_word <= '1';
                 elsif tx_count > REG_BULK_LEN_BYTES-1 then
                   -- take the first 8 bits of the local bulk data buffer,
                   -- the buffer itself is rotating the data each clock cycle
-                  udp_tx_int.data.data_out <= bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
+                  udp_tx_int.data.data_out <= bulk_data_wheel(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
 
-                  -- it takes three clock cycles for the read enable signal to
-                  -- propagate to the register control and the data to arrive
-                  -- at the local buffer
-                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-3 and
-                       tx_count < tx_count_target-3 and REGISTER_BLK_EMPTY = '0' ) then
-                    set_bulk_read_next <= '1';
+                  -- initialize the update of the wheel buffer and get the next
+                  -- word from the fifo
+                  if ( tx_blk_byte_count = REG_BULK_LEN_BYTES-1 and
+                       tx_count < tx_count_target-1 and REGISTER_BLK_EMPTY = '0' ) then
+                    get_next_bulk_word <= '1';
                   end if;
 
                   -- one word finished, go on to the next one
@@ -1235,6 +1234,7 @@ begin
         bulk_read_cnt_req <= (others => '0');
         bulk_read_target <= 0;
         bulk_read_target_set <= '0';
+        bulk_read_enable <= '0';
       else
 
         -- Next rx_state processing
@@ -1386,14 +1386,13 @@ begin
 
         -- Get the bulk data as soon as it is available and then rotate it. This
         -- way we only need to look at the first 8 bits when sending out data.
-        bulk_get_next_word <= set_bulk_read_next;
-        bulk_next_word_available <= bulk_get_next_word;
-        if bulk_next_word_available = '1' then
-          bulk_data_local <= REGISTER_BLK_DATA;
+        bulk_read_enable <= get_next_bulk_word;
+        if get_next_bulk_word = '1' then
+          bulk_data_wheel <= bulk_data_local;
         elsif udp_tx_data_out_ready_int = '1' then
           -- rotate
-          bulk_data_local <= bulk_data_local(REG_BULK_LEN-9 downto 0) &
-                             bulk_data_local(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
+          bulk_data_wheel <= bulk_data_wheel(REG_BULK_LEN-9 downto 0) &
+                             bulk_data_wheel(REG_BULK_LEN-1 downto REG_BULK_LEN-8);
         end if;
 
 
@@ -1421,6 +1420,7 @@ begin
     if rising_edge( GTX_CLK_BUFG ) then
       register_access_delayed <= register_access_int;
       register_read_ready_delayed <= REGISTER_READ_READY;
+      bulk_data_local <= REGISTER_BLK_DATA;
 
       if ( register_access_int = '1' ) then
         if ( REGISTER_READ_READY = '1' and register_read_ready_delayed = '0' ) then
@@ -1441,6 +1441,6 @@ begin
   REGISTER_WRITE_DATA <= register_write_data_int when register_access_int = '1' else (others => '0');
   REGISTER_WRITE_OR_READ <= register_write_or_read_int and register_access_int;
   REGISTER_BLK_EN <= bulk_mode_int and register_access_int;
-  REGISTER_BLK_RDEN <= bulk_get_next_word and register_access_int;
+  REGISTER_BLK_RDEN <= bulk_read_enable and register_access_int;
 
 end Behavorial;
