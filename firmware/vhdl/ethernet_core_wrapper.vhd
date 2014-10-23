@@ -393,7 +393,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal waiting_for_write_count    : unsigned (11 downto 0) := x"000";
   signal timeout_for_waiting_count  : unsigned (7 downto 0) := x"00";
   signal rx_pkg_ctr_int       : std_logic_vector(31 downto 0);  -- how many UDP packages were received?
-  signal tx_pkg_ctr_int       : unsigned(15 downto 0);  -- how many UDP packages were sent back?
+  signal tx_blk_ctr_int       : unsigned(15 downto 0);  -- how many bulk read packages were sent back?
   signal tx_count_target      : integer range 0 to 1500 := 0;  -- how many bytes should we send back?
   constant timeout_for_waiting  : integer := 20;  -- how many cycles should we wait until sending back a timeout?
   constant waiting_for_write    : integer := 100; -- how many cycles should we wait for the writing process?
@@ -411,7 +411,7 @@ architecture Behavorial of ethernet_core_wrapper is
   signal set_timeout_for_waiting_count  : count_mode_type;
   signal set_waiting_for_write_count    : count_mode_type;
   signal set_pkg_count        : count_mode_type;
-  signal set_tx_pkg_count     : count_mode_type;
+  signal set_tx_blk_count     : count_mode_type;
   signal set_hdr              : std_logic;
   signal set_tx_start         : set_clr_type;
   signal set_last             : std_logic;
@@ -900,7 +900,7 @@ begin
     set_tx_fin <= HOLD;
     set_timeout_for_waiting_exeeded <= '0';
     set_pkg_count <= HOLD;
-    set_tx_pkg_count <= HOLD;
+    set_tx_blk_count <= HOLD;
 
     set_what_to_do <= '0';
     set_register_access <= '0';
@@ -1101,11 +1101,16 @@ begin
             elsif ( tx_count = 1 ) then
               udp_tx_int.data.data_out <= (others => '0');
 
-            -- third and fourth byte are JDRS sent packages counter
+            -- third and fourth byte are bulk sent packages counter
             elsif ( tx_count = 2 ) then
-              udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(15 downto 8));
+              if ( what_to_do = do_bulk_read ) then
+                udp_tx_int.data.data_out <= std_logic_vector(tx_blk_ctr_int(15 downto 8));
+              end if;
+
             elsif ( tx_count = 3 ) then
-              udp_tx_int.data.data_out <= std_logic_vector(tx_pkg_ctr_int(7 downto 0));
+              if ( what_to_do = do_bulk_read ) then
+                udp_tx_int.data.data_out <= std_logic_vector(tx_blk_ctr_int(7 downto 0));
+              end if;
             end if;
 
 
@@ -1186,12 +1191,12 @@ begin
           when do_bulk_read =>
             reset_register_access <= '1';
             reset_bulk_access <= '1';
+            set_tx_blk_count <= INCR;
           when others =>
         end case;
 
         next_state <= IDLE;
         set_state <= '1';
-        set_tx_pkg_count <= INCR;
         reset_what_to_do <= '1';
 
     end case;
@@ -1215,7 +1220,7 @@ begin
         waiting_for_write_count <= x"000";
         timeout_for_waiting_count <= x"00";
         rx_pkg_ctr_int <= x"00000000";
-        tx_pkg_ctr_int <= x"0000";
+        tx_blk_ctr_int <= x"0000";
         tx_start_reg <= '0';
         tx_hdr.dst_ip_addr <= (others => '0');
         tx_hdr.dst_port <= (others => '0');
@@ -1275,10 +1280,10 @@ begin
           when INCR =>    rx_pkg_ctr_int <= rx_pkg_ctr_int + 1;
           when HOLD =>    rx_pkg_ctr_int <= rx_pkg_ctr_int;
         end case;
-        case set_tx_pkg_count is
-          when RST =>     tx_pkg_ctr_int <= (others => '0');
-          when INCR =>    tx_pkg_ctr_int <= tx_pkg_ctr_int + 1;
-          when HOLD =>    tx_pkg_ctr_int <= tx_pkg_ctr_int;
+        case set_tx_blk_count is
+          when RST =>     tx_blk_ctr_int <= (others => '0');
+          when INCR =>    tx_blk_ctr_int <= tx_blk_ctr_int + 1;
+          when HOLD =>    tx_blk_ctr_int <= tx_blk_ctr_int;
         end case;
 
         -- set tx hdr
