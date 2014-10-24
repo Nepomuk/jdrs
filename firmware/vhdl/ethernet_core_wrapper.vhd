@@ -1099,7 +1099,7 @@ begin
               end case;
 
             elsif ( tx_count = 1 ) then
-              udp_tx_int.data.data_out <= (others => '0');
+              udp_tx_int.data.data_out <= x"0" & USER_SWITCH;
 
             -- third and fourth byte are bulk sent packages counter
             elsif ( tx_count = 2 ) then
