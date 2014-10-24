@@ -20,8 +20,9 @@ entity RegisterControl is
     LED             : out std_logic_vector(7 downto 0);
 
     -- spill control
-    PUSHBTN_SW      : in  std_logic;
-    PUSHBTN_LED     : out std_logic;
+    SPILL_ACTIVE    : in  std_logic;  -- Spill identifier either through dedicated
+    PUSHBTN_SW      : in  std_logic;  --   input or with user switch.
+    PUSHBTN_LED     : out std_logic;  --   Output to user LED.
 
     -- MMCM output
     CLK_MMCM        : out std_logic;
@@ -271,7 +272,7 @@ begin
   process (clk)
   begin
     if rising_edge(clk) then
-      r_spill_active(0) <= not PUSHBTN_SW;
+      r_spill_active(0) <= SPILL_ACTIVE or PUSHBTN_SW;
     end if;
   end process;
 

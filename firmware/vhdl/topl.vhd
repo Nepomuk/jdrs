@@ -77,7 +77,9 @@ entity topl is
     PUSHBTN_SW          : in  std_logic_vector (4 downto 0);   --! 5 Push buttons
     PUSHBTN_LED         : out std_logic_vector (4 downto 0);   --! 5 Push buttons LEDs
     USER_LED            : out std_logic_vector (7 downto 0);   --! 8 GPIO LEDs
-    USER_SWITCH         : in  std_logic_vector (7 downto 0)    --! 8 GPIO Switches
+    USER_SWITCH         : in  std_logic_vector (7 downto 0);   --! 8 GPIO Switches
+
+    SMA_GPIO_N          : in  std_logic
   );
 end topl;
 
@@ -377,6 +379,7 @@ begin
     LED             => USER_LED,
 
     -- spill control
+    SPILL_ACTIVE    => SMA_GPIO_N,
     PUSHBTN_SW      => PUSHBTN_SW(0),
     PUSHBTN_LED     => PUSHBTN_LED(0),
 

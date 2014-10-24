@@ -136,6 +136,10 @@ Net PUSHBTN_LED<2>    LOC = AE21 | IOSTANDARD = LVCMOS25;  # E, SW7
 Net PUSHBTN_LED<3>    LOC = AD21 | IOSTANDARD = LVCMOS25;  # W, SW8
 Net PUSHBTN_LED<4>    LOC = AP24 | IOSTANDARD = LVCMOS25;  # C, SW9
 
+#### User SMA GPIO
+Net SMA_GPIO_N        LOC = W34  | IOSTANDARD = LVTTL;
+# Net SMA_GPIO_P        LOC = W34  | IOSTANDARD = LVCMOS25;
+
 
 #### Module DIP_Switches_4Bit constraints
 #Net mac_speed<0>     LOC = D22  | IOSTANDARD = LVCMOS15;
