@@ -182,9 +182,10 @@ begin
       register_address < RA_MMCM_START + N_MMCM_REGISTERS
     else '0';
 
+  -- start the MMCM when all registers have been written
   mmcm_start <= '1' when
       single_register_write = '1' and
-      register_address = RA_MMCM_START
+      register_address = RA_MMCM_START + N_MMCM_REGISTERS-1
     else '0';
 
   CLK_MMCM <= mmcm_clk;
