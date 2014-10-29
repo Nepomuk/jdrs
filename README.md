@@ -53,6 +53,6 @@ There are some things that haven't been done so far. Following an unordered list
 
 * Get FairMQ transfer things from Simone's version of the readout system. With this, the read bulk data is transformed into a FairMQ stream which can be sent to multiple receivers at once (useful to write data on two PC in parallel to have a backup immediately and look at a subset of the data for a live monitor).
 
-* Clean up the software and get a bit more structure inside. Right now everything is combined in the mainwindow.cpp/.h but this gets messy very soon. Also, there are still a lot of topix references in the software.
+* Clean up the software and get a bit more structure inside. Right now everything is combined one main window divided into tabs. This gets messy with a lot of ASIC specific features, think of a better way to separate things there. Also, there are still some topix references in the software's code.
 
 * Write some proper documentation of the software.
