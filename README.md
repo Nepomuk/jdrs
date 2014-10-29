@@ -35,16 +35,24 @@ There are some things that haven't been done so far. Following an unordered list
 
 * Make the MRF ready for variable word sizes for registers and bulk data.
 
-* Include a sent package counter into the bulk replys and check for data loss within the MRF.
+* The bulk transfer has a sent package counter in the header. This needs to be checked for data loss within the MRF.
 
 * Extend the bulk transfer to process larger requests by sending more than one reply package (`ethernet_core_wrapper.vhd` and MRF).
   Right now a request is truncated after reaching the maximum size that fit into a IP/UDP package. For performance reasons it would be beneficial to automatically send following packages until the requested word count is reached.
   **Note:** An additional `what_to_do` indicator should be used to mark an incomplete answer.
 
-* A method to fill the DAQ fifo from the software. This can become handy for debugging the system and to simulate data from an ASIC without having the ASIC connected. Ideally this could handle a bulk transfer to the PC as well, but this is not really mandatory.
+* A method to fill the DAQ fifo from the software. This can become handy for debugging the system and to simulate data from an ASIC without having the ASIC connected. Ideally this could handle a bulk transfer from the PC as well, but this is not really mandatory.
 
 * Dublicate the register to handle two connected test devices (`register_control.vhd`).
 
 * Include a performance check routine in the software to get the maximum transfer rate.
 
-* Reading a single word from the DAQ fifo (via single register read) retrieves the old word in the output because the fifo is not set as first word fall through. This needs to be fixed, either reconfigure the fifo (then the bulk transfer has to be looked at, probably the request for the next word has to be shifted) or put some work on single register read.
+* Include spill detection, which can be deactivated easily.
+
+* Make it possible to run the system with an external clock. Make sure, the configuration of the MMCM is not messed up by this. Right now the configuration (125 MHz, same as ethernet clock) is the same as the input clock of the MMCM.
+
+* Get FairMQ transfer things from Simone's version of the readout system. With this, the read bulk data is transformed into a FairMQ stream which can be sent to multiple receivers at once (useful to write data on two PC in parallel to have a backup immediately and look at a subset of the data for a live monitor).
+
+* Clean up the software and get a bit more structure inside. Right now everything is combined in the mainwindow.cpp/.h but this gets messy very soon. Also, there are still a lot of topix references in the software.
+
+* Write some proper documentation of the software.
